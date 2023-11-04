@@ -4,12 +4,13 @@
   "version": "1.0.0",
   "module": "index.ts",
   "license": "MIT",
-  "workspaces": ["packages/*"],
-  "devDependencies": {
-    "gym-tracker-api": "workspace:*"
-  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "start" : "yarn workspaces run start",
-    "clean": "rm -rf node_modules packages/a/node_modules packages/b/node_modules bun.lockb packages/a/bun.lockb packages/b/bun.lockb"
+    "server": "yarn workspace run start",
+    "mobile": "yarn workspace mobile run start",
+    "clean": "rm -rf node_modules apps/a/node_modules apps/b/node_modules bun.lockb apps/a/bun.lockb apps/b/bun.lockb"
   }
 }
