@@ -9,7 +9,7 @@
     "packages/*"
   ],
   "scripts": {
-    "server": "yarn workspace run start",
+    "api": "yarn workspace api run start",
     "mobile": "yarn workspace mobile run start",
     "clean": "rm -rf node_modules apps/a/node_modules apps/b/node_modules bun.lockb apps/a/bun.lockb apps/b/bun.lockb"
   }
