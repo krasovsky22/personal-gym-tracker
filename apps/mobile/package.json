@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@react-native/metro-config": "^0.74.0",
+    "@rneui/base": "^4.0.0-rc.8",
+    "@rneui/themed": "^4.0.0-rc.8",
     "cool-package": "*",
     "expo": "~49.0.15",
     "expo-status-bar": "~1.6.0",
