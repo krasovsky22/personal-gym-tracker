@@ -10,6 +10,8 @@ module.exports = function(api) {
           alias: {
             '@lib': './lib',
             '@components': './components',
+            '@stores': './stores',
+            '@models': './models',
           },
           extensions: ['.js', '.jsx', '.ts', '.tsx'],
         },

@@ -12,5 +12,11 @@
     "api": "yarn workspace api run start",
     "mobile": "yarn workspace mobile run start",
     "clean": "rm -rf node_modules apps/a/node_modules apps/b/node_modules bun.lockb apps/a/bun.lockb apps/b/bun.lockb"
+  },
+  "dependencies": {
+    "mobx": "^6.10.2",
+    "mobx-react": "^9.0.1",
+    "mobx-state-tree": "^5.3.0",
+    "mobx-utils": "^6.0.8"
   }
 }

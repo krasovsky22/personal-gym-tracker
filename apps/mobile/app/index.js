@@ -9,7 +9,9 @@ export default function Home() {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data }) => {
+      console.log(data);
+      const { session } = data;
       setSession(session);
     });
 
