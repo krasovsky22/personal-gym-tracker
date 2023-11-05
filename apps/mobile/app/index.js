@@ -1,12 +1,30 @@
-import { Link } from 'expo-router';
-import { SafeAreaView, View } from 'react-native';
+import 'react-native-url-polyfill/auto';
+import { useState, useEffect } from 'react';
+import { supabase } from '@lib/supabase';
+import Auth from '@components/Auth';
+import Account from '@components/Account';
+import { View } from 'react-native';
 
-export default function Root() {
+export default function Home() {
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
+
   return (
-    <SafeAreaView>
-      <Link replace href="/home/messages">
-        Navigate to nested route
-      </Link>
-    </SafeAreaView>
+    <View>
+      {session && session.user ? (
+        <Account key={session.user.id} session={session} />
+      ) : (
+        <Auth />
+      )}
+    </View>
   );
 }
