@@ -19,12 +19,14 @@ export default function Home() {
   }, []);
 
   return (
-    <View>
-      {session && session.user ? (
-        <Account key={session.user.id} session={session} />
-      ) : (
-        <Auth />
-      )}
+    <View flex={1}>
+      <View marginTop="auto" marginBottom="auto">
+        {session && session.user ? (
+          <Account key={session.user.id} session={session} />
+        ) : (
+          <Auth />
+        )}
+      </View>
     </View>
   );
 }
