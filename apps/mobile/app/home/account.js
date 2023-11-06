@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { Link } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
-import { Button, Input } from 'react-native-elements';
-import useAuthStore from '@hooks/useAuthStore';
+import { useState } from "react";
+import { Link } from "expo-router";
+import { StyleSheet, View } from "react-native";
+import { Button, Input } from "react-native-elements";
+import useAuthStore from "@hooks/useAuthStore";
 
 export default function Account() {
   const [loading, setLoading] = useState(true);
@@ -69,7 +69,7 @@ export default function Account() {
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Input label="Email" value={user.email} disabled />
       </View>
-      <Link href={{ pathname: 'home/messages' }}>Go to Home</Link>
+      <Link href={{ pathname: "home/messages" }}>Go to Home</Link>
       {/* <View style={styles.verticallySpaced}>
         <Input
           label="Username"
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   verticallySpaced: {
     paddingTop: 4,
     paddingBottom: 4,
-    alignSelf: 'stretch',
+    alignSelf: "stretch",
   },
   mt20: {
     marginTop: 20,

@@ -1,10 +1,10 @@
-import 'react-native-url-polyfill/auto';
+import "react-native-url-polyfill/auto";
 
-import { Stack } from 'expo-router';
-import { Platform } from 'react-native';
-import { lightColors, createTheme, ThemeProvider } from '@rneui/themed';
+import { Stack } from "expo-router";
+import { Platform } from "react-native";
+import { lightColors, createTheme, ThemeProvider } from "@rneui/themed";
 
-import { StoreProvider, RootStore } from '@stores/RootStore';
+import { StoreProvider, RootStore } from "@stores/RootStore";
 
 const theme = createTheme({
   lightColors: {

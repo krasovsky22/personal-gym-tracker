@@ -1,10 +1,10 @@
-import React from 'react';
-import { RootStoreContext } from '@stores/RootStore';
+import React from "react";
+import { RootStoreContext } from "@stores/RootStore";
 
 function useStore() {
   const store = React.useContext(RootStoreContext);
   if (store === null) {
-    throw new Error('Store cannot be null, please add a context provider');
+    throw new Error("Store cannot be null, please add a context provider");
   }
   return store;
 }

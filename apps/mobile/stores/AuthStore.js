@@ -1,12 +1,12 @@
-import { types, onSnapshot, getSnapshot, flow } from 'mobx-state-tree';
-import { AsyncStorage } from 'react-native';
+import { types, onSnapshot, getSnapshot, flow } from "mobx-state-tree";
+import { AsyncStorage } from "react-native";
 
-import { supabase } from '@lib/supabase';
-import { User } from '@models/User';
+import { supabase } from "@lib/supabase";
+import { User } from "@models/User";
 
 export const AuthStore = types
-  .model('AuthStore', {
-    identifier: types.optional(types.identifier, 'AuthStore'),
+  .model("AuthStore", {
+    identifier: types.optional(types.identifier, "AuthStore"),
     user: types.maybeNull(User),
   })
   .views((self) => ({

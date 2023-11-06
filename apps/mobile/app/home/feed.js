@@ -1,5 +1,5 @@
-import { View, Text } from 'react-native';
-import { Stack, Tabs, useNavigation } from 'expo-router';
+import { View, Text } from "react-native";
+import { Stack, Tabs, useNavigation } from "expo-router";
 
 export default function Feed() {
   return (

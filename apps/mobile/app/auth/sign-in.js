@@ -1,14 +1,15 @@
-import { Redirect } from 'expo-router';
-import React, { useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
-import { Button, Input } from 'react-native-elements';
+import { Redirect } from "expo-router";
+import React, { useState } from "react";
+import { Alert, StyleSheet, View } from "react-native";
+import { Button, Input } from "react-native-elements";
 
-import { supabase } from '@lib/supabase';
-import useAuthStore from '@hooks/useAuthStore';
+import { supabase } from "@lib/supabase";
+import useAuthStore from "@hooks/useAuthStore";
+import { observer } from "mobx-react-lite";
 
-export default function SignIn() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+function SignIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const { isLoggedIn } = useAuthStore();
@@ -36,7 +37,7 @@ export default function SignIn() {
 
     if (error) Alert.alert(error.message);
     if (!session)
-      Alert.alert('Please check your inbox for email verification!');
+      Alert.alert("Please check your inbox for email verification!");
     setLoading(false);
   }
 
@@ -49,22 +50,22 @@ export default function SignIn() {
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Input
           label="Email"
-          leftIcon={{ type: 'font-awesome', name: 'envelope' }}
+          leftIcon={{ type: "font-awesome", name: "envelope" }}
           onChangeText={(text) => setEmail(text)}
           value={email}
           placeholder="email@address.com"
-          autoCapitalize={'none'}
+          autoCapitalize={"none"}
         />
       </View>
       <View style={styles.verticallySpaced}>
         <Input
           label="Password"
-          leftIcon={{ type: 'font-awesome', name: 'lock' }}
+          leftIcon={{ type: "font-awesome", name: "lock" }}
           onChangeText={(text) => setPassword(text)}
           value={password}
           secureTextEntry={true}
           placeholder="Password"
-          autoCapitalize={'none'}
+          autoCapitalize={"none"}
         />
       </View>
       <View style={[styles.verticallySpaced, styles.mt20]}>
@@ -87,16 +88,18 @@ export default function SignIn() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 'auto',
-    marginBottom: 'auto',
+    marginTop: "auto",
+    marginBottom: "auto",
     padding: 12,
   },
   verticallySpaced: {
     paddingTop: 4,
     paddingBottom: 4,
-    alignSelf: 'stretch',
+    alignSelf: "stretch",
   },
   mt20: {
     marginTop: 20,
   },
 });
+
+export default observer(SignIn);

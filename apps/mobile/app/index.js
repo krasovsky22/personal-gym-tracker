@@ -1,7 +1,7 @@
-import { Redirect } from 'expo-router';
+import { Redirect } from "expo-router";
 
-import useAuthStore from '@hooks/useAuthStore';
-import { observer } from 'mobx-react-lite';
+import useAuthStore from "@hooks/useAuthStore";
+import { observer } from "mobx-react-lite";
 
 function Home() {
   const { isLoggedIn } = useAuthStore();
