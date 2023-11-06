@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
-import { StyleSheet, View, Alert } from 'react-native';
+import { useState } from 'react';
+import { Link } from 'expo-router';
+import { StyleSheet, View } from 'react-native';
 import { Button, Input } from 'react-native-elements';
-import useAuthStore from '../hooks/useAuthStore';
+import useAuthStore from '@hooks/useAuthStore';
 
 export default function Account() {
   const [loading, setLoading] = useState(true);
@@ -69,6 +69,7 @@ export default function Account() {
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Input label="Email" value={user.email} disabled />
       </View>
+      <Link href={{ pathname: 'home/messages' }}>Go to Home</Link>
       {/* <View style={styles.verticallySpaced}>
         <Input
           label="Username"
@@ -93,7 +94,6 @@ export default function Account() {
           disabled={loading}
         />
       </View> */}
-
       <View style={styles.verticallySpaced}>
         <Button title="Sign Out" onPress={signOut} />
       </View>

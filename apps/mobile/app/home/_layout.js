@@ -1,7 +1,16 @@
-import { Stack, Tabs } from 'expo-router';
-import { View } from 'react-native';
+import { Redirect, Stack, Tabs } from 'expo-router';
+import useAuthStore from '@hooks/useAuthStore';
+import { observer } from 'mobx-react-lite';
 
-export default function Layout() {
+function Layout() {
+  const { isLoggedIn } = useAuthStore();
+
+  console.log('layout is logged in -', isLoggedIn);
+
+  if (!isLoggedIn) {
+    return <Redirect href="/auth/sign-in" />;
+  }
+
   return (
     <>
       <Stack.Screen options={{ headerShown: false, title: 'My home' }} />
@@ -9,3 +18,5 @@ export default function Layout() {
     </>
   );
 }
+
+export default observer(Layout);

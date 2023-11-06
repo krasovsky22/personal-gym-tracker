@@ -1,8 +1,4 @@
-import 'react-native-url-polyfill/auto';
-
-import Auth from '@components/Auth';
-import Account from '@components/Account';
-import { View } from 'react-native';
+import { Redirect } from 'expo-router';
 
 import useAuthStore from '@hooks/useAuthStore';
 import { observer } from 'mobx-react-lite';
@@ -10,15 +6,11 @@ import { observer } from 'mobx-react-lite';
 function Home() {
   const { isLoggedIn } = useAuthStore();
 
-  console.log('is Logged In', isLoggedIn);
+  if (!isLoggedIn) {
+    <Redirect href="/auth/sign-in" />;
+  }
 
-  return (
-    <View flex={1}>
-      <View marginTop="auto" marginBottom="auto">
-        {isLoggedIn ? <Account /> : <Auth />}
-      </View>
-    </View>
-  );
+  return <Redirect href="/home" />;
 }
 
 export default observer(Home);

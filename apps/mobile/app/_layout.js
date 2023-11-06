@@ -1,3 +1,5 @@
+import 'react-native-url-polyfill/auto';
+
 import { Stack } from 'expo-router';
 import { Platform } from 'react-native';
 import { lightColors, createTheme, ThemeProvider } from '@rneui/themed';

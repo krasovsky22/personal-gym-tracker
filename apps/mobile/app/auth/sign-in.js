@@ -1,12 +1,17 @@
+import { Redirect } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
-import { supabase } from '../lib/supabase';
 import { Button, Input } from 'react-native-elements';
 
-export default function Auth() {
+import { supabase } from '@lib/supabase';
+import useAuthStore from '@hooks/useAuthStore';
+
+export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const { isLoggedIn } = useAuthStore();
 
   async function signInWithEmail() {
     setLoading(true);
@@ -33,6 +38,10 @@ export default function Auth() {
     if (!session)
       Alert.alert('Please check your inbox for email verification!');
     setLoading(false);
+  }
+
+  if (isLoggedIn) {
+    return <Redirect href="/home" />;
   }
 
   return (
@@ -78,7 +87,8 @@ export default function Auth() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
+    marginTop: 'auto',
+    marginBottom: 'auto',
     padding: 12,
   },
   verticallySpaced: {
