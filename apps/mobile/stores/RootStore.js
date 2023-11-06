@@ -1,3 +1,4 @@
+import React from 'react';
 import { types, onSnapshot, getSnapshot } from 'mobx-state-tree';
 import { AuthStore } from './AuthStore';
 import { AsyncStorage } from 'react-native';
@@ -25,3 +26,6 @@ export const RootStore = types
       }
     },
   }));
+
+export const RootStoreContext = React.createContext(null);
+export const StoreProvider = RootStoreContext.Provider;

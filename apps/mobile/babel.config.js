@@ -9,9 +9,10 @@ module.exports = function(api) {
         {
           alias: {
             '@lib': './lib',
-            '@components': './components',
+            '@hooks': './hooks',
             '@stores': './stores',
             '@models': './models',
+            '@components': './components',
           },
           extensions: ['.js', '.jsx', '.ts', '.tsx'],
         },

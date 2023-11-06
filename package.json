@@ -16,6 +16,7 @@
   "dependencies": {
     "mobx": "^6.10.2",
     "mobx-react": "^9.0.1",
+    "mobx-react-lite": "^4.0.5",
     "mobx-state-tree": "^5.3.0",
     "mobx-utils": "^6.0.8"
   }
