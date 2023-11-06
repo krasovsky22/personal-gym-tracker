@@ -5,8 +5,9 @@ import { Button, Input } from 'react-native-elements';
 
 import { supabase } from '@lib/supabase';
 import useAuthStore from '@hooks/useAuthStore';
+import { observer } from 'mobx-react-lite';
 
-export default function SignIn() {
+function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -100,3 +101,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
+
+export default observer(SignIn);
