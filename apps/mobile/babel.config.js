@@ -1,21 +1,20 @@
-module.exports = function (api) {
+module.exports = function(api) {
   api.cache(true);
   return {
-    presets: ["babel-preset-expo"],
+    presets: ['babel-preset-expo'],
     plugins: [
-      "nativewind/babel",
-      "expo-router/babel",
+      ['expo-router/babel'],
       [
-        "module-resolver",
+        'module-resolver',
         {
           alias: {
-            "@lib": "./lib",
-            "@hooks": "./hooks",
-            "@stores": "./stores",
-            "@models": "./models",
-            "@components": "./components",
+            '@lib': './lib',
+            '@hooks': './hooks',
+            '@stores': './stores',
+            '@models': './models',
+            '@components': './components',
           },
-          extensions: [".js", ".jsx", ".ts", ".tsx"],
+          extensions: ['.js', '.jsx', '.ts', '.tsx'],
         },
       ],
     ],

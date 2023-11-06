@@ -1,11 +1,11 @@
-import React from "react";
-import { types, onSnapshot, getSnapshot } from "mobx-state-tree";
-import { AuthStore } from "./AuthStore";
-import { AsyncStorage } from "react-native";
+import React from 'react';
+import { types, onSnapshot, getSnapshot } from 'mobx-state-tree';
+import { AuthStore } from './AuthStore';
+import { AsyncStorage } from 'react-native';
 
 export const RootStore = types
-  .model("RootStore", {
-    identifier: types.optional(types.identifier, "RootStore"),
+  .model('RootStore', {
+    identifier: types.optional(types.identifier, 'RootStore'),
     authStore: types.optional(AuthStore, () => AuthStore.create()),
     // navigationStore: types.optional(NavigationStore, () =>
     //   NavigationStore.create({
@@ -20,9 +20,9 @@ export const RootStore = types
         const transformedSnapshot = getSnapshot(self);
         const json = JSON.stringify(transformedSnapshot);
 
-        await AsyncStorage.setItem("appStatePersistenceKey", json);
+        await AsyncStorage.setItem('appStatePersistenceKey', json);
       } catch (err) {
-        console.warn("unexpected error " + err);
+        console.warn('unexpected error ' + err);
       }
     },
   }));
