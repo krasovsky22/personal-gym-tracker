@@ -1,15 +1,13 @@
 import 'react-native-url-polyfill/auto';
-import { useState, useEffect } from 'react';
 
 import Auth from '@components/Auth';
 import Account from '@components/Account';
 import { View } from 'react-native';
 
 import useAuthStore from '@hooks/useAuthStore';
+import { observer } from 'mobx-react-lite';
 
-export default function Home() {
-  const [session, setSession] = useState(null);
-
+function Home() {
   const { isLoggedIn } = useAuthStore();
 
   console.log('is Logged In', isLoggedIn);
@@ -17,12 +15,10 @@ export default function Home() {
   return (
     <View flex={1}>
       <View marginTop="auto" marginBottom="auto">
-        {session?.user ? (
-          <Account key={session.user?.id} session={session} />
-        ) : (
-          <Auth />
-        )}
+        {isLoggedIn ? <Account /> : <Auth />}
       </View>
     </View>
   );
 }
+
+export default observer(Home);

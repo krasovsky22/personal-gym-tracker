@@ -22,8 +22,8 @@ export const AuthStore = types
       const { session } = yield supabase.auth.getSession();
 
       supabase.auth.onAuthStateChange((_event, session) => {
-        console.log('on auth change', session);
         if (!session) {
+          self.setUser(null);
           return;
         }
         const { user, ...rest } = session;
@@ -49,5 +49,9 @@ export const AuthStore = types
       };
 
       self.setUser(authUser);
+    }),
+
+    signOut: flow(function* () {
+      yield supabase.auth.signOut();
     }),
   }));
