@@ -24,14 +24,6 @@ export default function Layout() {
         <Stack
           screenOptions={{
             headerShown: false,
-            //     headerStyle: {
-            //       headerHeight: 100,
-            //       backgroundColor: '#f4511e',
-            //       headerTintColor: '#fff',
-            //       headerTitleStyle: {
-            //         fontWeight: 'bold',
-            //       },
-            //     },
           }}
         />
       </StoreProvider>

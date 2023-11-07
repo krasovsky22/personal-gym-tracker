@@ -3,14 +3,14 @@ import { Redirect } from 'expo-router';
 import useAuthStore from '@hooks/useAuthStore';
 import { observer } from 'mobx-react-lite';
 
-function Home() {
+function App() {
   const { isLoggedIn } = useAuthStore();
 
   if (!isLoggedIn) {
-    <Redirect href="/auth/sign-in" />;
+    <Redirect href="/(auth)/sign-in" />;
   }
 
-  return <Redirect href="/home" />;
+  return <Redirect href="/(protected)/home" />;
 }
 
-export default observer(Home);
+export default observer(App);

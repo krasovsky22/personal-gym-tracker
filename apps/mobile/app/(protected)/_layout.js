@@ -1,0 +1,48 @@
+import { View } from 'react-native';
+import { observer } from 'mobx-react-lite';
+import { Redirect, Tabs } from 'expo-router';
+import { Icon, useTheme } from '@rneui/themed';
+
+import useAuthStore from '@hooks/useAuthStore';
+
+function ProtectedLayout() {
+  const { theme } = useTheme();
+  const { isLoggedIn } = useAuthStore();
+
+  console.log('in protectedd - loggedIn -> ', isLoggedIn);
+
+  if (!isLoggedIn) {
+    return <Redirect href="/(auth)/sign-in" />;
+  }
+
+  return (
+    <View style={{ backgroundColor: 'orange', flex: 1, marginTop: 30 }}>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Tabs.Screen
+          name="home"
+          options={{
+            title: 'Home',
+            tabBarLabel: 'Home',
+            tabBarIcon: () => <Icon name="home" color={theme.colors.primary} />,
+          }}
+        />
+        <Tabs.Screen
+          name="settings"
+          options={{
+            title: 'Settings',
+            tabBarLabel: 'Settings',
+            tabBarIcon: () => (
+              <Icon name="settings" color={theme.colors.primary} />
+            ),
+          }}
+        />
+      </Tabs>
+    </View>
+  );
+}
+
+export default observer(ProtectedLayout);
