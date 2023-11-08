@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { Button, Input } from '@rneui/themed';
 import { Stack, useRouter } from 'expo-router';
 import { View, Text, StyleSheet } from 'react-native';
