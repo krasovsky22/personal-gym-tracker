@@ -1,12 +1,5 @@
-import React from 'react';
-import { RootStoreContext } from '@stores/RootStore';
+import useStore from './useStore';
 
-function useAuthStore() {
-  const { authStore } = React.useContext(RootStoreContext);
-  if (authStore === null) {
-    throw new Error('Store cannot be null, please add a context provider');
-  }
-  return authStore;
-}
+const useAuthStore = () => useStore('authStore');
 
 export default useAuthStore;

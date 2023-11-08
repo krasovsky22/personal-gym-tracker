@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { observer } from 'mobx-react-lite';
 import { Redirect, Tabs } from 'expo-router';
 import { Icon, useTheme } from '@rneui/themed';
@@ -16,7 +16,7 @@ function ProtectedLayout() {
   }
 
   return (
-    <View style={{ backgroundColor: 'orange', flex: 1, marginTop: 30 }}>
+    <View style={styles.container}>
       <Tabs
         screenOptions={{
           headerShown: false,
@@ -44,5 +44,12 @@ function ProtectedLayout() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 30,
+  },
+});
 
 export default observer(ProtectedLayout);

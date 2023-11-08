@@ -1,12 +1,16 @@
 import React from 'react';
-import { types, onSnapshot, getSnapshot } from 'mobx-state-tree';
-import { AuthStore } from './AuthStore';
 import { AsyncStorage } from 'react-native';
+import { types, getSnapshot } from 'mobx-state-tree';
+import { AuthStore } from './AuthStore';
+import { ExercisesStore } from './ExercisesStore';
 
 export const RootStore = types
   .model('RootStore', {
     identifier: types.optional(types.identifier, 'RootStore'),
     authStore: types.optional(AuthStore, () => AuthStore.create()),
+    exercisesStore: types.optional(ExercisesStore, () =>
+      ExercisesStore.create()
+    ),
     // navigationStore: types.optional(NavigationStore, () =>
     //   NavigationStore.create({
     //     repoDetailScreenParams: {},

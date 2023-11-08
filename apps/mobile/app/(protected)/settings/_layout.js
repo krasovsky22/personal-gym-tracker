@@ -1,21 +1,24 @@
-import { Stack, Tabs } from 'expo-router';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Stack } from 'expo-router';
 
 export default function SettingsLayout() {
   return (
-    <Stack
-      screenOptions={
-        {
-          //     headerStyle: {
-          //       headerHeight: 100,
-          //       backgroundColor: '#f4511e',
-          //       headerTintColor: '#fff',
-          //       headerTitleStyle: {
-          //         fontWeight: 'bold',
-          //       },
-          //     },
-        }
-      }
-    />
+    <View style={styles.container}>
+      <Stack
+        screenOptions={{
+          headerStyle: {
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          },
+        }}
+      />
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});

@@ -13,6 +13,11 @@ const theme = createTheme({
       ios: lightColors.platform.ios,
     }),
   },
+  components: {
+    Button: (props, theme) => ({
+      radius: 'md',
+    }),
+  },
 });
 
 const rootStore = RootStore.create({});
