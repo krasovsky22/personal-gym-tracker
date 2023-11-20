@@ -1,25 +1,23 @@
 import { useState } from 'react';
-import { Button, Divider, lightColors, Icon } from '@rneui/themed';
+import { Button, Divider, useTheme, Icon } from '@rneui/themed';
 import { View, Text, StyleSheet, VirtualizedList } from 'react-native';
 
 import { ExercisesDropdown, WorkoutSet } from '@components';
-
-const getItem = (_data, index) => {
-  console.log('asdasd', _data, index);
-  return {
-    id: Math.random().toString(12).substring(0),
-    title: `Item ${index + 1}`,
-  };
-};
 
 // const getItemCount = (_data) => 3;
 const TEMP_SETS = [{ id: 1 }, { id: 2 }, { id: 3 }];
 
 function WorkoutsScreen() {
+  const { theme } = useTheme();
   const [sets, setSets] = useState(TEMP_SETS);
 
   const removeSetById = (id) => {
     const newSets = sets.filter((set) => set.id !== id);
+    setSets(newSets);
+  };
+
+  const addSet = () => {
+    const newSets = [...sets, { id: sets[sets.length - 1].id + 1 }];
     setSets(newSets);
   };
 
@@ -42,7 +40,7 @@ function WorkoutsScreen() {
               title="Remove"
               onPress={() => removeSetById(item.id)}
             >
-              <Icon name="delete" color="error" />
+              <Icon name="delete" color={theme.colors.error} />
             </Button>
           </View>
         )}
@@ -50,7 +48,7 @@ function WorkoutsScreen() {
         getItemCount={() => sets.length}
         getItem={(_data, index) => sets[index]}
       />
-      <Button title="Add Set" onPress={() => setTotalSets(totalSets + 1)} />
+      <Button title="Add Set" onPress={addSet} />
     </View>
   );
 }
@@ -66,7 +64,6 @@ const styles = StyleSheet.create({
     width: '100%',
     display: 'flex',
     borderTopWidth: 1,
-    borderColor: lightColors.greyOutline,
   },
   content: {
     gap: 1,
