@@ -10,11 +10,14 @@ import useExercisesStore from '@hooks/useExercisesStore';
 
 function ExercisesScreen() {
   const router = useRouter();
-  const { exercises, loadExercises } = useExercisesStore();
+  const { exercises, loadExercises, deleteExercise } = useExercisesStore();
 
   useEffect(() => {
+    console.log('loading excersi');
     loadExercises();
   }, []);
+
+  console.log(exercises);
 
   return (
     <View style={styles.container}>
@@ -29,8 +32,22 @@ function ExercisesScreen() {
                 <ListItem.Content>
                   <ListItem.Title>{item.name}</ListItem.Title>
                 </ListItem.Content>
-                <AsyncButton color="error" title="Delete" onPress={() => {}} />
-                <AsyncButton color="warning" title="Edit" onPress={() => {}} />
+                <AsyncButton
+                  color="error"
+                  title="Delete"
+                  onPress={() => {
+                    deleteExercise(item);
+                  }}
+                />
+                <AsyncButton
+                  color="warning"
+                  title="Edit"
+                  onPress={() =>
+                    router.push(
+                      `/settings/exercises/create-or-update?exercise_id=${item.id}}`
+                    )
+                  }
+                />
               </ListItem>
             </View>
           )}
@@ -41,7 +58,7 @@ function ExercisesScreen() {
         <AsyncButton type="clear" title="Reload" onPress={loadExercises} />
         <Button
           title="Add Exercise"
-          onPress={() => router.push('/settings/exercises/add-exercise')}
+          onPress={() => router.push('/settings/exercises/create-or-update')}
         ></Button>
       </View>
     </View>
