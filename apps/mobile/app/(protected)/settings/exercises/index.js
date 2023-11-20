@@ -17,8 +17,6 @@ function ExercisesScreen() {
     loadExercises();
   }, []);
 
-  console.log(exercises);
-
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ title: 'Exercises Management' }} />

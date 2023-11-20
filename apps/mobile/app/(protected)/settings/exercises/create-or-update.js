@@ -25,7 +25,6 @@ function AddExerciseScreen() {
 
   const router = useRouter();
 
-  console.log('params', exercise_id);
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ title: 'Exercises Management' }} />

@@ -10,8 +10,6 @@ function ProtectedLayout() {
   const { theme } = useTheme();
   const { isLoggedIn } = useAuthStore();
 
-  console.log('in protectedd - loggedIn -> ', isLoggedIn);
-
   if (!isLoggedIn) {
     return <Redirect href="/(auth)/sign-in" />;
   }

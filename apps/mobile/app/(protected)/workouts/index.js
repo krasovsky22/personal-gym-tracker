@@ -4,7 +4,6 @@ import { View, Text, StyleSheet, VirtualizedList } from 'react-native';
 
 import { ExercisesDropdown, WorkoutSet } from '@components';
 
-// const getItemCount = (_data) => 3;
 const TEMP_SETS = [{ id: 1 }, { id: 2 }, { id: 3 }];
 
 function WorkoutsScreen() {

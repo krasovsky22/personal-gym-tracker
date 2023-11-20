@@ -19,7 +19,6 @@ const ExercisesDropdown = () => {
     }));
   }, [exercises.length]);
 
-  console.log(selectedExerciseId);
   return (
     <View>
       <Text>Exercise</Text>
