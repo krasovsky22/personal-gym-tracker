@@ -18,8 +18,6 @@ const ExercisesDropdown = ({ name }) => {
 
   const hasError = fieldState.error;
 
-  console.log(fieldState);
-
   const exercisesOptions = useMemo(() => {
     return exercises.map((exercise) => ({
       id: exercise.id,

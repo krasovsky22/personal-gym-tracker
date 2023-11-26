@@ -5,12 +5,10 @@ import { StyleSheet, Text, View } from 'react-native';
 const WorkoutSet = ({ id, index }) => {
   const { field: weightField } = useController({
     name: `sets.${id}.weight`,
-    rules: [],
   });
 
   const { field: repeatField } = useController({
     name: `sets.${id}.repeat`,
-    rules: [],
   });
 
   return (

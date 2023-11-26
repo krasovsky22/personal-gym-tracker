@@ -11,12 +11,14 @@ const TEMP_SETS = [{ id: 1 }, { id: 2 }, { id: 3 }];
 
 const schema = z.object({
   exercise: z.string().min(1, { message: 'exercise is Required' }),
-  sets: z.array(
-    z.object({
-      weight: z.string({ description: 'weight is Required' }),
-      repeat: z.string(),
-    })
-  ),
+  sets: z
+    .array(
+      z.object({
+        weight: z.string({ description: 'weight is Required' }),
+        repeat: z.string(),
+      })
+    )
+    .min(1, { message: 'At least 1 sec is required' }),
 });
 
 function WorkoutsScreen() {
@@ -44,8 +46,8 @@ function WorkoutsScreen() {
 
   const onSubmit = (data) => console.log('submit', data);
 
-  const onError = (errors, e) => {
-    return console.log('errors', errors);
+  const onError = ({ sets }, e) => {
+    return console.log('errors', sets);
   };
 
   const removeSetById = (id) => {
@@ -55,6 +57,8 @@ function WorkoutsScreen() {
   const addSet = () => {
     append({ weight: '1', repeat: '2' });
   };
+
+  console.log('eee', methods.formState);
 
   return (
     <View style={styles.container}>
@@ -84,33 +88,6 @@ function WorkoutsScreen() {
           )}
           keyExtractor={(item) => item.id}
         />
-        {/* <VirtualizedList
-          initialNumToRender={0}
-          data={setsField}
-          renderItem={({ index, item }) => (
-            <View
-              style={{ gap: 5, flexDirection: 'row', alignItems: 'center' }}
-            >
-              <View style={{ flexGrow: 1 }}>
-                <WorkoutSet id={item.id} />
-              </View>
-              <Button
-                size="sm"
-                type="clear"
-                title="Remove"
-                onPress={() => removeSetById(item.id)}
-              >
-                <Icon name="delete" color={theme.colors.error} />
-              </Button>
-            </View>
-          )}
-          keyExtractor={(item) => item.id}
-          getItemCount={() => setsField.length}
-          getItem={(_data, index) => {
-            console.log('getitem', _data);
-            return _data[index];
-          }}
-        /> */}
         <Button title="Add Set" onPress={addSet} />
         <Button
           title="Save"
