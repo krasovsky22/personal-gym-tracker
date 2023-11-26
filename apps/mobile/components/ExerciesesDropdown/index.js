@@ -1,11 +1,17 @@
-import { useMemo, useEffect, useState } from 'react';
-import MultiSelect from 'react-native-multiple-select';
-import { Divider, Input } from '@rneui/themed';
-import { View, Text, StyleSheet } from 'react-native';
 import useExercisesStore from '@hooks/useExercisesStore';
+import { Divider } from '@rneui/themed';
+import { observer } from 'mobx-react-lite';
+import { useCallback, useEffect, useMemo } from 'react';
+import { useController } from 'react-hook-form';
+import { StyleSheet, Text, View } from 'react-native';
+import MultiSelect from 'react-native-multiple-select';
 
 const ExercisesDropdown = () => {
-  const [selectedExerciseId, setSelectedExerciseId] = useState([]);
+  const { field } = useController({
+    name: 'exercise',
+    rules: [],
+    defaultValue: null,
+  });
   const { exercises, loadExercises } = useExercisesStore();
 
   useEffect(() => {
@@ -19,37 +25,26 @@ const ExercisesDropdown = () => {
     }));
   }, [exercises.length]);
 
+  const handleOnExerciseChange = useCallback((selectedOptions) => {
+    field.onChange(selectedOptions?.[0] ?? null);
+  }, []);
+
+  console.log('field', exercises, exercisesOptions);
+
   return (
     <View>
       <Text>Exercise</Text>
       <MultiSelect
         single
         uniqueKey="id"
-        selectedItems={selectedExerciseId}
+        selectedItems={[field.value]}
         items={exercisesOptions}
-        onSelectedItemsChange={setSelectedExerciseId}
+        onSelectedItemsChange={handleOnExerciseChange}
       />
       <Divider />
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  setContainer: {
-    flexDirection: 'row',
-    gap: 10,
-    padding: 5,
-  },
-  inputGroup: {
-    alignItems: 'center',
-    flex: 1,
-    flexDirection: 'row',
-    gap: 10,
-  },
-
-  label: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-});
-export default ExercisesDropdown;
+const styles = StyleSheet.create({});
+export default observer(ExercisesDropdown);
