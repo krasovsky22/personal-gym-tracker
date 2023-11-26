@@ -4,8 +4,8 @@ import { supabase } from '@lib/supabase';
 import { Exercise } from '@models/Exercise';
 import { WorkoutSet } from '@models/WorkoutSet';
 
-const EXERCISE_TABLE_NAME = 'exercises';
 const SETS_TABLE_NAME = 'sets';
+const EXERCISE_TABLE_NAME = 'exercises';
 
 export const ExercisesStore = types
   .model('ExercisesStore', {
@@ -47,9 +47,20 @@ export const ExercisesStore = types
 
       destroy(exercise);
     }),
+
     loadExercises: flow(function* () {
       try {
         const { data } = yield supabase.from(EXERCISE_TABLE_NAME).select(`*`);
+
+        self.exercises = data;
+      } catch (error) {
+        console.log('ERROR', error);
+      }
+    }),
+
+    loadWorkout: flow(function* () {
+      try {
+        const { data } = yield supabase.from(SETS_TABLE_NAME).select(`*`);
 
         self.exercises = data;
       } catch (error) {
@@ -65,10 +76,19 @@ export const ExercisesStore = types
         .select();
 
       data.forEach((workoutSet) => {
-        self.workoutSets.push({
-          ...workoutSet,
-          exercise: workoutSet.exercise_id,
-        });
+        const { id, exercise_id, set_order, weight, repeats, workout_date } =
+          workoutSet;
+
+        const exercise = {
+          id: +id,
+          repeats: +repeats,
+          exercise: exercise_id,
+          set_order: +set_order,
+          workout_date: workout_date,
+          weight: (+weight).toFixed(2),
+        };
+
+        self.workoutSets.push(exercise);
       });
     }),
   }));

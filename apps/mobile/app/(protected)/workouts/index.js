@@ -1,9 +1,14 @@
+import { Link } from 'expo-router';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { Button } from '@rneui/themed';
 
 const WorkoutsScreen = () => {
   return (
     <View>
       <Text>TestView</Text>
+      <Link href={{ pathname: '/workouts/edit-workout-exercise' }}>
+        Track Workout
+      </Link>
     </View>
   );
 };

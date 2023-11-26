@@ -1,15 +1,33 @@
+import { useEffect } from 'react';
 import { Input } from '@rneui/themed';
-import { useController } from 'react-hook-form';
+import { useController, useFormContext } from 'react-hook-form';
 import { StyleSheet, Text, View } from 'react-native';
 
 const WorkoutSet = ({ id, index }) => {
+  //   const { register, setValue } = useFormContext();
+
+  //   useEffect(() => {
+  //     register(`sets.${id}.weight`);
+  //     // register(`sets.${id}.repeats`);
+  //   }, [register]);
+  //   const { field: weightField } = useController({
+  //     // control,
+  //     name: `sets.${id}.weight`,
+  //   });
+
   const { field: weightField } = useController({
+    // control,
     name: `sets.${id}.weight`,
   });
 
   const { field: repeatField } = useController({
     name: `sets.${id}.repeats`,
   });
+
+  const onTextChange = (text) => {
+    console.log('asdasd', text);
+    weightField.onChange(text);
+  };
 
   return (
     <View style={styles.setContainer}>
@@ -26,6 +44,7 @@ const WorkoutSet = ({ id, index }) => {
           }}
           value={weightField.value}
           onChangeText={weightField.onChange}
+          //   onChangeText={(text) => setValue(`sets.${id}.weight`, text)}
         />
       </View>
       <View style={styles.inputGroup}>
@@ -51,6 +70,7 @@ const styles = StyleSheet.create({
     gap: 10,
     padding: 5,
   },
+
   inputGroup: {
     alignItems: 'center',
     flex: 1,
