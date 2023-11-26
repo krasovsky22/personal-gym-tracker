@@ -6,17 +6,19 @@ import { useController } from 'react-hook-form';
 import { StyleSheet, Text, View } from 'react-native';
 import MultiSelect from 'react-native-multiple-select';
 
-const ExercisesDropdown = () => {
-  const { field } = useController({
-    name: 'exercise',
-    rules: [],
-    defaultValue: null,
+const ExercisesDropdown = ({ name }) => {
+  const { field, fieldState } = useController({
+    name: name,
   });
   const { exercises, loadExercises } = useExercisesStore();
 
   useEffect(() => {
     loadExercises();
   }, []);
+
+  const hasError = fieldState.error;
+
+  console.log(fieldState);
 
   const exercisesOptions = useMemo(() => {
     return exercises.map((exercise) => ({
@@ -29,8 +31,6 @@ const ExercisesDropdown = () => {
     field.onChange(selectedOptions?.[0] ?? null);
   }, []);
 
-  console.log('field', exercises, exercisesOptions);
-
   return (
     <View>
       <Text>Exercise</Text>
@@ -41,6 +41,7 @@ const ExercisesDropdown = () => {
         items={exercisesOptions}
         onSelectedItemsChange={handleOnExerciseChange}
       />
+      {hasError && <Text>ERROR: {fieldState.error.message}</Text>}
       <Divider />
     </View>
   );

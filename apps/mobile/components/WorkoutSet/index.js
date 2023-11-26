@@ -1,9 +1,18 @@
-import { useMemo, useEffect, useState } from 'react';
-import MultiSelect from 'react-native-multiple-select';
-import { Divider, Input } from '@rneui/themed';
-import { View, Text, StyleSheet } from 'react-native';
+import { Input } from '@rneui/themed';
+import { useController } from 'react-hook-form';
+import { StyleSheet, Text, View } from 'react-native';
 
-const WorkoutSet = ({ index }) => {
+const WorkoutSet = ({ id, index }) => {
+  const { field: weightField } = useController({
+    name: `sets.${id}.weight`,
+    rules: [],
+  });
+
+  const { field: repeatField } = useController({
+    name: `sets.${id}.repeat`,
+    rules: [],
+  });
+
   return (
     <View style={styles.setContainer}>
       <Text>{index}.</Text>
@@ -17,6 +26,8 @@ const WorkoutSet = ({ index }) => {
           containerStyle={{
             width: 75,
           }}
+          value={weightField.value}
+          onChangeText={weightField.onChange}
         />
       </View>
       <View style={styles.inputGroup}>
@@ -25,6 +36,8 @@ const WorkoutSet = ({ index }) => {
           type="numeric"
           textAlign={'center'}
           keyboardType="numeric"
+          value={repeatField.value}
+          onChangeText={repeatField.onChange}
           maxLength={3}
           containerStyle={{ width: 75 }}
         />

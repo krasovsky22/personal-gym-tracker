@@ -1,17 +1,46 @@
+import * as z from 'zod';
 import { useState } from 'react';
-import { useForm, Controller, FormProvider } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, FormProvider, useFieldArray } from 'react-hook-form';
 import { Button, Divider, useTheme, Icon } from '@rneui/themed';
-import { View, Text, StyleSheet, VirtualizedList } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 
 import { ExercisesDropdown, WorkoutSet } from '@components';
 
 const TEMP_SETS = [{ id: 1 }, { id: 2 }, { id: 3 }];
 
+const schema = z.object({
+  exercise: z.string().min(1, { message: 'exercise is Required' }),
+  sets: z.array(
+    z.object({
+      weight: z.string({ description: 'weight is Required' }),
+      repeat: z.string(),
+    })
+  ),
+});
+
 function WorkoutsScreen() {
   const { theme } = useTheme();
-  const { ...methods } = useForm();
+  const { ...methods } = useForm({
+    defaultValues: {
+      exercise: '',
+      sets: [],
+    },
+    resolver: zodResolver(schema),
+  });
 
-  const [sets, setSets] = useState(TEMP_SETS);
+  //   const [sets, setSets] = useState(TEMP_SETS);
+
+  const {
+    fields: setsField,
+    append,
+    remove,
+  } = useFieldArray({
+    control: methods.control, // control props comes from useForm (optional: if you are using FormContext)
+    name: 'sets', // unique name for your Field Array
+  });
+
+  console.log('asd', setsField);
 
   const onSubmit = (data) => console.log('submit', data);
 
@@ -20,31 +49,28 @@ function WorkoutsScreen() {
   };
 
   const removeSetById = (id) => {
-    const newSets = sets.filter((set) => set.id !== id);
-    setSets(newSets);
+    remove(id);
   };
 
   const addSet = () => {
-    const newSets = [...sets, { id: sets[sets.length - 1].id + 1 }];
-    setSets(newSets);
+    append({ weight: '1', repeat: '2' });
   };
 
   return (
     <View style={styles.container}>
       <FormProvider {...methods}>
         <Text>Workouts Page</Text>
-        <ExercisesDropdown />
+        <ExercisesDropdown name="exercise" />
 
         <Divider />
-        <VirtualizedList
-          initialNumToRender={sets.length}
-          data={TEMP_SETS}
-          renderItem={({ index, item }) => (
+        <FlatList
+          data={setsField}
+          renderItem={({ item, index }) => (
             <View
               style={{ gap: 5, flexDirection: 'row', alignItems: 'center' }}
             >
               <View style={{ flexGrow: 1 }}>
-                <WorkoutSet index={index + 1} />
+                <WorkoutSet id={item.id} index={index + 1} />
               </View>
               <Button
                 size="sm"
@@ -57,9 +83,34 @@ function WorkoutsScreen() {
             </View>
           )}
           keyExtractor={(item) => item.id}
-          getItemCount={() => sets.length}
-          getItem={(_data, index) => sets[index]}
         />
+        {/* <VirtualizedList
+          initialNumToRender={0}
+          data={setsField}
+          renderItem={({ index, item }) => (
+            <View
+              style={{ gap: 5, flexDirection: 'row', alignItems: 'center' }}
+            >
+              <View style={{ flexGrow: 1 }}>
+                <WorkoutSet id={item.id} />
+              </View>
+              <Button
+                size="sm"
+                type="clear"
+                title="Remove"
+                onPress={() => removeSetById(item.id)}
+              >
+                <Icon name="delete" color={theme.colors.error} />
+              </Button>
+            </View>
+          )}
+          keyExtractor={(item) => item.id}
+          getItemCount={() => setsField.length}
+          getItem={(_data, index) => {
+            console.log('getitem', _data);
+            return _data[index];
+          }}
+        /> */}
         <Button title="Add Set" onPress={addSet} />
         <Button
           title="Save"
