@@ -5,6 +5,7 @@ import { useForm, FormProvider, useFieldArray } from 'react-hook-form';
 import { Button, Divider, useTheme, Icon } from '@rneui/themed';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 
+import { useExercisesStore } from '@hooks';
 import { ExercisesDropdown, WorkoutSet } from '@components';
 
 const TEMP_SETS = [{ id: 1 }, { id: 2 }, { id: 3 }];
@@ -14,15 +15,17 @@ const schema = z.object({
   sets: z
     .array(
       z.object({
-        weight: z.string({ description: 'weight is Required' }),
-        repeat: z.string(),
+        weight: z.string().min(1, { message: 'Set Weight is Required' }),
+        repeats: z.string().min(1, { message: 'Set Repeats is Required' }),
       })
     )
-    .min(1, { message: 'At least 1 sec is required' }),
+    .min(1, { message: 'At least 1 set is required' }),
 });
 
 function WorkoutsScreen() {
   const { theme } = useTheme();
+  const { saveExerciseSets } = useExercisesStore();
+
   const { ...methods } = useForm({
     defaultValues: {
       exercise: '',
@@ -31,20 +34,26 @@ function WorkoutsScreen() {
     resolver: zodResolver(schema),
   });
 
-  //   const [sets, setSets] = useState(TEMP_SETS);
-
   const {
     fields: setsField,
     append,
     remove,
   } = useFieldArray({
-    control: methods.control, // control props comes from useForm (optional: if you are using FormContext)
-    name: 'sets', // unique name for your Field Array
+    control: methods.control,
+    name: 'sets',
   });
 
   console.log('asd', setsField);
 
-  const onSubmit = (data) => console.log('submit', data);
+  const onSubmit = async (formData) => {
+    const { exercise, sets } = formData;
+    const exerciseSets = formData.sets.map((set, index) => ({
+      ...set,
+      set_order: index,
+      exercise_id: exercise,
+    }));
+    return saveExerciseSets(exerciseSets);
+  };
 
   const onError = ({ sets }, e) => {
     return console.log('errors', sets);
@@ -55,7 +64,7 @@ function WorkoutsScreen() {
   };
 
   const addSet = () => {
-    append({ weight: '1', repeat: '2' });
+    append({ weight: '1', repeats: '2', isNew: true });
   };
 
   console.log('eee', methods.formState);

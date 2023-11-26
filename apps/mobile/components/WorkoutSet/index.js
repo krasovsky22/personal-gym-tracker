@@ -8,7 +8,7 @@ const WorkoutSet = ({ id, index }) => {
   });
 
   const { field: repeatField } = useController({
-    name: `sets.${id}.repeat`,
+    name: `sets.${id}.repeats`,
   });
 
   return (
