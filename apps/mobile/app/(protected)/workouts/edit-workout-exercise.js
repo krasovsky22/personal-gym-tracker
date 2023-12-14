@@ -1,3 +1,4 @@
+import { Stack } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import { useExercisesStore } from '@hooks';
@@ -10,12 +11,12 @@ const TEMP_SETS = [
 ];
 
 function EditWorkoutExerciseScreen() {
-    const { saveExerciseSets } = useExercisesStore();
-    const handleSubmit = async (exerciseWorkout) => {
-      console.log('handle submit', exerciseWorkout);
+  const { saveExerciseSets } = useExercisesStore();
+  const handleSubmit = async (exerciseWorkout) => {
+    console.log('handle submit', exerciseWorkout);
 
-      return saveExerciseSets(exerciseWorkout);
-    };
+    return saveExerciseSets(exerciseWorkout);
+  };
 
   //   const onSubmit = async (formData) => {
   //     const { exercise, sets } = formData;
@@ -28,9 +29,14 @@ function EditWorkoutExerciseScreen() {
   //   };
 
   return (
-    <View style={styles.container}>
-      <ExerciseWorkoutForm handleSubmitForm={handleSubmit} sets={TEMP_SETS} />
-    </View>
+    <>
+      <Stack.Screen
+        options={{ headerShown: true, title: 'Track New Workout' }}
+      />
+      <View style={styles.container}>
+        <ExerciseWorkoutForm handleSubmitForm={handleSubmit} sets={TEMP_SETS} />
+      </View>
+    </>
   );
 }
 

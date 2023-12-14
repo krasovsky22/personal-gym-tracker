@@ -31,8 +31,8 @@ export const ExercisesStore = types
         };
 
         carry[exerciseId].totalSets += 1;
-        if (carry[exerciseId].maxWeight < weight) {
-          carry[exerciseId].maxWeight = weight;
+        if (carry[exerciseId].maxWeight < +weight) {
+          carry[exerciseId].maxWeight = +weight;
         }
 
         return carry;

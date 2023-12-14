@@ -41,7 +41,7 @@ const WorkoutsScreen = () => {
 
   console.log('summary', trackedExercisesSummary);
   return (
-    <View>
+    <View style={styles.container}>
       <Text>TestView</Text>
       <FlatList
         data={trackedExercisesSummary}
@@ -57,7 +57,7 @@ const WorkoutsScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
+    marginTop: 30,
   },
   list: {
     flex: 1,

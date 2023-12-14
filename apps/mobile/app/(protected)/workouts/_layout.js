@@ -1,6 +1,10 @@
 import { View, StyleSheet } from 'react-native';
 import { Stack } from 'expo-router';
 
+// export const unstable_settings = {
+//   initialRouteName: 'index',
+// };
+
 export default function SettingsLayout() {
   return (
     <View style={styles.container}>
