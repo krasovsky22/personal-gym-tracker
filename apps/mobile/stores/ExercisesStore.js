@@ -17,6 +17,29 @@ export const ExercisesStore = types
     getExerciseById: (id) => {
       return self.exercises.find((exercise) => exercise.id);
     },
+
+    get trackedExercisesSummary() {
+      const summary = self.workoutSets.reduce((carry, workoutSet) => {
+        const { weight, exercise } = workoutSet;
+        const exerciseId = exercise.id;
+
+        carry[exerciseId] ??= {
+          exerciseId,
+          totalSets: 0,
+          maxWeight: 0,
+          exerciseName: exercise.name,
+        };
+
+        carry[exerciseId].totalSets += 1;
+        if (carry[exerciseId].maxWeight < weight) {
+          carry[exerciseId].maxWeight = weight;
+        }
+
+        return carry;
+      }, {});
+
+      return Object.values(summary);
+    },
   }))
   .actions((self) => ({
     saveExercise: flow(function* (exercise) {
@@ -60,9 +83,26 @@ export const ExercisesStore = types
 
     loadWorkout: flow(function* () {
       try {
-        const { data } = yield supabase.from(SETS_TABLE_NAME).select(`*`);
+        const { data } = yield supabase
+          .from(SETS_TABLE_NAME)
+          .select(
+            `id, weight, repeats, set_order, workout_date, exercises (id , name, created_at )`
+          );
 
-        self.exercises = data;
+        const exercises = data.reduce((carry, exerciseSet) => {
+          carry[exerciseSet.exercises.id] ??= exerciseSet.exercises;
+
+          return carry;
+        }, {});
+
+        const workoutSets = data.map((workoutSet) => ({
+          ...workoutSet,
+          weight: workoutSet.weight.toString(),
+          exercise: workoutSet.exercises.id,
+        }));
+
+        self.exercises = Object.values(exercises);
+        self.workoutSets = workoutSets;
       } catch (error) {
         console.log('ERROR', error);
       }

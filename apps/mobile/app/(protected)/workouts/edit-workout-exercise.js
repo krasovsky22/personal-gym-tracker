@@ -10,9 +10,12 @@ const TEMP_SETS = [
 ];
 
 function EditWorkoutExerciseScreen() {
-  const handleSubmit = (exerciseWorkout) => {
-    console.log('handle submit', exerciseWorkout);
-  };
+    const { saveExerciseSets } = useExercisesStore();
+    const handleSubmit = async (exerciseWorkout) => {
+      console.log('handle submit', exerciseWorkout);
+
+      return saveExerciseSets(exerciseWorkout);
+    };
 
   //   const onSubmit = async (formData) => {
   //     const { exercise, sets } = formData;
