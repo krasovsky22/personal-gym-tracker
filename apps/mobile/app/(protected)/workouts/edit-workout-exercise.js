@@ -62,6 +62,31 @@ function EditWorkoutExerciseScreen() {
             titleStyle={{ fontSize: 12 }}
             icon={{ name: 'cart', type: 'ionicon', color: 'white' }}
           />
+          <Tab.Item
+            title="cart"
+            titleStyle={{ fontSize: 12 }}
+            icon={{ name: 'cart', type: 'ionicon', color: 'white' }}
+          />
+          <Tab.Item
+            title="cart"
+            titleStyle={{ fontSize: 12 }}
+            icon={{ name: 'cart', type: 'ionicon', color: 'white' }}
+          />
+          <Tab.Item
+            title="cart"
+            titleStyle={{ fontSize: 12 }}
+            icon={{ name: 'cart', type: 'ionicon', color: 'white' }}
+          />
+          <Tab.Item
+            title="cart"
+            titleStyle={{ fontSize: 12 }}
+            icon={{ name: 'cart', type: 'ionicon', color: 'white' }}
+          />
+          <Tab.Item
+            title="cart"
+            titleStyle={{ fontSize: 12 }}
+            icon={{ name: 'cart', type: 'ionicon', color: 'white' }}
+          />
         </Tab>
         <TabView value={index} onChange={setIndex} animationType="spring">
           <TabView.Item style={{ backgroundColor: 'red', width: '100%' }}>

@@ -10,11 +10,7 @@ const ExercisesDropdown = ({ name }) => {
   const { field, fieldState } = useController({
     name: name,
   });
-  const { exercises, loadExercises } = useExercisesStore();
-
-  useEffect(() => {
-    loadExercises();
-  }, []);
+  const { exercises } = useExercisesStore();
 
   const hasError = fieldState.error;
 

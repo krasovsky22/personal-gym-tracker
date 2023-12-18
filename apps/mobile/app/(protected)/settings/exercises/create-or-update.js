@@ -12,14 +12,20 @@ function AddExerciseScreen() {
   const [name, setName] = useState('');
 
   const handleSave = async () => {
-    await saveExercise({ name, description: 'test description' });
+    await saveExercise({
+      id: exercise_id,
+      name,
+      description: 'test description',
+    });
     return router.back();
   };
 
   useEffect(() => {
     if (exercise_id) {
-      const { name, description } = getExerciseById(exercise_id);
-      setName(name);
+      const exercise = getExerciseById(exercise_id);
+      if (exercise) {
+        setName(exercise.name);
+      }
     }
   }, [exercise_id]);
 

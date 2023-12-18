@@ -10,12 +10,7 @@ import useExercisesStore from '@hooks/useExercisesStore';
 
 function ExercisesScreen() {
   const router = useRouter();
-  const { exercises, loadExercises, deleteExercise } = useExercisesStore();
-
-  useEffect(() => {
-    console.log('loading excersi');
-    loadExercises();
-  }, []);
+  const { exercises, deleteExercise } = useExercisesStore();
 
   return (
     <View style={styles.container}>
@@ -42,7 +37,7 @@ function ExercisesScreen() {
                   title="Edit"
                   onPress={() =>
                     router.push(
-                      `/settings/exercises/create-or-update?exercise_id=${item.id}}`
+                      `/settings/exercises/create-or-update?exercise_id=${item.id}`
                     )
                   }
                 />
@@ -53,7 +48,6 @@ function ExercisesScreen() {
       </View>
 
       <View style={styles.bottomContainer}>
-        <AsyncButton type="clear" title="Reload" onPress={loadExercises} />
         <Button
           title="Add Exercise"
           onPress={() => router.push('/settings/exercises/create-or-update')}
