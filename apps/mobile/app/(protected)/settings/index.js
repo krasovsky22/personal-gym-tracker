@@ -10,6 +10,11 @@ const SETTINGS_PAGES = [
     link: '/(protected)/settings/exercises',
   },
   {
+    title: 'Workouts',
+    icon: 'weight-lifter',
+    link: '/(protected)/settings/workouts',
+  },
+  {
     title: 'Placeholder',
     icon: 'map-marker-question',
     link: '',

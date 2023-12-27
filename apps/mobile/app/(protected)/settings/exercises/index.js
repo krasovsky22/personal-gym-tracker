@@ -1,7 +1,5 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { useEffect } from 'react';
+import { View, StyleSheet, FlatList } from 'react-native';
 import { Button, ListItem } from '@rneui/themed';
-import { FlatList } from 'react-native';
 import { observer } from 'mobx-react-lite';
 import { Stack, useRouter } from 'expo-router';
 

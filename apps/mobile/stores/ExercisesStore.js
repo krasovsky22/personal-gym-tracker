@@ -72,7 +72,7 @@ export const ExercisesStore = types
       // insert new one
       const { success, data } = yield insertExercise(exercise);
       if (success) {
-        self.exercises.push(data[0]);
+        self.exercises.push(data);
       }
     }),
 

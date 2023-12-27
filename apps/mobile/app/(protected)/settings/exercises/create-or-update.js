@@ -15,7 +15,6 @@ function AddExerciseScreen() {
     await saveExercise({
       id: exercise_id,
       name,
-      description: 'test description',
     });
     return router.back();
   };
