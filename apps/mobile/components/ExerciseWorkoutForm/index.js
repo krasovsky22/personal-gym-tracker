@@ -5,7 +5,7 @@ import { Button, Divider, Icon } from '@rneui/themed';
 import { StyleSheet, Text, View } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import ExercisesDropdown from './ExercisesDropdown';
+import ExercisesDropdown from '@components/UI/ExercisesDropdown';
 import WorkoutSetList from './WorkoutSetList';
 
 const schema = z.object({

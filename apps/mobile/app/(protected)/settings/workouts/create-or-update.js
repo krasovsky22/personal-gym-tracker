@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { AsyncButton } from '@components';
 import { useExercisesStore } from '@hooks';
 import { TextInput, SelectInput } from '@components/Form';
+import ExercisesDropdown from '@components/UI/ExercisesDropdown';
 
 const schema = z.object({
   name: z.string().min(1, { message: 'Workout Name is Required' }),
@@ -44,15 +45,6 @@ function CreateWorkoutScreen() {
     return console.log('ERRORS ', errors);
   };
 
-  //   useEffect(() => {
-  //     if (exercise_id) {
-  //       const exercise = getExerciseById(exercise_id);
-  //       if (exercise) {
-  //         setName(exercise.name);
-  //       }
-  //     }
-  //   }, [exercise_id]);
-
   const router = useRouter();
 
   const { ...methods } = useForm({
@@ -76,13 +68,12 @@ function CreateWorkoutScreen() {
             rules={{ required: 'Workout name is required!' }}
           />
 
-          <SelectInput
+          <ExercisesDropdown name="exercise" />
+          {/* <SelectInput
             search={false}
             options={TEMP_OPTIONS}
-            name="exercise"
-            label="Exercise Name"
             rules={{ required: 'Exercise name is required!' }}
-          />
+          /> */}
         </View>
 
         <View style={styles.bottomContainer}>
