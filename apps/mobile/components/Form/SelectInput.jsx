@@ -4,18 +4,8 @@ import { SelectList } from 'react-native-dropdown-select-list';
 
 import ControlledInput from './ControlledInput';
 
-const TEMP_OPTIONS = [
-  { key: 1, value: 'Mobiles' },
-  { key: 2, value: 'Appliances' },
-  { key: 3, value: 'Cameras' },
-  { key: 4, value: 'Computers' },
-  { key: 5, value: 'Vegetables' },
-  { key: 6, value: 'Diary Products' },
-  { key: 7, value: 'Drinks' },
-];
-
 const SelectInput = (props) => {
-  const { name, label, rules, defaultValue, ...inputProps } = props;
+  const { name, label, rules, options, defaultValue, ...inputProps } = props;
   const { field, fieldState } = useController({
     name: name,
   });
@@ -27,8 +17,9 @@ const SelectInput = (props) => {
       <ControlledInput {...props}>
         <SelectList
           save="key"
-          data={TEMP_OPTIONS}
+          data={options}
           setSelected={field.onChange}
+          defaultOption={defaultValue}
           dropdownStyles={styles.dropdown}
           {...inputProps}
         />

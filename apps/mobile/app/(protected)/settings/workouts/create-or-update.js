@@ -23,6 +23,16 @@ const schema = z.object({
   //     .min(1, { message: 'At least 1 set is required' }),
 });
 
+const TEMP_OPTIONS = [
+  { key: 1, value: 'Mobiles' },
+  { key: 2, value: 'Appliances' },
+  { key: 3, value: 'Cameras' },
+  { key: 4, value: 'Computers' },
+  { key: 5, value: 'Vegetables' },
+  { key: 6, value: 'Diary Products' },
+  { key: 7, value: 'Drinks' },
+];
+
 function CreateWorkoutScreen() {
   const { workout_id } = useLocalSearchParams();
 
@@ -68,6 +78,7 @@ function CreateWorkoutScreen() {
 
           <SelectInput
             search={false}
+            options={TEMP_OPTIONS}
             name="exercise"
             label="Exercise Name"
             rules={{ required: 'Exercise name is required!' }}

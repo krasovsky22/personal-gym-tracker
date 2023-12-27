@@ -1,10 +1,10 @@
 import useExercisesStore from '@hooks/useExercisesStore';
 import { Divider } from '@rneui/themed';
 import { observer } from 'mobx-react-lite';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useController } from 'react-hook-form';
 import { StyleSheet, Text, View } from 'react-native';
-import MultiSelect from 'react-native-multiple-select';
+import { SelectList } from 'react-native-dropdown-select-list';
 
 const ExercisesDropdown = ({ name }) => {
   const { field, fieldState } = useController({
@@ -16,25 +16,15 @@ const ExercisesDropdown = ({ name }) => {
 
   const exercisesOptions = useMemo(() => {
     return exercises.map((exercise) => ({
-      id: exercise.id,
-      name: exercise.name,
+      key: exercise.id,
+      value: exercise.name,
     }));
   }, [exercises.length]);
-
-  const handleOnExerciseChange = useCallback((selectedOptions) => {
-    field.onChange(selectedOptions?.[0] ?? null);
-  }, []);
 
   return (
     <View>
       <Text>Exercise</Text>
-      <MultiSelect
-        single
-        uniqueKey="id"
-        selectedItems={[field.value]}
-        items={exercisesOptions}
-        onSelectedItemsChange={handleOnExerciseChange}
-      />
+      <SelectList data={exercisesOptions} setSelected={field.onChange} />
       {hasError && <Text>ERROR: {fieldState.error.message}</Text>}
       <Divider />
     </View>
