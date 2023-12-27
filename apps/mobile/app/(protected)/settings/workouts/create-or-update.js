@@ -8,10 +8,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { AsyncButton } from '@components';
 import { useExercisesStore } from '@hooks';
-import { TextInput } from '@components/Form';
+import { TextInput, SelectInput } from '@components/Form';
 
 const schema = z.object({
   name: z.string().min(1, { message: 'Workout Name is Required' }),
+  exercise: z.number().min(1, { message: 'Exercise Name is Required' }),
   //   sets: z
   //     .array(
   //       z.object({
@@ -63,6 +64,13 @@ function CreateWorkoutScreen() {
             label="Name"
             placeholder="Workout Name"
             rules={{ required: 'Workout name is required!' }}
+          />
+
+          <SelectInput
+            search={false}
+            name="exercise"
+            label="Exercise Name"
+            rules={{ required: 'Exercise name is required!' }}
           />
         </View>
 
