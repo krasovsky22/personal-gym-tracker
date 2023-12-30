@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
 
   formGroup: {
     display: 'flex',
+    overflow: 'visible',
     alignItems: 'center',
     flexDirection: 'row',
     gap: 10,

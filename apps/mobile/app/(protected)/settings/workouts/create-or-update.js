@@ -1,41 +1,49 @@
 import * as z from 'zod';
-import { useEffect, useState } from 'react';
-import { Button } from '@rneui/themed';
-import { Stack, useRouter, useLocalSearchParams } from 'expo-router';
-import { FormProvider, useForm } from 'react-hook-form';
-import { View, Text, StyleSheet } from 'react-native';
+import { useState } from 'react';
+import uuid from 'react-native-uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Button, Icon, useTheme, Card } from '@rneui/themed';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  VirtualizedList,
+  Text,
+} from 'react-native';
 
 import { AsyncButton } from '@components';
-import { useExercisesStore } from '@hooks';
-import { TextInput, SelectInput } from '@components/Form';
-import ExercisesDropdown from '@components/UI/ExercisesDropdown';
+import { TextInput } from '@components/Form';
+
+import WorkoutExerciseField from './components/exercise-field';
 
 const schema = z.object({
   name: z.string().min(1, { message: 'Workout Name is Required' }),
-  exercise: z.number().min(1, { message: 'Exercise Name is Required' }),
-  //   sets: z
-  //     .array(
-  //       z.object({
-  //         weight: z.string().min(1, { message: 'Set Weight is Required' }),
-  //         repeats: z.string().min(1, { message: 'Set Repeats is Required' }),
-  //       })
-  //     )
-  //     .min(1, { message: 'At least 1 set is required' }),
+  exercises: z
+    .array(
+      z.object({
+        exercise: z.string().min(1, { message: 'Exercise is Required' }),
+        setsCount: z.number().min(1, { message: 'Number of sets is Required' }),
+      })
+    )
+    .min(1, { message: 'At least 1 set is required' }),
 });
 
-const TEMP_OPTIONS = [
-  { key: 1, value: 'Mobiles' },
-  { key: 2, value: 'Appliances' },
-  { key: 3, value: 'Cameras' },
-  { key: 4, value: 'Computers' },
-  { key: 5, value: 'Vegetables' },
-  { key: 6, value: 'Diary Products' },
-  { key: 7, value: 'Drinks' },
-];
-
 function CreateWorkoutScreen() {
+  const { theme } = useTheme();
   const { workout_id } = useLocalSearchParams();
+  const [totalExercises, setTotalExercises] = useState([]);
+
+  const addExercise = () => {
+    setTotalExercises([...totalExercises, { id: `new-${uuid.v4()}` }]);
+  };
+
+  const removeExercise = (id) => {
+    const newList = totalExercises.filter((exercise) => exercise.id !== id);
+
+    setTotalExercises(newList);
+  };
 
   const onSubmit = async (formData) => {
     console.log('submit', formData);
@@ -50,9 +58,12 @@ function CreateWorkoutScreen() {
   const { ...methods } = useForm({
     defaultValues: {
       name: '',
+      exercises: [],
     },
     resolver: zodResolver(schema),
   });
+
+  console.log(totalExercises);
 
   return (
     <View style={styles.container}>
@@ -68,12 +79,39 @@ function CreateWorkoutScreen() {
             rules={{ required: 'Workout name is required!' }}
           />
 
-          <ExercisesDropdown name="exercise" />
-          {/* <SelectInput
-            search={false}
-            options={TEMP_OPTIONS}
-            rules={{ required: 'Exercise name is required!' }}
-          /> */}
+          <SafeAreaView style={{ flex: 1 }}>
+            <VirtualizedList
+              initialNumToRender={totalExercises.length}
+              getItemCount={() => totalExercises.length}
+              getItem={(_data, index) => {
+                return totalExercises[index];
+              }}
+              data={totalExercises}
+              renderItem={({ item, index }) => (
+                <Card containerStyle={styles.listItem}>
+                  {/* <View> */}
+                  <WorkoutExerciseField id={item.id} index={index} />
+                  {/* </View> */}
+                  <Button
+                    size="sm"
+                    type="clear"
+                    title="Remove"
+                    onPress={() => removeExercise(item.id)}
+                  >
+                    <Icon name="delete" color={theme.colors.error} />
+                    Delete
+                  </Button>
+                </Card>
+              )}
+              keyExtractor={(item) => item.id}
+            />
+          </SafeAreaView>
+
+          <Button
+            color="secondary"
+            title="Add Exercise"
+            onPress={addExercise}
+          />
         </View>
 
         <View style={styles.bottomContainer}>
@@ -105,7 +143,6 @@ function CreateWorkoutScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
     marginLeft: 10,
     marginRight: 10,
     flex: 1,
@@ -113,6 +150,14 @@ const styles = StyleSheet.create({
 
   list: {
     flexGrow: 1,
+    marginBottom: 10,
+  },
+
+  listItem: {
+    flex: 1,
+    // gap: 2,
+    // alignItems: 'center',
+    // flexDirection: 'row',
   },
 
   bottomContainer: {

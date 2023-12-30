@@ -18,6 +18,7 @@ const SelectInput = (props) => {
         <SelectList
           save="key"
           data={options}
+          boxStyles={styles.box}
           setSelected={field.onChange}
           defaultOption={defaultValue}
           dropdownStyles={styles.dropdown}
@@ -36,10 +37,13 @@ const styles = StyleSheet.create({
   error: {
     color: 'red',
   },
+  box: {},
   dropdown: {
-    position: 'absolute',
-    top: 50,
-    width: '100%',
+    maxHeight: 150,
+    // top: 50,
+    // zIndex: 999,
+    // width: '100%',
+    // position: 'absolute',
   },
 });
 export default SelectInput;
