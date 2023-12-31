@@ -4,6 +4,7 @@ import uuid from 'react-native-uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Icon, useTheme, Card } from '@rneui/themed';
 import { FormProvider, useForm } from 'react-hook-form';
+
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import {
   SafeAreaView,
@@ -14,6 +15,7 @@ import {
 } from 'react-native';
 
 import { AsyncButton } from '@components';
+import { useExercisesStore } from '@hooks';
 import { TextInput } from '@components/Form';
 
 import WorkoutExerciseField from './components/exercise-field';
@@ -35,6 +37,8 @@ function CreateWorkoutScreen() {
   const { workout_id } = useLocalSearchParams();
   const [totalExercises, setTotalExercises] = useState([]);
 
+  const { saveWorkout } = useExercisesStore();
+
   const addExercise = () => {
     setTotalExercises([...totalExercises, { id: `new-${uuid.v4()}` }]);
   };
@@ -46,7 +50,7 @@ function CreateWorkoutScreen() {
   };
 
   const onSubmit = async (formData) => {
-    console.log('submit', formData);
+    await saveWorkout(formData);
   };
 
   const onError = (errors, e) => {

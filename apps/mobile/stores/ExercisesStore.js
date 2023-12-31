@@ -5,6 +5,7 @@ import { Exercise } from '@models/Exercise';
 import { WorkoutSet } from '@models/WorkoutSet';
 
 import fetchSets from '@lib/queries/fetchSets';
+import { createWorkout } from '@lib/queries/workouts';
 import {
   loadExercises,
   updateExercise,
@@ -124,5 +125,11 @@ export const ExercisesStore = types
 
         self.workoutSets.push(exercise);
       });
+    }),
+
+    saveWorkout: flow(function* (workout) {
+      const { success, data } = yield createWorkout(workout);
+
+      console.log('asdsadasda', success, data);
     }),
   }));
