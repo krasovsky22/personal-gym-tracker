@@ -2,7 +2,13 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { StyleSheet, Text, View } from 'react-native';
 
-const ControlledInput = ({ name, label, children }) => {
+const ControlledInput = ({
+  name,
+  label,
+  children,
+  containerStyles = {},
+  labelStyles = {},
+}) => {
   const formContext = useFormContext();
 
   if (!formContext || !name) {
@@ -14,8 +20,10 @@ const ControlledInput = ({ name, label, children }) => {
   }
 
   return (
-    <View style={styles.formGroup}>
-      {label && <Text style={styles.label}>{label}</Text>}
+    <View style={{ ...styles.formGroup, ...containerStyles }}>
+      {label && (
+        <Text style={{ ...styles.label, ...labelStyles }}>{label}</Text>
+      )}
       <View style={styles.inputContainer}>{children}</View>
     </View>
   );
@@ -31,6 +39,7 @@ const styles = StyleSheet.create({
   formGroup: {
     display: 'flex',
     overflow: 'visible',
+
     alignItems: 'center',
     flexDirection: 'row',
     gap: 10,

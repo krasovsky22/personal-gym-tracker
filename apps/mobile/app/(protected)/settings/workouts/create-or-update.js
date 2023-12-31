@@ -94,9 +94,12 @@ function CreateWorkoutScreen() {
                   {/* </View> */}
                   <Button
                     size="sm"
-                    type="clear"
+                    type="outline"
                     title="Remove"
                     onPress={() => removeExercise(item.id)}
+                    containerStyle={{
+                      marginLeft: 'auto',
+                    }}
                   >
                     <Icon name="delete" color={theme.colors.error} />
                     Delete
@@ -155,9 +158,6 @@ const styles = StyleSheet.create({
 
   listItem: {
     flex: 1,
-    // gap: 2,
-    // alignItems: 'center',
-    // flexDirection: 'row',
   },
 
   bottomContainer: {

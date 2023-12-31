@@ -17,7 +17,6 @@ const ExercisesDropdown = (props) => {
   return (
     <SelectInput
       options={exercisesOptions}
-      search={false}
       label="Exercise"
       rules={{ required: 'Exercise name is required!' }}
       {...props}
