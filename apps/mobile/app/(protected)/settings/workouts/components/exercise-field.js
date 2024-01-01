@@ -3,7 +3,8 @@ import { StyleSheet, View } from 'react-native';
 
 import ExercisesDropdown from '@components/UI/ExercisesDropdown';
 
-const WorkoutExerciseField = ({ id, index }) => {
+const WorkoutExerciseField = ({ index }) => {
+  console.log('asdasd', index);
   return (
     <View style={styles.container}>
       <ExercisesDropdown name={`exercises.${index}.exercise`} />

@@ -3,17 +3,10 @@ import { useState } from 'react';
 import uuid from 'react-native-uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Icon, useTheme, Card } from '@rneui/themed';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
 
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import {
-  SafeAreaView,
-  StyleSheet,
-  View,
-  VirtualizedList,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import { SafeAreaView, StyleSheet, View, TouchableOpacity } from 'react-native';
 import DraggableFlatList, {
   ScaleDecorator,
 } from 'react-native-draggable-flatlist';
@@ -37,31 +30,12 @@ const schema = z.object({
 });
 
 function CreateWorkoutScreen() {
-  const { theme } = useTheme();
-  const { workout_id } = useLocalSearchParams();
-  const [totalExercises, setTotalExercises] = useState([]);
-
-  const { saveWorkout } = useExercisesStore();
-
-  const addExercise = () => {
-    setTotalExercises([...totalExercises, { id: `new-${uuid.v4()}` }]);
-  };
-
-  const removeExercise = (id) => {
-    const newList = totalExercises.filter((exercise) => exercise.id !== id);
-
-    setTotalExercises(newList);
-  };
-
-  const onSubmit = async (formData) => {
-    await saveWorkout(formData);
-  };
-
-  const onError = (errors, e) => {
-    return console.log('ERRORS ', errors);
-  };
-
   const router = useRouter();
+  const { theme } = useTheme();
+  const { saveWorkout } = useExercisesStore();
+  const { workout_id } = useLocalSearchParams();
+
+  const [workoutExercises, setWorkoutExercises] = useState([]);
 
   const { ...methods } = useForm({
     defaultValues: {
@@ -71,7 +45,33 @@ function CreateWorkoutScreen() {
     resolver: zodResolver(schema),
   });
 
-  console.log(totalExercises);
+  const { control } = methods;
+
+  const { fields, append, move, remove } = useFieldArray({
+    control,
+    name: 'exercises',
+  });
+
+  const addWorkoutExercise = () => {
+    append({ id: `new-${uuid.v4()}` });
+  };
+
+  const removeWorkoutExercise = (id) => {
+    const newList = workoutExercises.filter(
+      (workoutExercise) => workoutExercise.id !== id
+    );
+
+    setWorkoutExercises(newList);
+  };
+
+  const onSubmit = async (formData) => {
+    console.log(JSON.stringify(formData, null, 2));
+    await saveWorkout(formData);
+  };
+
+  const onError = (errors, e) => {
+    return console.log('ERRORS ', JSON.stringify(errors, null, 2));
+  };
 
   return (
     <View style={styles.container}>
@@ -89,17 +89,12 @@ function CreateWorkoutScreen() {
 
           <SafeAreaView style={{ flex: 1 }}>
             <DraggableFlatList
-              //   initialNumToRender={totalExercises.length}
-              //   getItemCount={() => totalExercises.length}
-              //   getItem={(_data, index) => {
-              //     return totalExercises[index];
-              //   }}
               keyExtractor={(item) => item.id}
-              onDragEnd={(props) => {
-                console.log('on drag end', props);
+              onDragEnd={({ from, to }) => {
+                move(from, to);
               }}
-              data={totalExercises}
-              renderItem={({ item, drag, isActive, index }) => (
+              data={fields}
+              renderItem={({ item, drag, isActive, getIndex }) => (
                 <ScaleDecorator>
                   <TouchableOpacity
                     onLongPress={drag}
@@ -108,20 +103,19 @@ function CreateWorkoutScreen() {
                       styles.rowItem,
                       {
                         backgroundColor: isActive
-                          ? 'red'
+                          ? 'pink'
                           : item.backgroundColor,
                       },
                     ]}
                   >
                     <Card containerStyle={styles.listItem}>
-                      {/* <View> */}
-                      <WorkoutExerciseField id={item.id} index={index} />
-                      {/* </View> */}
+                      <WorkoutExerciseField index={getIndex()} />
+
                       <Button
                         size="sm"
                         type="outline"
                         title="Remove"
-                        onPress={() => removeExercise(item.id)}
+                        onPress={() => remove(getIndex())}
                         containerStyle={{
                           marginLeft: 'auto',
                         }}
@@ -139,7 +133,7 @@ function CreateWorkoutScreen() {
           <Button
             color="secondary"
             title="Add Exercise"
-            onPress={addExercise}
+            onPress={addWorkoutExercise}
           />
         </View>
 
