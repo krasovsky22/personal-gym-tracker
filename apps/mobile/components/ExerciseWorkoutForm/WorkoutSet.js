@@ -25,7 +25,6 @@ const WorkoutSet = ({ id, index }) => {
   });
 
   const onTextChange = (text) => {
-    console.log('asdasd', text);
     weightField.onChange(text);
   };
 
