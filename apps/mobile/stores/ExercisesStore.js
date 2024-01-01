@@ -1,11 +1,18 @@
+import { supabase } from '@lib/supabase';
 import { types, flow, destroy } from 'mobx-state-tree';
 
-import { supabase } from '@lib/supabase';
 import { Exercise } from '@models/Exercise';
 import { WorkoutSet } from '@models/WorkoutSet';
 
-const SETS_TABLE_NAME = 'sets';
-const EXERCISE_TABLE_NAME = 'exercises';
+import fetchSets from '@lib/queries/fetchSets';
+import { createWorkout } from '@lib/queries/workouts';
+import {
+  loadExercises,
+  updateExercise,
+  insertExercise,
+  deleteExercise,
+} from '@lib/queries/exercises';
+import { SETS_TABLE_NAME } from '@lib/constants';
 
 export const ExercisesStore = types
   .model('ExercisesStore', {
@@ -15,7 +22,9 @@ export const ExercisesStore = types
   })
   .views((self) => ({
     getExerciseById: (id) => {
-      return self.exercises.find((exercise) => exercise.id);
+      return self.exercises.find((exercise) => {
+        return exercise.id === id;
+      });
     },
 
     get trackedExercisesSummary() {
@@ -42,70 +51,56 @@ export const ExercisesStore = types
     },
   }))
   .actions((self) => ({
-    saveExercise: flow(function* (exercise) {
-      console.log('saving', exercise);
-      if (exercise.id) {
-        const { data } = yield supabase
-          .from(EXERCISE_TABLE_NAME)
-          .update({ ...exercise })
-          .eq('id', exercise.id)
-          .select();
+    afterCreate: flow(function* () {
+      const { success, data } = yield loadExercises();
+      if (success) {
+        self.exercises = data;
+      }
+    }),
 
-        console.log('update', data);
-        exercise.setName(exercise.name);
+    saveExercise: flow(function* (exercise) {
+      console.log(exercise);
+      if (exercise.id) {
+        const { success } = yield updateExercise(exercise);
+
+        if (success) {
+          exercise.setName(exercise.name);
+        }
+
         return;
       }
 
       // insert new one
-      const { data } = yield supabase
-        .from(EXERCISE_TABLE_NAME)
-        .insert({ ...exercise })
-        .select();
-
-      self.exercises.push(data[0]);
+      const { success, data } = yield insertExercise(exercise);
+      if (success) {
+        self.exercises.push(data);
+      }
     }),
 
     deleteExercise: flow(function* (exercise) {
-      yield supabase.from(EXERCISE_TABLE_NAME).delete().eq('id', exercise.id);
+      const { success } = yield deleteExercise(exercise.id);
 
-      destroy(exercise);
-    }),
-
-    loadExercises: flow(function* () {
-      try {
-        const { data } = yield supabase.from(EXERCISE_TABLE_NAME).select(`*`);
-
-        self.exercises = data;
-      } catch (error) {
-        console.log('ERROR', error);
+      if (success) {
+        destroy(exercise);
       }
     }),
 
     loadWorkout: flow(function* () {
-      try {
-        const { data } = yield supabase
-          .from(SETS_TABLE_NAME)
-          .select(
-            `id, weight, repeats, set_order, workout_date, exercises (id , name, created_at )`
-          );
+      const data = yield fetchSets();
+      const exercises = data.reduce((carry, exerciseSet) => {
+        carry[exerciseSet.exercises.id] ??= exerciseSet.exercises;
 
-        const exercises = data.reduce((carry, exerciseSet) => {
-          carry[exerciseSet.exercises.id] ??= exerciseSet.exercises;
+        return carry;
+      }, {});
 
-          return carry;
-        }, {});
+      const workoutSets = data.map((workoutSet) => ({
+        ...workoutSet,
+        weight: workoutSet.weight.toString(),
+        exercise: workoutSet.exercises.id,
+      }));
 
-        const workoutSets = data.map((workoutSet) => ({
-          ...workoutSet,
-          weight: workoutSet.weight.toString(),
-          exercise: workoutSet.exercises.id,
-        }));
-
-        self.exercises = Object.values(exercises);
-        self.workoutSets = workoutSets;
-      } catch (error) {
-        console.log('ERROR', error);
-      }
+      self.exercises = Object.values(exercises);
+      self.workoutSets = workoutSets;
     }),
 
     saveExerciseSets: flow(function* (exercises) {
@@ -130,5 +125,11 @@ export const ExercisesStore = types
 
         self.workoutSets.push(exercise);
       });
+    }),
+
+    saveWorkout: flow(function* (workout) {
+      const { success, data } = yield createWorkout(workout);
+
+      console.log('asdsadasda', success, data);
     }),
   }));

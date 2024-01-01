@@ -8,9 +8,7 @@ export const RootStore = types
   .model('RootStore', {
     identifier: types.optional(types.identifier, 'RootStore'),
     authStore: types.optional(AuthStore, () => AuthStore.create()),
-    exercisesStore: types.optional(ExercisesStore, () =>
-      ExercisesStore.create()
-    ),
+    exercisesStore: types.maybeNull(ExercisesStore),
     // navigationStore: types.optional(NavigationStore, () =>
     //   NavigationStore.create({
     //     repoDetailScreenParams: {},
@@ -19,6 +17,11 @@ export const RootStore = types
     // ),
   })
   .actions((self) => ({
+    initialize() {
+      if (self.authStore.isLoggedIn && self.exercisesStore === null) {
+        self.exercisesStore = ExercisesStore.create();
+      }
+    },
     async save() {
       try {
         const transformedSnapshot = getSnapshot(self);

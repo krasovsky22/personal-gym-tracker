@@ -1,14 +1,21 @@
+import { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { observer } from 'mobx-react-lite';
 import { Redirect, Tabs } from 'expo-router';
 import { Icon, useTheme } from '@rneui/themed';
 import { default as MaterialIcon } from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import useStore from '@hooks/useStore';
 import useAuthStore from '@hooks/useAuthStore';
 
 function ProtectedLayout() {
   const { theme } = useTheme();
   const { isLoggedIn } = useAuthStore();
+  const { initialize } = useStore();
+
+  useEffect(() => {
+    isLoggedIn && initialize();
+  }, [isLoggedIn]);
 
   if (!isLoggedIn) {
     return <Redirect href="/(auth)/sign-in" />;

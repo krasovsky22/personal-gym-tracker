@@ -14,7 +14,6 @@ const renderRow = ({ item }) => {
         //   onPress={() => item.link && router.push(item.link)}
       >
         <ListItem.Content style={styles.content}>
-          {/* <Icon name={item.icon} size={30} /> */}
           <ListItem.Title>{item.exerciseName}</ListItem.Title>
           <ListItem.Subtitle>
             <View

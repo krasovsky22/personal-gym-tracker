@@ -16,13 +16,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.krasovsky.gymtracker"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.krasovsky.gymtracker"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -38,6 +40,12 @@
         "projectId": "e84ad7df-76fc-4a95-9a11-6cbda61fcbde"
       }
     },
-    "owner": "krasovsky"
+    "owner": "krasovsky",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/e84ad7df-76fc-4a95-9a11-6cbda61fcbde"
+    }
   }
 }
