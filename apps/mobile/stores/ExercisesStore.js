@@ -59,7 +59,6 @@ export const ExercisesStore = types
     }),
 
     saveExercise: flow(function* (exercise) {
-      console.log(exercise);
       if (exercise.id) {
         const { success } = yield updateExercise(exercise);
 
@@ -77,10 +76,13 @@ export const ExercisesStore = types
       }
     }),
 
-    deleteExercise: flow(function* (exercise) {
-      const { success } = yield deleteExercise(exercise.id);
+    deleteExercise: flow(function* (exerciseId) {
+      const { success } = yield deleteExercise(exerciseId);
 
       if (success) {
+        const exercise = self.exercises.find(
+          (exercise) => exercise.id === exerciseId
+        );
         destroy(exercise);
       }
     }),

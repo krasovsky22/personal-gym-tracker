@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { Link } from 'expo-router';
 import { observer } from 'mobx-react-lite';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, FlatList } from 'react-native';
 import { ListItem } from '@rneui/themed';
 
 import { useExercisesStore } from '@hooks';
 
 const renderRow = ({ item }) => {
   return (
-    <View style={styles.list}>
+    <SafeAreaView style={styles.list}>
       <ListItem
         bottomDivider
         //   onPress={() => item.link && router.push(item.link)}
@@ -28,7 +28,7 @@ const renderRow = ({ item }) => {
         </ListItem.Content>
         <ListItem.Chevron />
       </ListItem>
-    </View>
+    </SafeAreaView>
   );
 };
 

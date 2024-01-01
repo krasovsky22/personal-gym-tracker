@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { ListItem, lightColors } from '@rneui/themed';
 import { View, FlatList, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -40,13 +40,16 @@ const renderRow = ({ item }) => {
 
 function SettingsScreen() {
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={SETTINGS_PAGES}
-        keyExtractor={(a, index) => index.toString()}
-        renderItem={renderRow}
-      />
-    </View>
+    <>
+      <Stack.Screen options={{ title: 'User Settings' }} />
+      <View style={styles.container}>
+        <FlatList
+          data={SETTINGS_PAGES}
+          keyExtractor={(a, index) => index.toString()}
+          renderItem={renderRow}
+        />
+      </View>
+    </>
   );
 }
 

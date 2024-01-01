@@ -6,9 +6,17 @@ const AsyncButton = ({ onPress, ...rest }) => {
 
   const handleOnPress = async () => {
     setIsLoading(true);
-    const result = await onPress();
+    try {
+      const result = await onPress();
+      setIsLoading(false);
+
+      return result;
+    } catch (error) {
+      console.warn('Promise rejection in async button - ', error);
+    }
+
     setIsLoading(false);
-    return result;
+    return null;
   };
 
   return <Button {...rest} onPress={handleOnPress} loading={isLoading} />;

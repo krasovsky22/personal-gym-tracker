@@ -1,3 +1,4 @@
+import { toJS } from 'mobx';
 import { View, StyleSheet, FlatList } from 'react-native';
 import { Button, ListItem } from '@rneui/themed';
 import { observer } from 'mobx-react-lite';
@@ -15,7 +16,7 @@ function ExercisesScreen() {
       <Stack.Screen options={{ title: 'Exercises Management' }} />
       <View style={styles.list}>
         <FlatList
-          data={exercises}
+          data={toJS(exercises)}
           keyExtractor={(a) => a.id}
           renderItem={({ item }) => (
             <View>
@@ -27,7 +28,7 @@ function ExercisesScreen() {
                   color="error"
                   title="Delete"
                   onPress={() => {
-                    deleteExercise(item);
+                    return deleteExercise(item.id);
                   }}
                 />
                 <AsyncButton
