@@ -12,7 +12,11 @@ import {
   View,
   VirtualizedList,
   Text,
+  TouchableOpacity,
 } from 'react-native';
+import DraggableFlatList, {
+  ScaleDecorator,
+} from 'react-native-draggable-flatlist';
 
 import { AsyncButton } from '@components';
 import { useExercisesStore } from '@hooks';
@@ -84,33 +88,51 @@ function CreateWorkoutScreen() {
           />
 
           <SafeAreaView style={{ flex: 1 }}>
-            <VirtualizedList
-              initialNumToRender={totalExercises.length}
-              getItemCount={() => totalExercises.length}
-              getItem={(_data, index) => {
-                return totalExercises[index];
+            <DraggableFlatList
+              //   initialNumToRender={totalExercises.length}
+              //   getItemCount={() => totalExercises.length}
+              //   getItem={(_data, index) => {
+              //     return totalExercises[index];
+              //   }}
+              keyExtractor={(item) => item.id}
+              onDragEnd={(props) => {
+                console.log('on drag end', props);
               }}
               data={totalExercises}
-              renderItem={({ item, index }) => (
-                <Card containerStyle={styles.listItem}>
-                  {/* <View> */}
-                  <WorkoutExerciseField id={item.id} index={index} />
-                  {/* </View> */}
-                  <Button
-                    size="sm"
-                    type="outline"
-                    title="Remove"
-                    onPress={() => removeExercise(item.id)}
-                    containerStyle={{
-                      marginLeft: 'auto',
-                    }}
+              renderItem={({ item, drag, isActive, index }) => (
+                <ScaleDecorator>
+                  <TouchableOpacity
+                    onLongPress={drag}
+                    disabled={isActive}
+                    style={[
+                      styles.rowItem,
+                      {
+                        backgroundColor: isActive
+                          ? 'red'
+                          : item.backgroundColor,
+                      },
+                    ]}
                   >
-                    <Icon name="delete" color={theme.colors.error} />
-                    Delete
-                  </Button>
-                </Card>
+                    <Card containerStyle={styles.listItem}>
+                      {/* <View> */}
+                      <WorkoutExerciseField id={item.id} index={index} />
+                      {/* </View> */}
+                      <Button
+                        size="sm"
+                        type="outline"
+                        title="Remove"
+                        onPress={() => removeExercise(item.id)}
+                        containerStyle={{
+                          marginLeft: 'auto',
+                        }}
+                      >
+                        <Icon name="delete" color={theme.colors.error} />
+                        Delete
+                      </Button>
+                    </Card>
+                  </TouchableOpacity>
+                </ScaleDecorator>
               )}
-              keyExtractor={(item) => item.id}
             />
           </SafeAreaView>
 
