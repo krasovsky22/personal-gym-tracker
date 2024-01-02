@@ -39,6 +39,7 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
+        working-directory: ./apps/mobile
         run: yarn install
 
       - name: Publish update
