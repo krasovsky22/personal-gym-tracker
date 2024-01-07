@@ -1,11 +1,12 @@
 import { supabase } from '@lib/supabase';
 import { types, flow, destroy } from 'mobx-state-tree';
 
+import { Workout } from '@models/Workout';
 import { Exercise } from '@models/Exercise';
 import { WorkoutSet } from '@models/WorkoutSet';
 
 import fetchSets from '@lib/queries/fetchSets';
-import { createWorkout } from '@lib/queries/workouts';
+import { createWorkout, fetchWorkouts } from '@lib/queries/workouts';
 import {
   loadExercises,
   updateExercise,
@@ -17,6 +18,7 @@ import { SETS_TABLE_NAME } from '@lib/constants';
 export const ExercisesStore = types
   .model('ExercisesStore', {
     identifier: types.optional(types.identifier, 'ExercisesStore'),
+    workouts: types.array(Workout),
     exercises: types.array(Exercise),
     workoutSets: types.array(WorkoutSet),
   })
@@ -134,4 +136,11 @@ export const ExercisesStore = types
 
       console.log('asdsadasda', success, data);
     }),
+
+    loadWorkouts: flow(function* () {
+        const workouts = yield fetchWorkouts();
+        console.log('qqqq', JSON.stringify(workouts, null, 2));
+
+        self.workouts = workouts;
+    })
   }));

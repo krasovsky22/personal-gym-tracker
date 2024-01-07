@@ -1,11 +1,20 @@
+import { useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { Button, ListItem } from '@rneui/themed';
 import { Stack, useRouter } from 'expo-router';
 
+
+import { AsyncButton } from '@components';
+import { useExercisesStore } from '@hooks';
+
 const WorkoutsScreen = () => {
   const router = useRouter();
+  const { workouts, loadWorkouts } = useExercisesStore();
 
-  const workouts = [];
+  useEffect(() => {
+    loadWorkouts();
+  }, [])
+
   const deleteWorkout = () => {};
 
   return (

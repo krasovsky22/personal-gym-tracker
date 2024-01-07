@@ -37,3 +37,34 @@ export async function createWorkout({ name, exercises }) {
 
   return { success: false, data: {} };
 }
+
+export async function fetchWorkouts() {
+  try {
+    const { data } = await supabase
+      .from(WORKOUT_EXERCISE_TABLE)
+      .select(
+        `id, order, sets_count, exercise_id, created_at, workout (id , name, created_at )`
+      );
+
+      const workouts = data.reduce((carry, workoutExercise) => {
+        const { workout, ...workoutExerciseData } = workoutExercise;
+
+        carry[workout.id] ??= {
+            ...workout,
+            workoutExercises: []
+        }
+
+        carry[workout.id].workoutExercises.push({
+          ...workoutExerciseData,
+          exercise: workoutExerciseData.exercise_id,
+        });
+
+        return carry;
+      }, {})
+    return Object.values(workouts);;
+  } catch (error) {
+    console.log('Unable to load workouts: ', error);
+  }
+
+  return [];
+}
