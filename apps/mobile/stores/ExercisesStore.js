@@ -131,16 +131,20 @@ export const ExercisesStore = types
       });
     }),
 
-    saveWorkout: flow(function* (workout) {
-      const { success, data } = yield createWorkout(workout);
-
-      console.log('asdsadasda', success, data);
-    }),
-
     loadWorkouts: flow(function* () {
         const workouts = yield fetchWorkouts();
         console.log('qqqq', JSON.stringify(workouts, null, 2));
 
         self.workouts = workouts;
-    })
+    }),
+
+    saveWorkout: flow(function* (workout) {
+      const { success, data } = yield createWorkout(workout);
+
+      yield self.loadWorkouts();
+
+      console.log('asdsadasda', success, data);
+    }),
+
+    
   }));
