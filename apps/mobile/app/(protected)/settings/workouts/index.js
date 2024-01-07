@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
   },
 
   bottomContainer: {
+    backgroundColor: 'orange',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
