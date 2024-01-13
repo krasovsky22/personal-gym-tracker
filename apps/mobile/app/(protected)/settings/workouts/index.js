@@ -6,6 +6,7 @@ import { Button, ListItem } from '@rneui/themed';
 import { Stack, useRouter } from 'expo-router';
 
 import { AsyncButton } from '@components';
+import { AddNewFab } from '@components/UI';
 import { useExercisesStore } from '@hooks';
 
 const WorkoutsScreen = () => {
@@ -55,12 +56,8 @@ const WorkoutsScreen = () => {
           )}
         />
       </View>
-      <View style={styles.bottomContainer}>
-        <Button
-          title="Create Workout"
-          onPress={() => router.push('/settings/workouts/create-or-update')}
-        ></Button>
-      </View>
+
+      <AddNewFab url="/settings/workouts/create-or-update" />
     </View>
   );
 };
@@ -78,13 +75,6 @@ const styles = StyleSheet.create({
   listItemContent: {
     flex: 1,
     gap: 10,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-
-  bottomContainer: {
-    backgroundColor: 'orange',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',

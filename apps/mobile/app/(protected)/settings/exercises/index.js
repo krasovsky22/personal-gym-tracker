@@ -1,9 +1,10 @@
 import { toJS } from 'mobx';
-import { View, StyleSheet, FlatList, TouchableOpacity, Text } from 'react-native';
-import { Button, ListItem } from '@rneui/themed';
+import { View, StyleSheet, FlatList } from 'react-native';
+import { FAB, ListItem } from '@rneui/themed';
 import { observer } from 'mobx-react-lite';
 import { Stack, useRouter } from 'expo-router';
 
+import { AddNewFab } from '@components/UI';
 import { AsyncButton } from '@components';
 import useExercisesStore from '@hooks/useExercisesStore';
 
@@ -44,12 +45,7 @@ function ExercisesScreen() {
             </View>
           )}
         />
-        <TouchableOpacity
-          onPress={() => router.push('/settings/exercises/create-or-update')}
-          style={styles.fab}
-        >
-          <Text style={styles.fabIcon}>+</Text>
-        </TouchableOpacity>
+        <AddNewFab url="/settings/exercises/create-or-update" />
       </View>
     </View>
   );
@@ -63,23 +59,6 @@ const styles = StyleSheet.create({
 
   list: {
     flexGrow: 1,
-  },
-
-  fab: {
-    position: 'absolute',
-    width: 25,
-    height: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-    right: 20,
-    bottom: 20,
-    backgroundColor: '#03A9F4',
-    borderRadius: 15,
-    elevation: 8,
-  },
-  fabIcon: {
-    fontSize: 15,
-    color: 'white',
   },
 });
 

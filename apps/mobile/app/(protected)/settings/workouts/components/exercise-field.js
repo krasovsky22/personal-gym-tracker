@@ -1,7 +1,7 @@
 import { NumberInput } from '@components/Form';
 import { StyleSheet, View } from 'react-native';
 
-import ExercisesDropdown from '@components/UI/ExercisesDropdown';
+import { ExercisesDropdown } from '@components/UI';
 
 const WorkoutExerciseField = ({ index }) => {
   return (
