@@ -1,11 +1,11 @@
-import { supabase } from '@lib/supabase';
+// import { supabase } from '@lib/supabase';
 import { types, flow, destroy } from 'mobx-state-tree';
 
 import { Workout } from '@models/Workout';
 import { Exercise } from '@models/Exercise';
 import { WorkoutSet } from '@models/WorkoutSet';
 
-import fetchSets from '@lib/queries/fetchSets';
+// import fetchSets from '@lib/queries/fetchSets';
 import { createWorkout, fetchWorkouts } from '@lib/queries/workouts';
 import {
   loadExercises,
@@ -13,14 +13,14 @@ import {
   insertExercise,
   deleteExercise,
 } from '@lib/queries/exercises';
-import { SETS_TABLE_NAME } from '@lib/constants';
+// import { SETS_TABLE_NAME } from '@lib/constants';
 
 export const ExercisesStore = types
   .model('ExercisesStore', {
     identifier: types.optional(types.identifier, 'ExercisesStore'),
     workouts: types.array(Workout),
     exercises: types.array(Exercise),
-    workoutSets: types.array(WorkoutSet),
+    // workoutSets: types.array(WorkoutSet),
   })
   .views((self) => ({
     getExerciseById: (id) => {
@@ -29,28 +29,28 @@ export const ExercisesStore = types
       });
     },
 
-    get trackedExercisesSummary() {
-      const summary = self.workoutSets.reduce((carry, workoutSet) => {
-        const { weight, exercise } = workoutSet;
-        const exerciseId = exercise.id;
+    // get trackedExercisesSummary() {
+    //   const summary = self.workoutSets.reduce((carry, workoutSet) => {
+    //     const { weight, exercise } = workoutSet;
+    //     const exerciseId = exercise.id;
 
-        carry[exerciseId] ??= {
-          exerciseId,
-          totalSets: 0,
-          maxWeight: 0,
-          exerciseName: exercise.name,
-        };
+    //     carry[exerciseId] ??= {
+    //       exerciseId,
+    //       totalSets: 0,
+    //       maxWeight: 0,
+    //       exerciseName: exercise.name,
+    //     };
 
-        carry[exerciseId].totalSets += 1;
-        if (carry[exerciseId].maxWeight < +weight) {
-          carry[exerciseId].maxWeight = +weight;
-        }
+    //     carry[exerciseId].totalSets += 1;
+    //     if (carry[exerciseId].maxWeight < +weight) {
+    //       carry[exerciseId].maxWeight = +weight;
+    //     }
 
-        return carry;
-      }, {});
+    //     return carry;
+    //   }, {});
 
-      return Object.values(summary);
-    },
+    //   return Object.values(summary);
+    // },
   }))
   .actions((self) => ({
     afterCreate: flow(function* () {
@@ -58,6 +58,8 @@ export const ExercisesStore = types
       if (success) {
         self.exercises = data;
       }
+
+      yield self.loadWorkouts();
     }),
 
     saveExercise: flow(function* (exercise) {
@@ -89,62 +91,57 @@ export const ExercisesStore = types
       }
     }),
 
-    loadWorkout: flow(function* () {
-      const data = yield fetchSets();
-      const exercises = data.reduce((carry, exerciseSet) => {
-        carry[exerciseSet.exercises.id] ??= exerciseSet.exercises;
+    // loadWorkout: flow(function* () {
+    //   const data = yield fetchSets();
+    //   const exercises = data.reduce((carry, exerciseSet) => {
+    //     carry[exerciseSet.exercises.id] ??= exerciseSet.exercises;
 
-        return carry;
-      }, {});
+    //     return carry;
+    //   }, {});
 
-      const workoutSets = data.map((workoutSet) => ({
-        ...workoutSet,
-        weight: workoutSet.weight.toString(),
-        exercise: workoutSet.exercises.id,
-      }));
+    //   const workoutSets = data.map((workoutSet) => ({
+    //     ...workoutSet,
+    //     weight: workoutSet.weight.toString(),
+    //     exercise: workoutSet.exercises.id,
+    //   }));
 
-      self.exercises = Object.values(exercises);
-      self.workoutSets = workoutSets;
-    }),
+    //   self.exercises = Object.values(exercises);
+    //   self.workoutSets = workoutSets;
+    // }),
 
-    saveExerciseSets: flow(function* (exercises) {
-      console.log('saving', exercises);
-      const { data } = yield supabase
-        .from(SETS_TABLE_NAME)
-        .upsert(exercises)
-        .select();
+    // saveExerciseSets: flow(function* (exercises) {
+    //   console.log('saving', exercises);
+    //   const { data } = yield supabase
+    //     .from(SETS_TABLE_NAME)
+    //     .upsert(exercises)
+    //     .select();
 
-      data.forEach((workoutSet) => {
-        const { id, exercise_id, set_order, weight, repeats, workout_date } =
-          workoutSet;
+    //   data.forEach((workoutSet) => {
+    //     const { id, exercise_id, set_order, weight, repeats, workout_date } =
+    //       workoutSet;
 
-        const exercise = {
-          id: +id,
-          repeats: +repeats,
-          exercise: exercise_id,
-          set_order: +set_order,
-          workout_date: workout_date,
-          weight: (+weight).toFixed(2),
-        };
+    //     const exercise = {
+    //       id: +id,
+    //       repeats: +repeats,
+    //       exercise: exercise_id,
+    //       set_order: +set_order,
+    //       workout_date: workout_date,
+    //       weight: (+weight).toFixed(2),
+    //     };
 
-        self.workoutSets.push(exercise);
-      });
-    }),
+    //     self.workoutSets.push(exercise);
+    //   });
+    // }),
 
     loadWorkouts: flow(function* () {
-        const workouts = yield fetchWorkouts();
-        console.log('qqqq', JSON.stringify(workouts, null, 2));
+      const workouts = yield fetchWorkouts();
 
-        self.workouts = workouts;
+      self.workouts = workouts;
     }),
 
     saveWorkout: flow(function* (workout) {
       const { success, data } = yield createWorkout(workout);
 
       yield self.loadWorkouts();
-
-      console.log('asdsadasda', success, data);
     }),
-
-    
   }));

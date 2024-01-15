@@ -5,7 +5,7 @@ import { Stack } from 'expo-router';
 //   initialRouteName: 'index',
 // };
 
-export default function SettingsLayout() {
+export default function WorkoutsLayout() {
   return (
     <View style={styles.container}>
       <Stack
