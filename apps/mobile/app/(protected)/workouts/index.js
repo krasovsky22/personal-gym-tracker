@@ -42,16 +42,22 @@ const schema = z.object({
 });
 
 const WorkoutsScreen = () => {
-  const { ...methods } = useForm({
-    defaultValues: {
-      workout: '',
-    },
-    resolver: zodResolver(schema),
-  });
+    const { createUserWorkout } = useExercisesStore();
+    const { ...methods } = useForm({
+      defaultValues: {
+        workout: '',
+      },
+      resolver: zodResolver(schema),
+    });
 
-  const onSubmit = async (formData) => {
-    console.log(JSON.stringify(formData, null, 2));
-  };
+    const onSubmit = async (formData) => {
+      console.log(JSON.stringify(formData, null, 2));
+      const { workout } = formData;
+
+      await createUserWorkout(workout);
+
+      console.log('created');
+    };
 
   const onError = (errors, e) => {
     return console.log('ERRORS ', JSON.stringify(errors, null, 2));

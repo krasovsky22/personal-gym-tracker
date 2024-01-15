@@ -3,10 +3,11 @@ import { types, flow, destroy } from 'mobx-state-tree';
 
 import { Workout } from '@models/Workout';
 import { Exercise } from '@models/Exercise';
-import { WorkoutSet } from '@models/WorkoutSet';
+import { UserWorkout } from '@models/UserWorkout';
 
 // import fetchSets from '@lib/queries/fetchSets';
 import { createWorkout, fetchWorkouts } from '@lib/queries/workouts';
+import { createUserWorkout } from '@lib/queries/userWorkouts';
 import {
   loadExercises,
   updateExercise,
@@ -20,6 +21,7 @@ export const ExercisesStore = types
     identifier: types.optional(types.identifier, 'ExercisesStore'),
     workouts: types.array(Workout),
     exercises: types.array(Exercise),
+    userWorkouts: types.array(UserWorkout),
     // workoutSets: types.array(WorkoutSet),
   })
   .views((self) => ({
@@ -143,5 +145,9 @@ export const ExercisesStore = types
       const { success, data } = yield createWorkout(workout);
 
       yield self.loadWorkouts();
+    }),
+
+    createUserWorkout: flow(function* (workoutId) {
+      yield createUserWorkout({ workout_id: workoutId });
     }),
   }));
