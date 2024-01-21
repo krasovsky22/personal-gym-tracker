@@ -8,7 +8,9 @@ export const RootStore = types
   .model('RootStore', {
     identifier: types.optional(types.identifier, 'RootStore'),
     authStore: types.optional(AuthStore, () => AuthStore.create()),
-    exercisesStore: types.maybeNull(ExercisesStore),
+    exercisesStore: types.optional(ExercisesStore, () =>
+      ExercisesStore.create()
+    ),
     // navigationStore: types.optional(NavigationStore, () =>
     //   NavigationStore.create({
     //     repoDetailScreenParams: {},

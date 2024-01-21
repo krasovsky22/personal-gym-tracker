@@ -2,6 +2,16 @@ import { supabase } from '@lib/supabase';
 
 const USER_WORKOUT_TABLE = 'user_workout';
 
+export async function fetchUserWorkouts() {
+  const { data, error } = await supabase.from(USER_WORKOUT_TABLE).select('*');
+
+  if (error) {
+    console.warn('Error while fetching user workouts ', error);
+  }
+
+  return data ?? [];
+}
+
 export async function createUserWorkout({ workout_id }) {
   try {
     const userWorkout = {

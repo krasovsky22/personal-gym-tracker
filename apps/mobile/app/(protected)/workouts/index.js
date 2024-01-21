@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Link } from 'expo-router';
 import * as z from 'zod';
+import { usePathname } from 'expo-router';
 import { observer } from 'mobx-react-lite';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SafeAreaView, View, Text, StyleSheet, FlatList } from 'react-native';
@@ -10,6 +11,8 @@ import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
 import { useExercisesStore } from '@hooks';
 import { AsyncButton } from '@components';
 import WorkoutsDropdown from './components/WorkoutsDropdown';
+
+const ROUTE_PATH = '/workouts';
 
 // const renderRow = ({ item }) => {
 //   return (
@@ -42,22 +45,29 @@ const schema = z.object({
 });
 
 const WorkoutsScreen = () => {
-    const { createUserWorkout } = useExercisesStore();
-    const { ...methods } = useForm({
-      defaultValues: {
-        workout: '',
-      },
-      resolver: zodResolver(schema),
-    });
+  const pathName = usePathname();
+  const { loadUserWorkouts, createUserWorkout } = useExercisesStore();
+  const { ...methods } = useForm({
+    defaultValues: {
+      workout: '',
+    },
+    resolver: zodResolver(schema),
+  });
 
-    const onSubmit = async (formData) => {
-      console.log(JSON.stringify(formData, null, 2));
-      const { workout } = formData;
+  useEffect(() => {
+    if (pathName === ROUTE_PATH) {
+      loadUserWorkouts();
+    }
+  }, [pathName]);
 
-      await createUserWorkout(workout);
+  const onSubmit = async (formData) => {
+    console.log(JSON.stringify(formData, null, 2));
+    const { workout } = formData;
 
-      console.log('created');
-    };
+    await createUserWorkout(workout);
+
+    console.log('created');
+  };
 
   const onError = (errors, e) => {
     return console.log('ERRORS ', JSON.stringify(errors, null, 2));

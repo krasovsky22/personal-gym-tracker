@@ -7,7 +7,10 @@ import { UserWorkout } from '@models/UserWorkout';
 
 // import fetchSets from '@lib/queries/fetchSets';
 import { createWorkout, fetchWorkouts } from '@lib/queries/workouts';
-import { createUserWorkout } from '@lib/queries/userWorkouts';
+import {
+  fetchUserWorkouts,
+  createUserWorkout,
+} from '@lib/queries/userWorkouts';
 import {
   loadExercises,
   updateExercise,
@@ -145,6 +148,17 @@ export const ExercisesStore = types
       const { success, data } = yield createWorkout(workout);
 
       yield self.loadWorkouts();
+    }),
+
+    loadUserWorkouts: flow(function* () {
+      const userWorkoutsData = yield fetchUserWorkouts();
+      userWorkoutsData.forEach((userWorkoutData) => {
+        console.log(userWorkoutData);
+        const userWorkout = {
+          ...userWorkoutData,
+          workout: userWorkoutData.workout_id,
+        };
+      });
     }),
 
     createUserWorkout: flow(function* (workoutId) {

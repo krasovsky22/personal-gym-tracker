@@ -37,6 +37,7 @@ export const AuthStore = types
       });
 
       if (!session) {
+        self.setUser(null);
         return;
       }
 
@@ -48,10 +49,11 @@ export const AuthStore = types
         ...rest,
       };
 
+      console.log('here');
       self.setUser(authUser);
     }),
 
     signOut: flow(function* () {
-      yield supabase.auth.signOut();
+      yield supabase.auth.signOut({ scope: 'local' });
     }),
   }));
