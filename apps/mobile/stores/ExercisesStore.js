@@ -8,6 +8,7 @@ import { UserWorkout } from '@models/UserWorkout';
 // import fetchSets from '@lib/queries/fetchSets';
 import { createWorkout, fetchWorkouts } from '@lib/queries/workouts';
 import {
+  updateWorkout,
   fetchUserWorkouts,
   createUserWorkout,
 } from '@lib/queries/userWorkouts';
@@ -147,7 +148,24 @@ export const ExercisesStore = types
       self.workouts = workouts;
     }),
 
-    saveWorkout: flow(function* (workout) {
+    saveWorkout: flow(function* (workout, workoutId) {
+      if (workoutId) {
+        const workoutModel = self.getWorkoutById(workoutId);
+        // const { success, data } = updateWorkout(workout);
+
+        console.log('asdasd', workout);
+        const workoutExercisesToRemove = workoutModel.workoutExercises.filter(
+          (workoutExercise) => {
+            return !workout.exercises.some(
+              ({ exercise }) => workoutExercise.exercise.id === exercise
+            );
+          }
+        );
+
+        console.log('removed', workoutExercisesToRemove);
+
+        return;
+      }
       const { success, data } = yield createWorkout(workout);
 
       yield self.loadWorkouts();

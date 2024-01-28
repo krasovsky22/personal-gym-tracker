@@ -61,14 +61,8 @@ function CreateWorkoutScreen() {
   const workout = workout_id ? getWorkoutById(workout_id) : null;
   const defaultValues = getFormDefaultValue(workout);
 
-  console.log(defaultValues);
-
   const { ...methods } = useForm({
     defaultValues,
-    // defaultValues: {
-    //   name: '',
-    //   exercises: [],
-    // },
     resolver: zodResolver(schema),
   });
 
@@ -85,7 +79,7 @@ function CreateWorkoutScreen() {
 
   const onSubmit = async (formData) => {
     console.log(JSON.stringify(formData, null, 2));
-    await saveWorkout(formData);
+    await saveWorkout(formData, workout_id);
 
     return router.back();
   };

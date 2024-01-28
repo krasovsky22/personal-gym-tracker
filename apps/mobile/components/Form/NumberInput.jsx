@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
 import { Input } from '@rneui/themed';
+import React, { useEffect } from 'react';
 import { useController } from 'react-hook-form';
 
 import ControlledInput from './ControlledInput';
@@ -14,15 +14,15 @@ const NumberInput = (props) => {
     input.current.setNativeProps({
       type: 'numeric',
       keyboardType: 'numeric',
+      value: field.value.toString(),
     });
-
-    input.current.focus();
   }, []);
 
   return (
     <ControlledInput {...props}>
       <Input
         ref={input}
+        value={field.value.toString()}
         onChangeText={(value) => field.onChange(+value)}
         onBlur={field.onBlur}
         errorMessage={fieldState?.error?.message}

@@ -3,6 +3,22 @@ import { supabase } from '@lib/supabase';
 const WORKOUT_TABLE = 'workout';
 const WORKOUT_EXERCISE_TABLE = 'workout_exercise';
 
+export async function updateWorkout(workout) {
+  try {
+    const { data } = await supabase
+      .from(WORKOUT_TABLE)
+      .update({ ...workout })
+      .eq('id', workout.id)
+      .select();
+
+    return { success: true, data };
+  } catch (error) {
+    console.error('Unable to update exercise', error);
+  }
+
+  return { success: false, data: {} };
+}
+
 export async function createWorkout({ name, exercises }) {
   try {
     const workout = {
