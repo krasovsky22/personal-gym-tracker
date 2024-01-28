@@ -15,15 +15,22 @@ const SelectInput = (props) => {
   return (
     <View style={{ flex: 1 }}>
       <ControlledInput {...props}>
-        <SelectList
-          save="key"
-          data={options}
-          boxStyles={styles.box}
-          setSelected={field.onChange}
-          defaultOption={defaultValue}
-          dropdownStyles={styles.dropdown}
-          {...inputProps}
-        />
+        <View
+          onStartShouldSetResponder={(event) => true}
+          onTouchEnd={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <SelectList
+            save="key"
+            data={options}
+            boxStyles={styles.box}
+            setSelected={field.onChange}
+            defaultOption={defaultValue}
+            dropdownStyles={styles.dropdown}
+            {...inputProps}
+          />
+        </View>
 
         {hasError && (
           <Text style={styles.error}>{fieldState?.error?.message}</Text>
@@ -45,8 +52,8 @@ const styles = StyleSheet.create({
     // width: '100%',
     // position: 'absolute',
     // backgroundColor: 'white',
-    position: 'absolute',
-    top: 40,
+    // position: 'absolute',
+    // top: 40,
     width: '100%',
     zIndex: 999,
   },

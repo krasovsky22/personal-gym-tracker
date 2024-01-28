@@ -1,5 +1,5 @@
 import { NumberInput } from '@components/Form';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 
 import { ExercisesDropdown } from '@components/UI';
 

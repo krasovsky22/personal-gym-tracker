@@ -8,6 +8,8 @@ import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView, StyleSheet, View, TouchableOpacity } from 'react-native';
 import DraggableFlatList, {
+  NestableScrollContainer,
+  NestableDraggableFlatList,
   ScaleDecorator,
 } from 'react-native-draggable-flatlist';
 
@@ -81,7 +83,7 @@ function CreateWorkoutScreen() {
         options={{ title: workout_id ? 'Update Workout' : 'Create Workout' }}
       />
       <FormProvider {...methods}>
-        <View style={styles.list}>
+        <NestableScrollContainer style={{ backgroundColor: 'seashell' }}>
           <TextInput
             name="name"
             label="Name"
@@ -89,55 +91,53 @@ function CreateWorkoutScreen() {
             rules={{ required: 'Workout name is required!' }}
           />
 
-          <SafeAreaView style={{ flex: 1 }}>
-            <DraggableFlatList
-              keyExtractor={(item) => item.id}
-              onDragEnd={({ from, to }) => {
-                move(from, to);
-              }}
-              data={fields}
-              renderItem={({ item, drag, isActive, getIndex }) => (
-                <ScaleDecorator>
-                  <TouchableOpacity
-                    onLongPress={drag}
-                    disabled={isActive}
-                    style={[
-                      styles.rowItem,
-                      {
-                        backgroundColor: isActive
-                          ? 'pink'
-                          : item.backgroundColor,
-                      },
-                    ]}
-                  >
-                    <Card containerStyle={styles.listItem}>
-                      <WorkoutExerciseField index={getIndex()} />
+          {/* <SafeAreaView style={{ flex: 1 }}> */}
 
-                      <Button
-                        size="sm"
-                        type="outline"
-                        title="Remove"
-                        onPress={() => remove(getIndex())}
-                        containerStyle={{
-                          marginLeft: 'auto',
-                        }}
-                      >
-                        <Icon name="delete" color={theme.colors.error} />
-                        Delete
-                      </Button>
-                    </Card>
-                  </TouchableOpacity>
-                </ScaleDecorator>
-              )}
-            />
-          </SafeAreaView>
+          <NestableDraggableFlatList
+            keyExtractor={(item) => item.id}
+            onDragEnd={({ from, to }) => {
+              move(from, to);
+            }}
+            data={fields}
+            renderItem={({ item, drag, isActive, getIndex }) => (
+              <ScaleDecorator>
+                <TouchableOpacity
+                  onLongPress={drag}
+                  disabled={isActive}
+                  style={[
+                    styles.rowItem,
+                    {
+                      backgroundColor: isActive ? 'pink' : item.backgroundColor,
+                    },
+                  ]}
+                >
+                  <Card containerStyle={styles.listItem}>
+                    <WorkoutExerciseField index={getIndex()} />
+
+                    <Button
+                      size="sm"
+                      type="outline"
+                      title="Remove"
+                      onPress={() => remove(getIndex())}
+                      containerStyle={{
+                        marginLeft: 'auto',
+                      }}
+                    >
+                      <Icon name="delete" color={theme.colors.error} />
+                      Delete
+                    </Button>
+                  </Card>
+                </TouchableOpacity>
+              </ScaleDecorator>
+            )}
+          />
 
           <Button
             color="secondary"
             title="Add Exercise"
             onPress={addWorkoutExercise}
           />
-        </View>
+        </NestableScrollContainer>
 
         <View style={styles.bottomContainer}>
           <View style={{ flex: 1 }}>
