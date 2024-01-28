@@ -31,19 +31,44 @@ const schema = z.object({
     .min(1, { message: 'At least 1 set is required' }),
 });
 
+function getFormDefaultValue(workout) {
+  if (!workout) {
+    return {
+      name: '',
+      exercises: [],
+    };
+  }
+
+  return {
+    name: workout.name,
+    exercises: workout.workoutExercises.map((workoutExercise) => ({
+      setsCount: workoutExercise.sets_count,
+      exercise: workoutExercise.exercise.id,
+    })),
+  };
+}
+
 function CreateWorkoutScreen() {
   const router = useRouter();
   const { theme } = useTheme();
-  const { saveWorkout } = useExercisesStore();
+  const { getWorkoutById, saveWorkout } = useExercisesStore();
   const { workout_id } = useLocalSearchParams();
 
-  const [workoutExercises, setWorkoutExercises] = useState([]);
+  //   const defaultValues = workout_id
+  //     ? getWorkoutById(workout_id)
+  //     : console.log('asdasd', workout_id);
+
+  const workout = workout_id ? getWorkoutById(workout_id) : null;
+  const defaultValues = getFormDefaultValue(workout);
+
+  console.log(defaultValues);
 
   const { ...methods } = useForm({
-    defaultValues: {
-      name: '',
-      exercises: [],
-    },
+    defaultValues,
+    // defaultValues: {
+    //   name: '',
+    //   exercises: [],
+    // },
     resolver: zodResolver(schema),
   });
 
@@ -56,14 +81,6 @@ function CreateWorkoutScreen() {
 
   const addWorkoutExercise = () => {
     append({ id: `new-${uuid.v4()}` });
-  };
-
-  const removeWorkoutExercise = (id) => {
-    const newList = workoutExercises.filter(
-      (workoutExercise) => workoutExercise.id !== id
-    );
-
-    setWorkoutExercises(newList);
   };
 
   const onSubmit = async (formData) => {
@@ -91,52 +108,56 @@ function CreateWorkoutScreen() {
             rules={{ required: 'Workout name is required!' }}
           />
 
-          {/* <SafeAreaView style={{ flex: 1 }}> */}
+          <SafeAreaView style={{ flex: 1 }}>
+            <NestableDraggableFlatList
+              keyExtractor={(item) => item.id}
+              onDragEnd={({ from, to }) => {
+                move(from, to);
+              }}
+              data={fields}
+              renderItem={({ item, drag, isActive, getIndex }) => (
+                <ScaleDecorator>
+                  <TouchableOpacity
+                    onLongPress={drag}
+                    disabled={isActive}
+                    style={[
+                      styles.rowItem,
+                      {
+                        backgroundColor: isActive
+                          ? 'pink'
+                          : item.backgroundColor,
+                      },
+                    ]}
+                  >
+                    <Card containerStyle={styles.listItem}>
+                      <WorkoutExerciseField index={getIndex()} />
 
-          <NestableDraggableFlatList
-            keyExtractor={(item) => item.id}
-            onDragEnd={({ from, to }) => {
-              move(from, to);
-            }}
-            data={fields}
-            renderItem={({ item, drag, isActive, getIndex }) => (
-              <ScaleDecorator>
-                <TouchableOpacity
-                  onLongPress={drag}
-                  disabled={isActive}
-                  style={[
-                    styles.rowItem,
-                    {
-                      backgroundColor: isActive ? 'pink' : item.backgroundColor,
-                    },
-                  ]}
-                >
-                  <Card containerStyle={styles.listItem}>
-                    <WorkoutExerciseField index={getIndex()} />
+                      <Button
+                        size="sm"
+                        type="outline"
+                        title="Remove"
+                        onPress={() => remove(getIndex())}
+                        containerStyle={{
+                          marginLeft: 'auto',
+                        }}
+                      >
+                        <Icon name="delete" color={theme.colors.error} />
+                        Delete
+                      </Button>
+                    </Card>
+                  </TouchableOpacity>
+                </ScaleDecorator>
+              )}
+            />
+          </SafeAreaView>
 
-                    <Button
-                      size="sm"
-                      type="outline"
-                      title="Remove"
-                      onPress={() => remove(getIndex())}
-                      containerStyle={{
-                        marginLeft: 'auto',
-                      }}
-                    >
-                      <Icon name="delete" color={theme.colors.error} />
-                      Delete
-                    </Button>
-                  </Card>
-                </TouchableOpacity>
-              </ScaleDecorator>
-            )}
-          />
-
-          <Button
-            color="secondary"
-            title="Add Exercise"
-            onPress={addWorkoutExercise}
-          />
+          <View style={{ marginTop: 10 }}>
+            <Button
+              color="secondary"
+              title="Add Exercise"
+              onPress={addWorkoutExercise}
+            />
+          </View>
         </NestableScrollContainer>
 
         <View style={styles.bottomContainer}>

@@ -47,7 +47,7 @@ const WorkoutsScreen = () => {
                   title="Edit"
                   onPress={() =>
                     router.push(
-                      `/settings/exercises/create-or-update?exercise_id=${item.id}`
+                      `/settings/workouts/create-or-update?workout_id=${item.id}`
                     )
                   }
                 />

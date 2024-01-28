@@ -28,6 +28,9 @@ export const ExercisesStore = types
     // workoutSets: types.array(WorkoutSet),
   })
   .views((self) => ({
+    getWorkoutById: (id) => {
+      return self.workouts.find((workout) => workout.id === id);
+    },
     getExerciseById: (id) => {
       return self.exercises.find((exercise) => {
         return exercise.id === id;

@@ -5,10 +5,12 @@ import { SelectList } from 'react-native-dropdown-select-list';
 import ControlledInput from './ControlledInput';
 
 const SelectInput = (props) => {
-  const { name, label, rules, options, defaultValue, ...inputProps } = props;
+  const { name, label, rules, options, ...inputProps } = props;
   const { field, fieldState } = useController({
     name: name,
   });
+
+  const defaultValue = options.find((option) => option.key === field.value);
 
   const hasError = !!fieldState.error;
 
