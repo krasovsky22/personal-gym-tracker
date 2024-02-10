@@ -45,11 +45,7 @@ const WorkoutsScreen = () => {
                 <AsyncButton
                   color="warning"
                   title="Edit"
-                  onPress={() =>
-                    router.push(
-                      `/settings/workouts/create-or-update?workout_id=${item.id}`
-                    )
-                  }
+                  onPress={() => router.push(`/settings/workouts/${item.id}`)}
                 />
               </ListItem>
             </View>
@@ -57,7 +53,7 @@ const WorkoutsScreen = () => {
         />
       </View>
 
-      <AddNewFab url="/settings/workouts/create-or-update" />
+      <AddNewFab url="/settings/workouts/0" />
     </View>
   );
 };

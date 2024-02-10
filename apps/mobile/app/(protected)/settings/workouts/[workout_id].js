@@ -1,5 +1,4 @@
 import * as z from 'zod';
-import { useState } from 'react';
 import uuid from 'react-native-uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Icon, useTheme, Card } from '@rneui/themed';
@@ -7,7 +6,7 @@ import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
 
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView, StyleSheet, View, TouchableOpacity } from 'react-native';
-import DraggableFlatList, {
+import {
   NestableScrollContainer,
   NestableDraggableFlatList,
   ScaleDecorator,
@@ -53,10 +52,6 @@ function CreateWorkoutScreen() {
   const { theme } = useTheme();
   const { getWorkoutById, saveWorkout } = useExercisesStore();
   const { workout_id } = useLocalSearchParams();
-
-  //   const defaultValues = workout_id
-  //     ? getWorkoutById(workout_id)
-  //     : console.log('asdasd', workout_id);
 
   const workout = workout_id ? getWorkoutById(workout_id) : null;
   const defaultValues = getFormDefaultValue(workout);
