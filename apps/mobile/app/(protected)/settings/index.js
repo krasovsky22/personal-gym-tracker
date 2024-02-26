@@ -32,7 +32,7 @@ const renderRow = ({ item }) => {
     <View style={styles.list}>
       <ListItem
         bottomDivider
-        onPress={() => item.link && router.push(item.link)}
+        onPress={() => item.link && router.replace(item.link)}
       >
         <ListItem.Content style={styles.content}>
           <Icon name={item.icon} size={30} />

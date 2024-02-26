@@ -26,6 +26,7 @@ function ProtectedLayout() {
       <Tabs
         screenOptions={{
           headerShown: false,
+          unmountOnBlur: true,
         }}
       >
         <Tabs.Screen
