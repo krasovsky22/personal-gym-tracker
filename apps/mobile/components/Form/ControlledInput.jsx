@@ -49,8 +49,6 @@ const styles = StyleSheet.create({
 
   inputContainer: {
     flex: 1,
-    borderColor: 'none',
-    borderRadius: 4,
   },
 });
 

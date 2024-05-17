@@ -62,9 +62,7 @@ function SettingsScreen() {
 export default SettingsScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 20,
-  },
+  container: {},
   list: {
     flex: 1,
     width: '100%',

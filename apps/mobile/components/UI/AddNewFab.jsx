@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
     backgroundColor: 'red',
-    borderRadius: '50%',
+    borderRadius: 50,
   },
 });
 

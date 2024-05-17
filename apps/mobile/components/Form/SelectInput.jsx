@@ -54,10 +54,6 @@ const styles = StyleSheet.create({
     // width: '100%',
     // position: 'absolute',
     // backgroundColor: 'white',
-    // position: 'absolute',
-    // top: 40,
-    width: '100%',
-    zIndex: 999,
   },
 });
 export default SelectInput;

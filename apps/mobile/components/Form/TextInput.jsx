@@ -1,6 +1,7 @@
 import React from 'react';
 import { Input } from '@rneui/themed';
 import { useController } from 'react-hook-form';
+import { StyleSheet } from 'react-native';
 
 import ControlledInput from './ControlledInput';
 

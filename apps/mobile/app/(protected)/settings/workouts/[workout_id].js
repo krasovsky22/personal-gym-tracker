@@ -5,7 +5,13 @@ import { Button, Icon, useTheme, Card } from '@rneui/themed';
 import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
 
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { SafeAreaView, StyleSheet, View, TouchableOpacity } from 'react-native';
+import {
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+} from 'react-native';
 import {
   NestableScrollContainer,
   NestableDraggableFlatList,
@@ -105,37 +111,46 @@ function CreateWorkoutScreen() {
               }}
               data={fields}
               renderItem={({ item, drag, isActive, getIndex }) => (
-                <ScaleDecorator>
-                  <TouchableOpacity
-                    onLongPress={drag}
-                    disabled={isActive}
-                    style={[
-                      styles.rowItem,
-                      {
-                        backgroundColor: isActive
-                          ? 'pink'
-                          : item.backgroundColor,
-                      },
-                    ]}
-                  >
-                    <Card containerStyle={styles.listItem}>
-                      <WorkoutExerciseField index={getIndex()} />
+                <Card
+                  containerStyle={styles.cardContainer}
+                  wrapperStyle={styles.cardWrapper}
+                >
+                  <ScaleDecorator>
+                    <TouchableOpacity
+                      onLongPress={drag}
+                      disabled={isActive}
+                      style={[
+                        styles.rowItem,
+                        {
+                          backgroundColor: isActive
+                            ? 'pink'
+                            : item.backgroundColor,
+                        },
+                      ]}
+                    >
+                      <View style={{ flexDirection: 'row', gap: '1' }}>
+                        <Icon name="align-bottom"></Icon>
+                        <Text>Sort</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </ScaleDecorator>
+                  <View>
+                    <WorkoutExerciseField index={getIndex()} />
 
-                      <Button
-                        size="sm"
-                        type="outline"
-                        title="Remove"
-                        onPress={() => remove(getIndex())}
-                        containerStyle={{
-                          marginLeft: 'auto',
-                        }}
-                      >
-                        <Icon name="delete" color={theme.colors.error} />
-                        Delete
-                      </Button>
-                    </Card>
-                  </TouchableOpacity>
-                </ScaleDecorator>
+                    <Button
+                      size="sm"
+                      type="outline"
+                      title="Remove"
+                      onPress={() => remove(getIndex())}
+                      containerStyle={{
+                        marginLeft: 'auto',
+                      }}
+                    >
+                      <Icon name="delete" color={theme.colors.error} />
+                      Delete
+                    </Button>
+                  </View>
+                </Card>
               )}
             />
           </SafeAreaView>
@@ -188,8 +203,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
-  listItem: {
+  cardWrapper: {
+    width: '100%',
+  },
+  cardContainer: {
     flex: 1,
+    width: '100%',
+    flexDirection: 'row',
+    flexGrow: 1,
   },
 
   bottomContainer: {

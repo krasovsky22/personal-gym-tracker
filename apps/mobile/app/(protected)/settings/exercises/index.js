@@ -1,6 +1,6 @@
 import { toJS } from 'mobx';
 import { View, StyleSheet, FlatList } from 'react-native';
-import { FAB, ListItem } from '@rneui/themed';
+import { useTheme, FAB, ListItem, Icon, Button } from '@rneui/themed';
 import { observer } from 'mobx-react-lite';
 import { Stack, useRouter } from 'expo-router';
 
@@ -10,6 +10,7 @@ import useExercisesStore from '@hooks/useExercisesStore';
 
 function ExercisesScreen() {
   const router = useRouter();
+  const { theme } = useTheme();
   const { exercises, deleteExercise } = useExercisesStore();
 
   return (
@@ -21,27 +22,50 @@ function ExercisesScreen() {
           keyExtractor={(a) => a.id}
           renderItem={({ item }) => (
             <View>
-              <ListItem bottomDivider>
+              <ListItem.Swipeable
+                bottomDivider
+                leftWidth={80}
+                rightWidth={90}
+                minSlideWidth={40}
+                leftContent={(action) => (
+                  <Button
+                    containerStyle={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      backgroundColor: theme.colors.warning,
+                    }}
+                    type="clear"
+                    icon={{
+                      name: 'pencil',
+                      type: 'material-community',
+                    }}
+                    onPress={() =>
+                      router.push(`/settings/exercises/${item.id}`)
+                    }
+                  />
+                )}
+                rightContent={(action) => (
+                  <AsyncButton
+                    containerStyle={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      backgroundColor: theme.colors.error,
+                    }}
+                    type="clear"
+                    icon={{ name: 'delete-outline' }}
+                    onPress={() => {
+                      return deleteExercise(item.id);
+                    }}
+                  />
+                )}
+              >
+                <Icon name="label-important-outline" type="material" />
                 <ListItem.Content>
                   <ListItem.Title>{item.name}</ListItem.Title>
+                  <ListItem.Subtitle>Placeholder Description</ListItem.Subtitle>
                 </ListItem.Content>
-                <AsyncButton
-                  color="error"
-                  title="Delete"
-                  onPress={() => {
-                    return deleteExercise(item.id);
-                  }}
-                />
-                <AsyncButton
-                  color="warning"
-                  title="Edit"
-                  onPress={() =>
-                    router.push(
-                      `/settings/exercises/create-or-update?exercise_id=${item.id}`
-                    )
-                  }
-                />
-              </ListItem>
+                <ListItem.Chevron />
+              </ListItem.Swipeable>
             </View>
           )}
         />
