@@ -35,13 +35,13 @@ jobs:
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
-          working-directory: ./apps/mobile
+          working-directory: .
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        working-directory: ./apps/mobile
+        working-directory: .
         run: yarn install
 
       - name: Publish update
-        working-directory: ./apps/mobile
+        working-directory: .
         run: eas update --auto
