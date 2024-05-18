@@ -69,7 +69,6 @@ export default function Account() {
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Input label="Email" value={user.email} disabled />
       </View>
-      <Link href={{ pathname: 'home/messages' }}>Go to Home</Link>
       {/* <View style={styles.verticallySpaced}>
         <Input
           label="Username"

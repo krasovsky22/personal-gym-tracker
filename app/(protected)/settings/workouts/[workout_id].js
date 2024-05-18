@@ -79,7 +79,6 @@ function CreateWorkoutScreen() {
   };
 
   const onSubmit = async (formData) => {
-    console.log(JSON.stringify(formData, null, 2));
     await saveWorkout(formData, workout_id);
 
     return router.back();

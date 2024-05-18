@@ -24,8 +24,6 @@ function ExerciseForm({ exercise = null }) {
   const { saveExercise } = useExercisesStore();
 
   const onSubmit = async (formData) => {
-    console.log(JSON.stringify(formData, null, 2));
-
     const { name } = formData;
 
     const originalName = exercise?.name ?? '';
