@@ -21,7 +21,6 @@ const WorkoutsScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: 'Workout Management' }} />
       <View style={styles.list}>
         <FlatList
           data={toJS(workouts)}

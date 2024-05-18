@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { observer } from 'mobx-react-lite';
 import { Redirect, Tabs } from 'expo-router';
 import { Icon, useTheme } from '@rneui/themed';

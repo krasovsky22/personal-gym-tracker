@@ -12,7 +12,22 @@ export default function SettingsLayout() {
             },
           },
         }}
-      />
+      >
+        <Stack.Screen options={{ title: 'Settings' }} name="index" />
+        <Stack.Screen
+          options={{ title: 'Exercises Management' }}
+          name="exercises/index"
+        />
+        <Stack.Screen
+          options={{ title: 'Workouts Management' }}
+          name="workouts/index"
+        />
+
+        <Stack.Screen
+          options={{ title: 'Account Management' }}
+          name="account"
+        />
+      </Stack>
     </View>
   );
 }

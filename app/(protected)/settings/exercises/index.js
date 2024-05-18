@@ -29,7 +29,6 @@ function ExercisesScreen() {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: 'Exercises Management' }} />
       <View style={styles.list}>
         <View>
           <Input

@@ -32,7 +32,7 @@ const renderRow = ({ item }) => {
     <View style={styles.list}>
       <ListItem
         bottomDivider
-        onPress={() => item.link && router.replace(item.link)}
+        onPress={() => item.link && router.push(item.link)}
       >
         <ListItem.Content style={styles.content}>
           <Icon name={item.icon} size={30} />
@@ -47,7 +47,6 @@ const renderRow = ({ item }) => {
 function SettingsScreen() {
   return (
     <>
-      <Stack.Screen options={{ title: 'User Settings' }} />
       <View style={styles.container}>
         <FlatList
           data={SETTINGS_PAGES}
