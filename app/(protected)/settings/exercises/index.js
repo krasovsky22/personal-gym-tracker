@@ -69,7 +69,7 @@ function ExercisesScreen() {
             </View>
           )}
         />
-        <AddNewFab url="/settings/exercises/create-or-update" />
+        <AddNewFab url="/settings/exercises/new" />
       </View>
     </View>
   );

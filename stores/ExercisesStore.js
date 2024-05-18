@@ -71,6 +71,12 @@ export const ExercisesStore = types
       yield self.loadWorkouts();
     }),
 
+    createExerciseModel: () => {
+      return Exercise.create({
+        name: '',
+      });
+    },
+
     saveExercise: flow(function* (exercise) {
       if (exercise.id) {
         const { success } = yield updateExercise(exercise);

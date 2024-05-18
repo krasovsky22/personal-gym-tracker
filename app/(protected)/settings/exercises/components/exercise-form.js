@@ -1,24 +1,44 @@
 import * as z from 'zod';
-import { View, Text, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
+import { View, StyleSheet } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
-import { TextInput } from '@components/Form';
+import { FormProvider, useForm } from 'react-hook-form';
+
 import { AsyncButton } from '@components';
+import { useExercisesStore } from '@hooks';
+import { TextInput } from '@components/Form';
 
 const schema = z.object({
   name: z.string().min(1, { message: 'Exercise Name is Required' }),
 });
 
-function ExerciseForm() {
+function ExerciseForm({ exercise = null }) {
+  const router = useRouter();
   const { ...methods } = useForm({
+    defaultValues: {
+      name: exercise?.name ?? '',
+    },
     resolver: zodResolver(schema),
   });
 
+  const { saveExercise } = useExercisesStore();
+
   const onSubmit = async (formData) => {
     console.log(JSON.stringify(formData, null, 2));
-    // await saveWorkout(formData, workout_id);
 
-    // return router.back();
+    const { name } = formData;
+
+    const originalName = exercise?.name ?? '';
+
+    try {
+      exercise?.setName(name);
+
+      await saveExercise(exercise ?? { name });
+      return router.back();
+    } catch (e) {
+      exercise?.setName(originalName);
+      console.error('ERROR', e);
+    }
   };
 
   const onError = (errors, e) => {
@@ -32,7 +52,7 @@ function ExerciseForm() {
           <TextInput
             name="name"
             label="Name"
-            placeholder="Workout Name"
+            placeholder="Exercise Name"
             rules={{ required: 'Workout name is required!' }}
           />
         </View>

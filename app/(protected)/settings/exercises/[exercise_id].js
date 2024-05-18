@@ -1,17 +1,19 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { Stack, useRouter, useLocalSearchParams } from 'expo-router';
+import { View, StyleSheet } from 'react-native';
+import { Stack, useLocalSearchParams } from 'expo-router';
 
-
+import { useExercisesStore } from '@hooks';
 import ExerciseForm from './components/exercise-form';
 
 function ExerciseScreen() {
   const { exercise_id } = useLocalSearchParams();
 
-  console.log(exercise_id);
+  const { getExerciseById } = useExercisesStore();
+  const exercise = getExerciseById(exercise_id);
+
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ title: 'Edit Exercise' }} />
-      <ExerciseForm />
+      <ExerciseForm exercise={exercise} />
     </View>
   );
 }
