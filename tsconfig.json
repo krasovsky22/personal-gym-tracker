@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+        "@lib": [
+        "./lib/index.ts"
+      ],
+      "@lib/*": [
+        "./lib/*"
+      ],
+      "@hooks": [
+        "./hooks/index.ts"
+      ],
+      "@hooks/*": [
+        "./hooks/*"
+      ],
+      "@stores": [
+        "./stores/index.ts"
+      ],
+      "@stores/*": [
+        "./stores/*"
+      ],
+      "@models": [
+        "./models/index.ts"
+      ],
+      "@models/*": [
+        "./models/*"
+      ],
+      "@components": [
+        "./components/index.ts"
+      ],
+      "@components/*": [
+        "./components/*"
+      ]
+    }
+  },
+  "extends": "expo/tsconfig.base",
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ]
+}

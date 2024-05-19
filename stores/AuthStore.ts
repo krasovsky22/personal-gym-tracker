@@ -1,8 +1,13 @@
-import { types, onSnapshot, getSnapshot, flow } from 'mobx-state-tree';
-import { AsyncStorage } from 'react-native';
+import {
+  flow,
+  types,
+  Instance,
+  SnapshotIn,
+  SnapshotOut,
+} from 'mobx-state-tree';
 
 import { supabase } from '@lib/supabase';
-import { User } from '@models/User';
+import { User, UserSnapshotInType } from '@models/User';
 
 export const AuthStore = types
   .model('AuthStore', {
@@ -15,9 +20,11 @@ export const AuthStore = types
     },
   }))
   .actions((self) => ({
-    setUser: (user) => {
+    setUser: (user: UserSnapshotInType | null) => {
       self.user = user;
     },
+  }))
+  .actions((self) => ({
     afterCreate: flow(function* () {
       const { session } = yield supabase.auth.getSession();
 
@@ -26,12 +33,25 @@ export const AuthStore = types
           self.setUser(null);
           return;
         }
-        const { user, ...rest } = session;
+        const {
+          user,
+          access_token,
+          refresh_token,
+          expires_at,
+          expires_in,
+          token_type,
+        } = session;
+        const { id, email = '' } = user;
 
-        const authUser = {
-          ...user,
-          ...rest,
-        };
+        const authUser = User.create({
+          id,
+          email,
+          access_token,
+          refresh_token,
+          expires_at: +(expires_at ?? 0),
+          expires_in,
+          token_type,
+        });
 
         self.setUser(authUser);
       });
@@ -57,3 +77,7 @@ export const AuthStore = types
       yield supabase.auth.signOut({ scope: 'local' });
     }),
   }));
+
+interface AuthStoreType extends Instance<typeof AuthStore> {}
+interface AuthStoreSnapshotInType extends SnapshotIn<typeof AuthStore> {}
+interface AuthStoreSnapshotOutType extends SnapshotOut<typeof AuthStore> {}

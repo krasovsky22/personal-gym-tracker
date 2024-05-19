@@ -1,6 +1,14 @@
 import React from 'react';
-import { AsyncStorage } from 'react-native';
-import { types, getSnapshot } from 'mobx-state-tree';
+import {
+  flow,
+  types,
+  Instance,
+  SnapshotIn,
+  SnapshotOut,
+  getSnapshot,
+} from 'mobx-state-tree';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { AuthStore } from './AuthStore';
 import { ExercisesStore } from './ExercisesStore';
 
@@ -36,5 +44,10 @@ export const RootStore = types
     },
   }));
 
-export const RootStoreContext = React.createContext(null);
+export interface RootStoreType extends Instance<typeof RootStore> {}
+export interface RootStoreSnapshotInType extends SnapshotIn<typeof RootStore> {}
+export interface RootStoreSnapshotOutType
+  extends SnapshotOut<typeof RootStore> {}
+
+export const RootStoreContext = React.createContext<RootStoreType | null>(null);
 export const StoreProvider = RootStoreContext.Provider;

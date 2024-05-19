@@ -2,17 +2,31 @@ import * as z from 'zod';
 import { useRouter } from 'expo-router';
 import { View, StyleSheet } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FormProvider, useForm } from 'react-hook-form';
+import {
+  FormProvider,
+  useForm,
+  SubmitHandler,
+  SubmitErrorHandler,
+} from 'react-hook-form';
 
 import { AsyncButton } from '@components';
 import { useExercisesStore } from '@hooks';
 import { TextInput } from '@components/Form';
+import { ExerciseType } from '@models/Exercise';
 
 const schema = z.object({
   name: z.string().min(1, { message: 'Exercise Name is Required' }),
 });
 
-function ExerciseForm({ exercise = null }) {
+type ExerciseFormValuesType = {
+  name: string;
+};
+
+type ExerciseFormProps = {
+  exercise: ExerciseType | null;
+};
+
+function ExerciseForm({ exercise }: ExerciseFormProps) {
   const router = useRouter();
   const { ...methods } = useForm({
     defaultValues: {
@@ -23,10 +37,12 @@ function ExerciseForm({ exercise = null }) {
 
   const { saveExercise } = useExercisesStore();
 
-  const onSubmit = async (formData) => {
+  const onSubmit: SubmitHandler<ExerciseFormValuesType> = async (formData) => {
     const { name } = formData;
 
     const originalName = exercise?.name ?? '';
+
+    console.log(formData, exercise);
 
     try {
       exercise?.setName(name);
@@ -39,7 +55,7 @@ function ExerciseForm({ exercise = null }) {
     }
   };
 
-  const onError = (errors, e) => {
+  const onError: SubmitErrorHandler<ExerciseFormValuesType> = (errors, _e) => {
     return console.log('ERRORS ', JSON.stringify(errors, null, 2));
   };
 
@@ -77,7 +93,7 @@ const styles = StyleSheet.create({
 
   formFooter: {
     width: '80%',
-    marginBottom: '20',
+    marginBottom: 20,
     marginLeft: 'auto',
     marginRight: 'auto',
   },

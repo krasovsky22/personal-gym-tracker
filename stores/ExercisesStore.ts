@@ -1,5 +1,11 @@
 // import { supabase } from '@lib/supabase';
-import { types, flow, destroy } from 'mobx-state-tree';
+import {
+  flow,
+  types,
+  Instance,
+  SnapshotIn,
+  SnapshotOut,
+} from 'mobx-state-tree';
 
 import { Workout } from '@models/Workout';
 import { Exercise } from '@models/Exercise';
@@ -8,7 +14,6 @@ import { UserWorkout } from '@models/UserWorkout';
 // import fetchSets from '@lib/queries/fetchSets';
 import { createWorkout, fetchWorkouts } from '@lib/queries/workouts';
 import {
-  updateWorkout,
   fetchUserWorkouts,
   createUserWorkout,
 } from '@lib/queries/userWorkouts';
@@ -29,10 +34,10 @@ export const ExercisesStore = types
     // workoutSets: types.array(WorkoutSet),
   })
   .views((self) => ({
-    getWorkoutById: (id) => {
+    getWorkoutById: (id: string) => {
       return self.workouts.find((workout) => workout.id === id);
     },
-    getExerciseById: (id) => {
+    getExerciseById: (id: string) => {
       return self.exercises.find((exercise) => {
         return exercise.id === id;
       });
@@ -62,6 +67,13 @@ export const ExercisesStore = types
     // },
   }))
   .actions((self) => ({
+    loadWorkouts: flow(function* () {
+      const workouts = yield fetchWorkouts();
+
+      self.workouts = workouts;
+    }),
+  }))
+  .actions((self) => ({
     afterCreate: flow(function* () {
       const { success, data } = yield loadExercises();
       if (success) {
@@ -70,12 +82,6 @@ export const ExercisesStore = types
 
       yield self.loadWorkouts();
     }),
-
-    createExerciseModel: () => {
-      return Exercise.create({
-        name: '',
-      });
-    },
 
     saveExercise: flow(function* (exercise) {
       if (exercise.id) {
@@ -148,12 +154,6 @@ export const ExercisesStore = types
     //   });
     // }),
 
-    loadWorkouts: flow(function* () {
-      const workouts = yield fetchWorkouts();
-
-      self.workouts = workouts;
-    }),
-
     saveWorkout: flow(function* (workout, workoutId) {
       if (workoutId) {
         const workoutModel = self.getWorkoutById(workoutId);
@@ -192,3 +192,9 @@ export const ExercisesStore = types
       yield createUserWorkout({ workout_id: workoutId });
     }),
   }));
+
+export interface ExercisesStoreType extends Instance<typeof ExercisesStore> {}
+export interface ExercisesStoreSnapshotInType
+  extends SnapshotIn<typeof ExercisesStore> {}
+export interface ExercisesStoreSnapshotOutType
+  extends SnapshotOut<typeof ExercisesStore> {}

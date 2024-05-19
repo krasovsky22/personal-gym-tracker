@@ -4,15 +4,7 @@ import { Stack } from 'expo-router';
 export default function SettingsLayout() {
   return (
     <View style={styles.container}>
-      <Stack
-        screenOptions={{
-          headerStyle: {
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            },
-          },
-        }}
-      >
+      <Stack>
         <Stack.Screen options={{ title: 'Settings' }} name="index" />
         <Stack.Screen
           options={{ title: 'Exercises Management' }}

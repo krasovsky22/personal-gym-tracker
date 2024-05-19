@@ -1,3 +1,4 @@
+require('ts-node/register');
 const { getDefaultConfig } = require('expo/metro-config');
 const path = require('path');
 

@@ -5,10 +5,10 @@ import { useExercisesStore } from '@hooks';
 import ExerciseForm from './components/exercise-form';
 
 function ExerciseScreen() {
-  const { exercise_id } = useLocalSearchParams();
+  const { exercise_id = '' } = useLocalSearchParams<{ exercise_id: string }>();
 
   const { getExerciseById } = useExercisesStore();
-  const exercise = getExerciseById(exercise_id);
+  const exercise = getExerciseById(exercise_id)!;
 
   return (
     <View style={styles.container}>
@@ -22,30 +22,6 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flex: 1,
-  },
-
-  formGroup: {
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 10,
-  },
-
-  label: {
-    fontWeight: 'bold',
-    fontSize: 20,
-    lineHeight: 20,
-  },
-
-  list: {
-    flexGrow: 1,
-  },
-
-  bottomContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
   },
 });
 
