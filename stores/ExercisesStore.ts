@@ -34,6 +34,17 @@ export const ExercisesStore = types
     // workoutSets: types.array(WorkoutSet),
   })
   .views((self) => ({
+    get sortedExercises() {
+      return self.exercises.slice().sort((a, b) => {
+        if (a.name.toLocaleLowerCase() < b.name.toLocaleLowerCase()) {
+          return -1;
+        }
+        if (a.name.toLocaleLowerCase() > b.name.toLocaleLowerCase()) {
+          return 1;
+        }
+        return 0;
+      });
+    },
     getWorkoutById: (id: string) => {
       return self.workouts.find((workout) => workout.id === id);
     },

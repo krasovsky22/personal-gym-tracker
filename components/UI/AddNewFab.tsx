@@ -3,14 +3,17 @@ import { StyleSheet } from 'react-native';
 import { Button, Icon } from '@rneui/themed';
 import { useRouter } from 'expo-router';
 
-const AddNewFab = ({ url }) => {
+type AddNewFabType = {
+  url: string;
+};
+function AddNewFab({ url }: AddNewFabType) {
   const router = useRouter();
   return (
     <View style={styles.fab}>
       <Icon name="add" color="white" onPress={() => router.push(url)} />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   fab: {

@@ -2,13 +2,20 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { StyleSheet, Text, View } from 'react-native';
 
-const ControlledInput = ({
+export type ControlledInputType = {
+  name: string;
+  label?: string;
+  children: React.ReactNode;
+  containerStyles?: object;
+  labelStyles?: object;
+};
+function ControlledInput({
   name,
   label,
   children,
   containerStyles = {},
   labelStyles = {},
-}) => {
+}: ControlledInputType) {
   const formContext = useFormContext();
 
   if (!formContext || !name) {

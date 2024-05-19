@@ -1,15 +1,17 @@
 import { toJS } from 'mobx';
-import { useEffect } from 'react';
-import { observer } from 'mobx-react-lite';
+import { useEffect, useState } from 'react';
+import { Observer, observer } from 'mobx-react-lite';
 import { View, StyleSheet, FlatList } from 'react-native';
-import { Button, ListItem } from '@rneui/themed';
+import { Button, ListItem, Input } from '@rneui/themed';
 import { Stack, useRouter } from 'expo-router';
 
 import { AsyncButton } from '@components';
 import { AddNewFab } from '@components/UI';
 import { useExercisesStore } from '@hooks';
+import { WorkoutType } from '@models/Workout';
 
 const WorkoutsScreen = () => {
+  const [filterText, setFilterText] = useState<string>('');
   const router = useRouter();
   const { workouts, loadWorkouts } = useExercisesStore();
 
@@ -17,37 +19,48 @@ const WorkoutsScreen = () => {
     loadWorkouts();
   }, []);
 
-  const deleteWorkout = () => {};
+  const deleteWorkout = (workout: WorkoutType) => {
+    console.log('deleting workout', workout);
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.list}>
+        <View>
+          <Input
+            placeholder="Search"
+            onChangeText={setFilterText}
+            leftIcon={{ name: 'magnify', type: 'material-community' }}
+          />
+        </View>
         <FlatList
-          data={toJS(workouts)}
+          data={workouts}
           keyExtractor={(a) => a.id}
           renderItem={({ item }) => (
-            <View>
-              <ListItem bottomDivider>
-                <ListItem.Content>
-                  <ListItem.Title>{item.name}</ListItem.Title>
-                  <ListItem.Subtitle>
-                    {item.workoutExercises.length} Exercises
-                  </ListItem.Subtitle>
-                </ListItem.Content>
-                <AsyncButton
-                  color="error"
-                  title="Delete"
-                  onPress={() => {
-                    deleteWorkout(item);
-                  }}
-                />
-                <AsyncButton
-                  color="warning"
-                  title="Edit"
-                  onPress={() => router.push(`/settings/workouts/${item.id}`)}
-                />
-              </ListItem>
-            </View>
+            <Observer>
+              {() => (
+                <ListItem bottomDivider>
+                  <ListItem.Content>
+                    <ListItem.Title>{item.name}</ListItem.Title>
+                    <ListItem.Subtitle>
+                      {item.workoutExercises.length} Exercises
+                    </ListItem.Subtitle>
+                  </ListItem.Content>
+                  <AsyncButton
+                    color="error"
+                    title="Delete"
+                    onPress={() => {
+                      deleteWorkout(item);
+                    }}
+                  />
+                  <AsyncButton
+                    color="warning"
+                    title="Edit"
+                    onPress={() => router.push(`/settings/workouts/${item.id}`)}
+                  />
+                </ListItem>
+              )}
+            </Observer>
           )}
         />
       </View>

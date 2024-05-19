@@ -1,12 +1,13 @@
-import { NumberInput } from '@components/Form';
+import { NumberInput, ExerciseInput } from '@components/Form';
 import { StyleSheet, View } from 'react-native';
 
-import { ExercisesDropdown } from '@components/UI';
-
-const WorkoutExerciseField = ({ index }) => {
+type WorkoutExerciseFieldType = {
+  index: number;
+};
+function WorkoutExerciseField({ index }: WorkoutExerciseFieldType) {
   return (
     <View style={styles.container}>
-      <ExercisesDropdown name={`exercises.${index}.exercise`} />
+      <ExerciseInput name={`exercises.${index}.exercise_id`} />
 
       <NumberInput
         name={`exercises.${index}.setsCount`}
@@ -22,7 +23,7 @@ const WorkoutExerciseField = ({ index }) => {
       />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

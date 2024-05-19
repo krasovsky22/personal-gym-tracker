@@ -7,11 +7,12 @@ import { default as MaterialIcon } from 'react-native-vector-icons/MaterialCommu
 
 import useStore from '@hooks/useStore';
 import useAuthStore from '@hooks/useAuthStore';
+import { RootStoreType } from '@stores/RootStore';
 
 function ProtectedLayout() {
   const { theme } = useTheme();
   const { isLoggedIn } = useAuthStore();
-  const { initialize } = useStore();
+  const { initialize } = useStore<RootStoreType>();
 
   useEffect(() => {
     isLoggedIn && initialize();

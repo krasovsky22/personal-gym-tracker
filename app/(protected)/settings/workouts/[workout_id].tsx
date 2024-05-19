@@ -2,7 +2,12 @@ import * as z from 'zod';
 import uuid from 'react-native-uuid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Icon, useTheme, Card } from '@rneui/themed';
-import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
+import {
+  FormProvider,
+  useForm,
+  useFieldArray,
+  SubmitHandler,
+} from 'react-hook-form';
 
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import {
@@ -12,180 +17,83 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import {
-  NestableScrollContainer,
-  NestableDraggableFlatList,
-  ScaleDecorator,
-} from 'react-native-draggable-flatlist';
 
 import { AsyncButton } from '@components';
 import { useExercisesStore } from '@hooks';
 import { TextInput } from '@components/Form';
 
 import WorkoutExerciseField from './components/exercise-field';
+import { FlatList } from 'react-native-gesture-handler';
+import WorkoutForm from './components/workout-form';
 
-const schema = z.object({
-  name: z.string().min(1, { message: 'Workout Name is Required' }),
-  exercises: z
-    .array(
-      z.object({
-        exercise: z.string().min(1, { message: 'Exercise is Required' }),
-        setsCount: z.number().min(1, { message: 'Number of sets is Required' }),
-      })
-    )
-    .min(1, { message: 'At least 1 set is required' }),
-});
+// const schema = z.object({
+//   name: z.string().min(1, { message: 'Workout Name is Required' }),
+//   exercises: z
+//     .array(
+//       z.object({
+//         exercise: z.string().min(1, { message: 'Exercise is Required' }),
+//         setsCount: z.number().min(1, { message: 'Number of sets is Required' }),
+//       })
+//     )
+//     .min(1, { message: 'At least 1 set is required' }),
+// });
 
-function getFormDefaultValue(workout) {
-  if (!workout) {
-    return {
-      name: '',
-      exercises: [],
-    };
-  }
+// function getFormDefaultValue(workout) {
+//   if (!workout) {
+//     return {
+//       name: '',
+//       exercises: [],
+//     };
+//   }
 
-  return {
-    name: workout.name,
-    exercises: workout.workoutExercises.map((workoutExercise) => ({
-      setsCount: workoutExercise.sets_count,
-      exercise: workoutExercise.exercise.id,
-    })),
-  };
-}
+//   return {
+//     name: workout.name,
+//     exercises: workout.workoutExercises.map((workoutExercise) => ({
+//       setsCount: workoutExercise.sets_count,
+//       exercise: workoutExercise.exercise.id,
+//     })),
+//   };
+// }
 
 function CreateWorkoutScreen() {
   const router = useRouter();
   const { theme } = useTheme();
   const { getWorkoutById, saveWorkout } = useExercisesStore();
-  const { workout_id } = useLocalSearchParams();
+  const { workout_id } = useLocalSearchParams<{ workout_id: string }>();
 
-  const workout = workout_id ? getWorkoutById(workout_id) : null;
-  const defaultValues = getFormDefaultValue(workout);
+  const workout = getWorkoutById(workout_id!);
+  //   const defaultValues = getFormDefaultValue(workout);
 
-  const { ...methods } = useForm({
-    defaultValues,
-    resolver: zodResolver(schema),
-  });
+  //   const { ...methods } = useForm({
+  //     defaultValues,
+  //     resolver: zodResolver(schema),
+  //   });
 
-  const { control } = methods;
+  //   const { control } = methods;
 
-  const { fields, append, move, remove } = useFieldArray({
-    control,
-    name: 'exercises',
-  });
+  //   const { fields, append, move, remove } = useFieldArray({
+  //     control,
+  //     name: 'exercises',
+  //   });
 
-  const addWorkoutExercise = () => {
-    append({ id: `new-${uuid.v4()}` });
-  };
+  //   const addWorkoutExercise = () => {
+  //     append({ id: `new-${uuid.v4()}` });
+  //   };
 
-  const onSubmit = async (formData) => {
-    await saveWorkout(formData, workout_id);
+  //   const onSubmit : SubmitHandler<ExerciseFormValuesType></ExerciseFormValuesType> = async (formData) => {
+  //     await saveWorkout(formData, workout_id);
 
-    return router.back();
-  };
+  //     return router.back();
+  //   };
 
-  const onError = (errors, e) => {
-    return console.log('ERRORS ', JSON.stringify(errors, null, 2));
-  };
+  //   const onError = (errors, e) => {
+  //     return console.log('ERRORS ', JSON.stringify(errors, null, 2));
+  //   };
 
   return (
     <View style={styles.container}>
-      <Stack.Screen
-        options={{ title: workout_id ? 'Update Workout' : 'Create Workout' }}
-      />
-      <FormProvider {...methods}>
-        <NestableScrollContainer style={{ backgroundColor: 'seashell' }}>
-          <TextInput
-            name="name"
-            label="Name"
-            placeholder="Workout Name"
-            rules={{ required: 'Workout name is required!' }}
-          />
-
-          <SafeAreaView style={{ flex: 1 }}>
-            <NestableDraggableFlatList
-              keyExtractor={(item) => item.id}
-              onDragEnd={({ from, to }) => {
-                move(from, to);
-              }}
-              data={fields}
-              renderItem={({ item, drag, isActive, getIndex }) => (
-                <Card
-                  containerStyle={styles.cardContainer}
-                  wrapperStyle={styles.cardWrapper}
-                >
-                  <ScaleDecorator>
-                    <TouchableOpacity
-                      onLongPress={drag}
-                      disabled={isActive}
-                      style={[
-                        styles.rowItem,
-                        {
-                          backgroundColor: isActive
-                            ? 'pink'
-                            : item.backgroundColor,
-                        },
-                      ]}
-                    >
-                      <View style={{ flexDirection: 'row', gap: '1' }}>
-                        <Icon name="align-bottom"></Icon>
-                        <Text>Sort</Text>
-                      </View>
-                    </TouchableOpacity>
-                  </ScaleDecorator>
-                  <View>
-                    <WorkoutExerciseField index={getIndex()} />
-
-                    <Button
-                      size="sm"
-                      type="outline"
-                      title="Remove"
-                      onPress={() => remove(getIndex())}
-                      containerStyle={{
-                        marginLeft: 'auto',
-                      }}
-                    >
-                      <Icon name="delete" color={theme.colors.error} />
-                      Delete
-                    </Button>
-                  </View>
-                </Card>
-              )}
-            />
-          </SafeAreaView>
-
-          <View style={{ marginTop: 10 }}>
-            <Button
-              color="secondary"
-              title="Add Exercise"
-              onPress={addWorkoutExercise}
-            />
-          </View>
-        </NestableScrollContainer>
-
-        <View style={styles.bottomContainer}>
-          <View style={{ flex: 1 }}>
-            <Button
-              color="error"
-              title="Cancel"
-              onPress={() => router.back()}
-              containerStyle={{
-                width: '100%',
-              }}
-            />
-          </View>
-          <View style={{ flex: 1 }}>
-            <AsyncButton
-              color="success"
-              title="Save"
-              onPress={methods.handleSubmit(onSubmit, onError)}
-              containerStyle={{
-                width: '100%',
-              }}
-            />
-          </View>
-        </View>
-      </FormProvider>
+      <Stack.Screen options={{ title: 'Edit Workout' }} />
+      <WorkoutForm workout={workout} />
     </View>
   );
 }

@@ -1,11 +1,17 @@
 import React from 'react';
-import { Input } from '@rneui/themed';
+import { Input, InputProps } from '@rneui/themed';
 import { useController } from 'react-hook-form';
-import { StyleSheet } from 'react-native';
 
-import ControlledInput from './ControlledInput';
+import ControlledInput, { ControlledInputType } from './ControlledInput';
 
-const TextInput = (props) => {
+type TextInputType = Partial<Omit<ControlledInputType, 'children'>> &
+  InputProps & {
+    name: string;
+    rules?: object;
+    defaultValue?: string;
+  };
+
+function TextInput(props: TextInputType) {
   const { name, label, rules, defaultValue, ...inputProps } = props;
 
   const { field, fieldState } = useController({ name, rules, defaultValue });
@@ -21,6 +27,6 @@ const TextInput = (props) => {
       />
     </ControlledInput>
   );
-};
+}
 
 export default TextInput;

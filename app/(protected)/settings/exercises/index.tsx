@@ -13,17 +13,18 @@ function ExercisesScreen() {
   const [filterText, setFilterText] = useState<string>('');
   const router = useRouter();
   const { theme } = useTheme();
-  const { exercises, deleteExercise } = useExercisesStore();
+  const { sortedExercises, deleteExercise } = useExercisesStore();
 
   const filteredExercises = useMemo(() => {
     if (!filterText.length) {
-      return exercises;
+      return sortedExercises;
     }
 
-    return exercises.filter((exercise) => exercise.name.includes(filterText));
-  }, [filterText, exercises]);
+    return sortedExercises.filter((exercise) =>
+      exercise.name.includes(filterText)
+    );
+  }, [filterText, sortedExercises]);
 
-  console.log(filteredExercises);
   return (
     <View style={styles.container}>
       <View style={styles.list}>

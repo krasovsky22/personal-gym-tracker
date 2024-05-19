@@ -23,7 +23,7 @@ type ExerciseFormValuesType = {
 };
 
 type ExerciseFormProps = {
-  exercise: ExerciseType | null;
+  exercise?: ExerciseType;
 };
 
 function ExerciseForm({ exercise }: ExerciseFormProps) {
