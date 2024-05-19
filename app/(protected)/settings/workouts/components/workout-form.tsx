@@ -14,16 +14,17 @@ import {
 import AsyncButton from '@components/AsyncButton';
 import { TextInput } from '@components/Form';
 import { Button } from '@rneui/themed';
-import { WorkoutExercise } from '@models/WorkoutExercise';
 import WorkoutExerciseField from './exercise-field';
+
+const DEFAULT_SETS_COUNT = '3';
 
 const schema = z.object({
   name: z.string().min(1, { message: 'Workout Name is Required' }),
   exercises: z
     .array(
       z.object({
-        exercise_id: z.string().min(1, { message: 'Exercise is Required' }),
-        setsCount: z.number().min(1, { message: 'Number of sets is Required' }),
+        exercise_id: z.string().min(1, { message: 'Please, select exercise' }),
+        setsCount: z.string().min(1, { message: 'Number of sets is Required' }),
       })
     )
     .min(1, { message: 'At least 1 set is required' }),
@@ -32,7 +33,7 @@ const schema = z.object({
 type WorkoutExerciseFormFieldType = {
   id?: string;
   exercise_id: string;
-  setsCount: number;
+  setsCount: string;
 };
 
 type WorkoutFormValuesType = {
@@ -52,7 +53,7 @@ function WorkoutForm({ workout }: WorkoutFormProps) {
         workout?.workoutExercises?.map((workoutExercise) => ({
           id: workoutExercise.id,
           exercise_id: workoutExercise.exercise?.id ?? '',
-          setsCount: workoutExercise.sets_count,
+          setsCount: workoutExercise.sets_count.toString(),
         })) ?? [],
     },
     resolver: zodResolver(schema),
@@ -64,7 +65,11 @@ function WorkoutForm({ workout }: WorkoutFormProps) {
   });
 
   const addWorkoutExercise = () => {
-    append({ id: `new-${uuid.v4()}`, exercise_id: '', setsCount: 0 });
+    append({
+      id: `new-${uuid.v4()}`,
+      exercise_id: '',
+      setsCount: DEFAULT_SETS_COUNT,
+    });
   };
 
   const onSubmit: SubmitHandler<WorkoutFormValuesType> = async (formData) => {
@@ -128,29 +133,6 @@ const styles = StyleSheet.create({
   flatList: {
     flexGrow: 0,
   },
-
-  //   list: {
-  //     flexGrow: 1,
-  //     marginBottom: 10,
-  //   },
-
-  //   cardWrapper: {
-  //     width: '100%',
-  //   },
-  //   cardContainer: {
-  //     flex: 1,
-  //     width: '100%',
-  //     flexDirection: 'row',
-  //     flexGrow: 1,
-  //   },
-
-  //   bottomContainer: {
-  //     display: 'flex',
-  //     gap: 30,
-  //     marginBottom: 10,
-  //     flexDirection: 'row',
-  //     justifyContent: 'space-between',
-  //   },
 
   formFooter: {
     width: '80%',

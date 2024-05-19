@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 type WorkoutExerciseFieldType = {
   index: number;
 };
+
 function WorkoutExerciseField({ index }: WorkoutExerciseFieldType) {
   return (
     <View style={styles.container}>
@@ -16,7 +17,6 @@ function WorkoutExerciseField({ index }: WorkoutExerciseFieldType) {
         containerStyle={{
           width: 45,
         }}
-        defaultValue={3}
         rules={{ required: 'Total Sets is required!' }}
         containerStyles={styles.numberInputContainer}
         labelStyles={styles.numberLabel}

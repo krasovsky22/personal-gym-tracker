@@ -16,7 +16,10 @@ function ExercisesInput(props: ExercisesInputType) {
   const { name, defaultValue } = props;
   const { getExerciseById } = useExercisesStore();
 
-  const { field } = useController({ name, defaultValue });
+  const {
+    field,
+    fieldState: { error },
+  } = useController({ name, defaultValue });
 
   const exercise = getExerciseById(field.value);
 
@@ -24,9 +27,16 @@ function ExercisesInput(props: ExercisesInputType) {
     <View>
       <HiddenInput {...props} />
 
-      <Text>
-        {exercise?.id}-{exercise?.name}
-      </Text>
+      {exercise && (
+        <Text>
+          {exercise?.id}-{exercise?.name}
+        </Text>
+      )}
+      {error?.message && (
+        <Text style={[styles.errorText, { color: theme.colors.error }]}>
+          {error.message}
+        </Text>
+      )}
       <ExercisesDialog
         title="Select Exercise"
         handleSelect={(exercise) => {
@@ -37,7 +47,11 @@ function ExercisesInput(props: ExercisesInputType) {
         <Text
           style={[
             styles.selectExerciseButton,
-            { backgroundColor: theme.colors.warning },
+            {
+              backgroundColor: error?.message
+                ? theme.colors.error
+                : theme.colors.warning,
+            },
           ]}
         >
           Select Exercise
@@ -55,6 +69,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 10,
+  },
+
+  errorText: {
+    textAlign: 'center',
   },
 });
 
