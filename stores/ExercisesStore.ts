@@ -2,6 +2,7 @@
 import {
   flow,
   types,
+  destroy,
   Instance,
   SnapshotIn,
   SnapshotOut,
@@ -28,6 +29,7 @@ import {
 export const ExercisesStore = types
   .model('ExercisesStore', {
     identifier: types.optional(types.identifier, 'ExercisesStore'),
+    isInitialized: types.optional(types.boolean, false),
     workouts: types.array(Workout),
     exercises: types.array(Exercise),
     userWorkouts: types.array(UserWorkout),
@@ -92,6 +94,8 @@ export const ExercisesStore = types
       }
 
       yield self.loadWorkouts();
+
+      self.isInitialized = true;
     }),
 
     saveExercise: flow(function* (exercise) {

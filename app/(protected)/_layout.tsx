@@ -1,29 +1,55 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { observer } from 'mobx-react-lite';
 import { Redirect, Tabs } from 'expo-router';
 import { Icon, useTheme } from '@rneui/themed';
+import * as SplashScreen from 'expo-splash-screen';
 import { default as MaterialIcon } from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import useStore from '@hooks/useStore';
 import useAuthStore from '@hooks/useAuthStore';
 import { RootStoreType } from '@stores/RootStore';
 
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
+
 function ProtectedLayout() {
+  const [appIsReady, setAppIsReady] = useState(false);
   const { theme } = useTheme();
   const { isLoggedIn } = useAuthStore();
-  const { initialize } = useStore<RootStoreType>();
+  const { isInitialized, initialize } = useStore<RootStoreType>();
 
   useEffect(() => {
     isLoggedIn && initialize();
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    if (isInitialized) {
+      setAppIsReady(true);
+    }
+  }, [isInitialized]);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (isInitialized) {
+      // This tells the splash screen to hide immediately! If we call this after
+      // `setAppIsReady`, then we may see a blank screen while the app is
+      // loading its initial state and rendering its first pixels. So instead,
+      // we hide the splash screen once we know the root view has already
+      // performed layout.
+      await SplashScreen.hideAsync();
+    }
+  }, [isInitialized]);
+
   if (!isLoggedIn) {
     return <Redirect href="/(auth)/sign-in" />;
   }
 
+  if (!appIsReady) {
+    return null;
+  }
+
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onLayout={onLayoutRootView}>
       <Tabs
         screenOptions={{
           headerShown: false,

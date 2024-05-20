@@ -26,10 +26,15 @@ export const RootStore = types
     //   })
     // ),
   })
+  .views((self) => ({
+    get isInitialized() {
+      return self.exercisesStore.isInitialized;
+    },
+  }))
   .actions((self) => ({
-    initialize() {
+    async initialize() {
       if (self.authStore.isLoggedIn && self.exercisesStore === null) {
-        self.exercisesStore = ExercisesStore.create();
+        self.exercisesStore = await ExercisesStore.create();
       }
     },
     async save() {

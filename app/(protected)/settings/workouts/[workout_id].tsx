@@ -62,6 +62,7 @@ function CreateWorkoutScreen() {
   const { workout_id } = useLocalSearchParams<{ workout_id: string }>();
 
   const workout = getWorkoutById(workout_id!);
+
   //   const defaultValues = getFormDefaultValue(workout);
 
   //   const { ...methods } = useForm({

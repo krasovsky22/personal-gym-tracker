@@ -27,7 +27,9 @@ function WorkoutExerciseField({ index }: WorkoutExerciseFieldType) {
 
 const styles = StyleSheet.create({
   container: {
-    // gap: 10,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 1,
+    marginBottom: 10,
   },
 
   numberLabel: {

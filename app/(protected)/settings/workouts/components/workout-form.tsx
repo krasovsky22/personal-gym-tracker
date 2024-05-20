@@ -15,6 +15,7 @@ import AsyncButton from '@components/AsyncButton';
 import { TextInput } from '@components/Form';
 import { Button } from '@rneui/themed';
 import WorkoutExerciseField from './exercise-field';
+import { observer } from 'mobx-react-lite';
 
 const DEFAULT_SETS_COUNT = '3';
 
@@ -59,6 +60,8 @@ function WorkoutForm({ workout }: WorkoutFormProps) {
     resolver: zodResolver(schema),
   });
 
+  console.log('here', workout?.workoutExercises?.length);
+
   const { fields, append, move, remove } = useFieldArray({
     control: methods.control,
     name: 'exercises',
@@ -86,7 +89,7 @@ function WorkoutForm({ workout }: WorkoutFormProps) {
         <TextInput
           name="name"
           label="Name"
-          placeholder="Exercise Name"
+          placeholder="Workout Name"
           rules={{ required: 'Workout name is required!' }}
         />
 
@@ -142,4 +145,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WorkoutForm;
+export default observer(WorkoutForm);

@@ -13,11 +13,7 @@ import { WorkoutType } from '@models/Workout';
 const WorkoutsScreen = () => {
   const [filterText, setFilterText] = useState<string>('');
   const router = useRouter();
-  const { workouts, loadWorkouts } = useExercisesStore();
-
-  useEffect(() => {
-    loadWorkouts();
-  }, []);
+  const { workouts } = useExercisesStore();
 
   const deleteWorkout = (workout: WorkoutType) => {
     console.log('deleting workout', workout);

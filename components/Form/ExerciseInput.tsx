@@ -5,7 +5,7 @@ import { useController } from 'react-hook-form';
 import { ExercisesDialog } from '@components/Dialogs';
 import useExercisesStore from '@hooks/useExercisesStore';
 import HiddenInput, { HiddenInputType } from './HiddenInput';
-import { useTheme } from '@rneui/themed';
+import { Icon, useTheme } from '@rneui/themed';
 
 type ExercisesInputType = HiddenInputType & {
   name: string;
@@ -27,36 +27,46 @@ function ExercisesInput(props: ExercisesInputType) {
     <View>
       <HiddenInput {...props} />
 
-      {exercise && (
-        <Text>
-          {exercise?.id}-{exercise?.name}
-        </Text>
-      )}
-      {error?.message && (
-        <Text style={[styles.errorText, { color: theme.colors.error }]}>
-          {error.message}
-        </Text>
-      )}
-      <ExercisesDialog
-        title="Select Exercise"
-        handleSelect={(exercise) => {
-          console.log('selected', exercise);
-          return field.onChange(exercise.id);
-        }}
-      >
-        <Text
-          style={[
-            styles.selectExerciseButton,
-            {
-              backgroundColor: error?.message
-                ? theme.colors.error
-                : theme.colors.warning,
-            },
-          ]}
+      <View style={styles.exerciseContainer}>
+        {exercise && (
+          <View style={styles.exerciseDescriptionContainer}>
+            <Icon
+              name="weight-lifter"
+              type="material-community"
+              color="#517fa4"
+              size={50}
+            />
+            <Text style={{ flex: 5, textAlign: 'center', fontSize: 20 }}>
+              {exercise?.name}
+            </Text>
+          </View>
+        )}
+
+        {error?.message && (
+          <Text style={[styles.errorText, { color: theme.colors.error }]}>
+            {error.message}
+          </Text>
+        )}
+        <ExercisesDialog
+          title="Select Exercise"
+          handleSelect={(exercise) => {
+            return field.onChange(exercise.id);
+          }}
         >
-          Select Exercise
-        </Text>
-      </ExercisesDialog>
+          <Text
+            style={[
+              styles.selectExerciseButton,
+              {
+                backgroundColor: error?.message
+                  ? theme.colors.error
+                  : theme.colors.warning,
+              },
+            ]}
+          >
+            Select Exercise
+          </Text>
+        </ExercisesDialog>
+      </View>
     </View>
   );
 }
@@ -73,6 +83,23 @@ const styles = StyleSheet.create({
 
   errorText: {
     textAlign: 'center',
+  },
+
+  exerciseContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+  },
+
+  exerciseDescriptionContainer: {
+    flexDirection: 'row',
+    gap: 1,
+    flex: 1,
+    height: 40,
+    justifyContent: 'space-between',
+    marginHorizontal: 10,
+    alignItems: 'center',
   },
 });
 
