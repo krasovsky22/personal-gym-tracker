@@ -2,7 +2,7 @@ import * as z from 'zod';
 import uuid from 'react-native-uuid';
 import { WorkoutType } from '@models/Workout';
 import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   useForm,
@@ -67,6 +67,16 @@ function WorkoutForm({ workout }: WorkoutFormProps) {
     name: 'exercises',
   });
 
+  const handleSorting = (direction: string, index: number) => {
+    if (direction === 'UP') {
+      move(index, index - 1);
+    }
+
+    if (direction === 'DOWN') {
+      move(index, index + 1);
+    }
+  };
+
   const addWorkoutExercise = () => {
     append({
       id: `new-${uuid.v4()}`,
@@ -99,7 +109,13 @@ function WorkoutForm({ workout }: WorkoutFormProps) {
               data={fields}
               keyExtractor={(a) => a.id}
               renderItem={({ index }) => {
-                return <WorkoutExerciseField index={index} />;
+                return (
+                  <WorkoutExerciseField
+                    index={index}
+                    onSortingClick={handleSorting}
+                    totalExercises={fields.length - 1}
+                  />
+                );
               }}
             />
           </View>

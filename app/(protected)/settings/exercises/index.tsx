@@ -1,10 +1,10 @@
-import { toJS } from 'mobx';
 import { useState, useMemo } from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
-import { useTheme, FAB, ListItem, Icon, Button, Input } from '@rneui/themed';
+import { View, StyleSheet, FlatList, Text } from 'react-native';
+import { useTheme, ListItem, Button, Input } from '@rneui/themed';
 import { Observer, observer } from 'mobx-react-lite';
-import { Stack, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AddNewFab } from '@components/UI';
 import { AsyncButton } from '@components';
 import useExercisesStore from '@hooks/useExercisesStore';
@@ -38,6 +38,11 @@ function ExercisesScreen() {
         <FlatList
           data={filteredExercises}
           keyExtractor={(a) => a.id}
+          ListEmptyComponent={
+            <View>
+              <Text>No Exercises found</Text>
+            </View>
+          }
           renderItem={({ item }) => (
             <Observer>
               {() => (
@@ -54,10 +59,7 @@ function ExercisesScreen() {
                         backgroundColor: theme.colors.warning,
                       }}
                       type="clear"
-                      icon={{
-                        name: 'pencil',
-                        type: 'material-community',
-                      }}
+                      icon={<Icon name="pencil" size={30} />}
                       onPress={() =>
                         router.push(`/settings/exercises/${item.id}`)
                       }
@@ -71,14 +73,14 @@ function ExercisesScreen() {
                         backgroundColor: theme.colors.error,
                       }}
                       type="clear"
-                      icon={{ name: 'delete-outline' }}
+                      icon={<Icon name="delete-outline" size={30} />}
                       onPress={() => {
                         return deleteExercise(item.id);
                       }}
                     />
                   )}
                 >
-                  <Icon name="label-important-outline" type="material" />
+                  <Icon name="label-important-outline" />
                   <ListItem.Content>
                     <ListItem.Title>{item.name}</ListItem.Title>
                     <ListItem.Subtitle>
@@ -105,7 +107,7 @@ const styles = StyleSheet.create({
   },
 
   list: {
-    flexGrow: 1,
+    flex: 1,
   },
 });
 
