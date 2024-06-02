@@ -1,9 +1,7 @@
 import { supabase } from '@lib/supabase';
 import { Database } from '../database.types.ts';
 
-import { WorkoutExercise } from '@models/WorkoutExercise';
-import { WorkoutSnapshotInType, WorkoutSnapshotOutType } from '@models/Workout';
-import { boolean } from 'zod';
+import { WorkoutSnapshotOutType } from '@models/Workout';
 
 const WORKOUT_TABLE = 'workout';
 const WORKOUT_EXERCISE_TABLE = 'workout_exercise';
@@ -18,7 +16,7 @@ export type WorkoutExerciseRowInsertType =
 export type WorkoutExerciseRowUpdateType =
   Database['public']['Tables']['workout_exercise']['Update'];
 
-type QueryResultType<T> = Promise<{ success: boolean; data?: T }>;
+type QueryResultType<T extends {}> = Promise<{ success: boolean; data?: T }>;
 
 export async function insertWorkout(
   workout: WorkoutRowInsertType
@@ -150,4 +148,18 @@ export async function fetchWorkouts() {
   }
 
   return [];
+}
+
+export async function deleteWorkout(id: string): QueryResultType<{}> {
+  try {
+    const { error } = await supabase.from(WORKOUT_TABLE).delete().eq('id', id);
+
+    if (error) throw error;
+
+    return { success: true };
+  } catch (error) {
+    console.error('Unable to delete workout', error);
+  }
+
+  return { success: false };
 }

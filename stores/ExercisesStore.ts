@@ -21,11 +21,10 @@ import { UserWorkout } from '@models/UserWorkout';
 import {
   insertWorkout,
   fetchWorkouts,
+  deleteWorkout,
   insertWorkoutExercises,
   removeWorkoutExercises,
-  WorkoutExerciseRowType,
   WorkoutExerciseRowInsertType,
-  WorkoutExerciseRowUpdateType,
 } from '@lib/queries/workouts';
 import {
   fetchUserWorkouts,
@@ -182,6 +181,14 @@ export const ExercisesStore = types
     //     self.workoutSets.push(exercise);
     //   });
     // }),
+
+    deleteWorkout: flow(function* (workout: WorkoutType) {
+      const { success } = yield deleteWorkout(workout.id!);
+
+      if (success) {
+        destroy(workout);
+      }
+    }),
 
     saveWorkout: flow(function* (
       workoutSnapshot: WorkoutSnapshotInType,

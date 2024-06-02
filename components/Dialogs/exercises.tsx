@@ -45,7 +45,6 @@ function ExercisesDialog({
     toggleDialog();
   };
 
-  console.log(selectedExercises);
   return (
     <View>
       <TouchableOpacity onPress={toggleDialog}>{children}</TouchableOpacity>

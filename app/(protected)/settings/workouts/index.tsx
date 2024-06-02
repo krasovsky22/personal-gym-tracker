@@ -1,5 +1,5 @@
 import { toJS } from 'mobx';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Observer, observer } from 'mobx-react-lite';
 import { View, StyleSheet, FlatList } from 'react-native';
 import { Button, ListItem, Input } from '@rneui/themed';
@@ -13,10 +13,20 @@ import { WorkoutType } from '@models/Workout';
 const WorkoutsScreen = () => {
   const [filterText, setFilterText] = useState<string>('');
   const router = useRouter();
-  const { workouts } = useExercisesStore();
+  const { workouts, deleteWorkout } = useExercisesStore();
 
-  const deleteWorkout = (workout: WorkoutType) => {
-    console.log('deleting workout', workout);
+  const filteredWorkouts = useMemo(() => {
+    if (!filterText.length) {
+      return workouts;
+    }
+
+    return workouts.filter((workout) =>
+      workout.name.toLowerCase().includes(filterText.toLowerCase())
+    );
+  }, [filterText, workouts.length]);
+
+  const handleDeleteWorkout = async (workout: WorkoutType) => {
+    await deleteWorkout(workout);
   };
 
   return (
@@ -30,7 +40,7 @@ const WorkoutsScreen = () => {
           />
         </View>
         <FlatList
-          data={workouts}
+          data={filteredWorkouts}
           renderItem={({ item }) => (
             <Observer>
               {() => (
@@ -45,7 +55,7 @@ const WorkoutsScreen = () => {
                     color="error"
                     title="Delete"
                     onPress={() => {
-                      deleteWorkout(item);
+                      handleDeleteWorkout(item);
                     }}
                   />
                   <AsyncButton
