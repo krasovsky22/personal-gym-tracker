@@ -1,83 +1,150 @@
 import { supabase } from '@lib/supabase';
+import { Database } from '../database.types.ts';
+
+import { WorkoutExercise } from '@models/WorkoutExercise';
+import { WorkoutSnapshotInType, WorkoutSnapshotOutType } from '@models/Workout';
+import { boolean } from 'zod';
 
 const WORKOUT_TABLE = 'workout';
 const WORKOUT_EXERCISE_TABLE = 'workout_exercise';
 
-export async function updateWorkout(workout) {
+export type WorkoutRowType = Database['public']['Tables']['workout']['Row'];
+export type WorkoutRowInsertType =
+  Database['public']['Tables']['workout']['Insert'];
+export type WorkoutExerciseRowType =
+  Database['public']['Tables']['workout_exercise']['Row'];
+export type WorkoutExerciseRowInsertType =
+  Database['public']['Tables']['workout_exercise']['Insert'];
+export type WorkoutExerciseRowUpdateType =
+  Database['public']['Tables']['workout_exercise']['Update'];
+
+type QueryResultType<T> = Promise<{ success: boolean; data?: T }>;
+
+export async function insertWorkout(
+  workout: WorkoutRowInsertType
+): QueryResultType<WorkoutRowType> {
   try {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from(WORKOUT_TABLE)
-      .update({ ...workout })
-      .eq('id', workout.id)
-      .select();
+      .upsert([workout], { onConflict: 'id', defaultToNull: false })
+      .select()
+      .single<WorkoutRowType>();
+
+    if (error) throw error;
 
     return { success: true, data };
   } catch (error) {
-    console.error('Unable to update exercise', error);
+    console.error('Unable to update workout', error);
   }
 
-  return { success: false, data: {} };
+  return { success: false };
 }
 
-export async function createWorkout({ name, exercises }) {
+export async function insertWorkoutExercises(
+  workoutExercises: WorkoutExerciseRowInsertType[]
+): QueryResultType<WorkoutExerciseRowType[]> {
   try {
-    const workout = {
-      name,
-    };
-
-    const { data: workoutSelect } = await supabase
-      .from(WORKOUT_TABLE)
-      .insert({ ...workout })
-      .select();
-
-    const insertedWorkout = workoutSelect[0];
-    const exercisesData = exercises.map((exercise, index) => ({
-      order: index,
-      sets_count: exercise.setsCount,
-      exercise_id: exercise.exercise,
-      workout_id: insertedWorkout.id,
-    }));
-
-    const { data: exercisesSelect } = await supabase
+    const { data, error } = await supabase
       .from(WORKOUT_EXERCISE_TABLE)
-      .insert(exercisesData)
-      .select();
+      .upsert(workoutExercises, { onConflict: 'id', defaultToNull: false })
+      .select()
+      .returns<WorkoutExerciseRowType[]>();
 
-    return {
-      success: true,
-      data: { workout: { ...insertedWorkout, exercises: exercisesSelect } },
-    };
+    if (error) throw error;
+
+    return { success: true, data };
   } catch (error) {
-    console.error('Unable to insert exercise', error);
+    console.error('Unable to update/insert workout exercises', error);
   }
 
-  return { success: false, data: {} };
+  return { success: false };
 }
+
+export async function removeWorkoutExercises(ids: string[]) {
+  try {
+    const { error } = await supabase
+      .from(WORKOUT_EXERCISE_TABLE)
+      .delete()
+      .in('id', ids);
+
+    if (error) throw error;
+
+    return { success: true };
+  } catch (error) {
+    console.error('Unable to delete workout exercises', error);
+  }
+
+  return { success: false };
+}
+
+// export async function createWorkout({ name, exercises }) {
+//   try {
+//     const workout = {
+//       name,
+//     };
+
+//     const { data: workoutSelect } = await supabase
+//       .from(WORKOUT_TABLE)
+//       .insert({ ...workout })
+//       .select();
+
+//     const insertedWorkout = workoutSelect[0];
+//     const exercisesData = exercises.map((exercise, index) => ({
+//       order: index,
+//       sets_count: exercise.setsCount,
+//       exercise_id: exercise.exercise,
+//       workout_id: insertedWorkout.id,
+//     }));
+
+//     const { data: exercisesSelect } = await supabase
+//       .from(WORKOUT_EXERCISE_TABLE)
+//       .insert(exercisesData)
+//       .select();
+
+//     return {
+//       success: true,
+//       data: { workout: { ...insertedWorkout, exercises: exercisesSelect } },
+//     };
+//   } catch (error) {
+//     console.error('Unable to insert exercise', error);
+//   }
+
+//   return { success: false, data: {} };
+// }
 
 export async function fetchWorkouts() {
   try {
-    const { data } = await supabase
+    const query = supabase
       .from(WORKOUT_EXERCISE_TABLE)
       .select(
         `id, order, sets_count, exercise_id, created_at, workout (id , name, created_at )`
       );
 
-      const workouts = data.reduce((carry, workoutExercise) => {
+    const { data, error } = await query;
+
+    if (error) throw error;
+
+    const workouts = data.reduce<{ [id: string]: WorkoutSnapshotOutType }>(
+      (carry, workoutExercise) => {
         const { workout, ...workoutExerciseData } = workoutExercise;
+        const { id } = workout!;
 
-        carry[workout.id] ??= {
-            ...workout,
-            workoutExercises: []
-        }
+        carry[id] ??= {
+          ...workout!,
+          workoutExercises: [],
+        };
 
-        carry[workout.id].workoutExercises.push({
+        carry[id]?.workoutExercises?.push({
           ...workoutExerciseData,
           exercise: workoutExerciseData.exercise_id,
         });
 
         return carry;
-      }, {})
-    return Object.values(workouts);;
+      },
+      {}
+    );
+
+    return Object.values(workouts);
   } catch (error) {
     console.log('Unable to load workouts: ', error);
   }

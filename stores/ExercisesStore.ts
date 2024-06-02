@@ -8,12 +8,25 @@ import {
   SnapshotOut,
 } from 'mobx-state-tree';
 
-import { Workout } from '@models/Workout';
+import {
+  Workout,
+  WorkoutSnapshotInType,
+  WorkoutSnapshotOutType,
+  WorkoutType,
+} from '@models/Workout';
 import { Exercise } from '@models/Exercise';
 import { UserWorkout } from '@models/UserWorkout';
 
 // import fetchSets from '@lib/queries/fetchSets';
-import { createWorkout, fetchWorkouts } from '@lib/queries/workouts';
+import {
+  insertWorkout,
+  fetchWorkouts,
+  insertWorkoutExercises,
+  removeWorkoutExercises,
+  WorkoutExerciseRowType,
+  WorkoutExerciseRowInsertType,
+  WorkoutExerciseRowUpdateType,
+} from '@lib/queries/workouts';
 import {
   fetchUserWorkouts,
   createUserWorkout,
@@ -24,6 +37,7 @@ import {
   insertExercise,
   deleteExercise,
 } from '@lib/queries/exercises';
+import { WorkoutExercise } from '@models/WorkoutExercise';
 // import { SETS_TABLE_NAME } from '@lib/constants';
 
 export const ExercisesStore = types
@@ -169,25 +183,65 @@ export const ExercisesStore = types
     //   });
     // }),
 
-    saveWorkout: flow(function* (workout, workoutId) {
-      if (workoutId) {
-        const workoutModel = self.getWorkoutById(workoutId);
-        // const { success, data } = updateWorkout(workout);
+    saveWorkout: flow(function* (
+      workoutSnapshot: WorkoutSnapshotInType,
+      workoutId?: string
+    ) {
+      try {
+        const { data: workoutRowData } = yield insertWorkout({
+          id: workoutId,
+          name: workoutSnapshot.name,
+        });
 
-        console.log('asdasd', workout);
-        const workoutExercisesToRemove = workoutModel.workoutExercises.filter(
-          (workoutExercise) => {
-            return !workout.exercises.some(
-              ({ exercise }) => workoutExercise.exercise.id === exercise
+        const workoutExercisesToInsertOrUpdate: WorkoutExerciseRowInsertType[] =
+          workoutSnapshot.workoutExercises?.map((workoutExercise) => {
+            const insertData: WorkoutExerciseRowInsertType = {
+              exercise_id: workoutExercise.exercise as string,
+              workout_id: workoutRowData.id,
+              order: workoutExercise.order,
+              sets_count: workoutExercise.sets_count,
+            };
+
+            return insertData;
+          }) ?? [];
+
+        if (workoutId) {
+          const workoutModel = self.getWorkoutById(workoutId);
+
+          // set ids for data we need to insert to db, to ensure updates
+          workoutModel?.workoutExercises?.forEach((exerciseModel) => {
+            const exerciseToInsert = workoutExercisesToInsertOrUpdate.find(
+              (exerciseToInsert) => {
+                return (
+                  exerciseModel.exercise?.id === exerciseToInsert.exercise_id
+                );
+              }
             );
-          }
-        );
 
-        console.log('removed', workoutExercisesToRemove);
+            if (exerciseToInsert) {
+              exerciseToInsert.id = exerciseModel.id!;
+            }
+          });
 
-        return;
+          const workoutExercisesToRemove: string[] =
+            workoutModel?.workoutExercises
+              .filter((workoutModelExercise) => {
+                return (
+                  workoutSnapshot?.workoutExercises?.some(
+                    ({ exercise }) =>
+                      workoutModelExercise?.exercise?.id === exercise
+                  ) === false
+                );
+              })
+              .map((WorkoutExerciseModel) => WorkoutExerciseModel.id!) ?? [];
+
+          yield removeWorkoutExercises(workoutExercisesToRemove);
+        }
+
+        yield insertWorkoutExercises(workoutExercisesToInsertOrUpdate);
+      } catch (error) {
+        console.log('SAVE WORKOUT ERROR', error);
       }
-      const { success, data } = yield createWorkout(workout);
 
       yield self.loadWorkouts();
     }),

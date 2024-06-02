@@ -1,6 +1,6 @@
 import * as z from 'zod';
 import { useRouter } from 'expo-router';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   FormProvider,
@@ -41,8 +41,6 @@ function ExerciseForm({ exercise }: ExerciseFormProps) {
     const { name } = formData;
 
     const originalName = exercise?.name ?? '';
-
-    console.log(formData, exercise);
 
     try {
       exercise?.setName(name);

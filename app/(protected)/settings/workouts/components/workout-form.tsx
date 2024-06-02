@@ -1,6 +1,10 @@
 import * as z from 'zod';
 import uuid from 'react-native-uuid';
-import { WorkoutType } from '@models/Workout';
+import {
+  WorkoutSnapshotInType,
+  WorkoutSnapshotOutType,
+  WorkoutType,
+} from '@models/Workout';
 import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,6 +20,8 @@ import { TextInput } from '@components/Form';
 import { Button } from '@rneui/themed';
 import WorkoutExerciseField from './exercise-field';
 import { observer } from 'mobx-react-lite';
+import { useExercisesStore } from '@hooks';
+import { useRouter } from 'expo-router';
 
 const DEFAULT_SETS_COUNT = '3';
 
@@ -32,7 +38,7 @@ const schema = z.object({
 });
 
 type WorkoutExerciseFormFieldType = {
-  id?: string;
+  id: string | null;
   exercise_id: string;
   setsCount: string;
 };
@@ -47,6 +53,8 @@ type WorkoutFormProps = {
 };
 
 function WorkoutForm({ workout }: WorkoutFormProps) {
+  const router = useRouter();
+  const { saveWorkout } = useExercisesStore();
   const { ...methods } = useForm<WorkoutFormValuesType>({
     defaultValues: {
       name: workout?.name ?? '',
@@ -59,8 +67,6 @@ function WorkoutForm({ workout }: WorkoutFormProps) {
     },
     resolver: zodResolver(schema),
   });
-
-  console.log('here', workout?.workoutExercises?.length);
 
   const { fields, append, move, remove } = useFieldArray({
     control: methods.control,
@@ -86,7 +92,20 @@ function WorkoutForm({ workout }: WorkoutFormProps) {
   };
 
   const onSubmit: SubmitHandler<WorkoutFormValuesType> = async (formData) => {
-    console.log(formData, workout);
+    const workoutModelData: WorkoutSnapshotInType = {
+      name: formData.name,
+      workoutExercises: formData.exercises.map((formExercise, index) => {
+        return {
+          order: index,
+          exercise: formExercise.exercise_id,
+          sets_count: +formExercise.setsCount,
+        };
+      }),
+    };
+
+    await saveWorkout(workoutModelData, workout?.id ?? undefined);
+
+    return router.back();
   };
 
   const onError: SubmitErrorHandler<WorkoutFormValuesType> = (errors, _e) => {
