@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { observer } from 'mobx-react-lite';
-import { useController } from 'react-hook-form';
+import { useController, useFormContext } from 'react-hook-form';
 
 import { ExercisesDialog } from '@components/Dialogs';
 import useExercisesStore from '@hooks/useExercisesStore';

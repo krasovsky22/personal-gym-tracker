@@ -4,6 +4,7 @@ import { Dialog, Input, ListItem } from '@rneui/themed';
 
 import { useExercisesStore } from '@hooks';
 import { ExerciseType } from '@models/Exercise';
+import { useFormContext } from 'react-hook-form';
 
 type ExercisesDialogProps = {
   title?: string;
@@ -19,6 +20,11 @@ function ExercisesDialog({
   const [filterText, setFilterText] = useState('');
   const [visible, setVisible] = useState(false);
   const { sortedExercises } = useExercisesStore();
+
+  const { getValues } = useFormContext();
+  const selectedExercises =
+    getValues()['exercises']?.map((exercise: any) => exercise.exercise_id) ??
+    [];
 
   const filteredExercises = useMemo(() => {
     if (!filterText.length) {
@@ -38,6 +44,8 @@ function ExercisesDialog({
     handleSelect(exercise);
     toggleDialog();
   };
+
+  console.log(selectedExercises);
   return (
     <View>
       <TouchableOpacity onPress={toggleDialog}>{children}</TouchableOpacity>
@@ -64,6 +72,8 @@ function ExercisesDialog({
           {filteredExercises.map((exercise) => (
             <ListItem
               key={exercise.id}
+              disabled={selectedExercises.includes(exercise.id)}
+              disabledStyle={{ opacity: 0.5 }}
               containerStyle={{
                 borderRadius: 8,
               }}
