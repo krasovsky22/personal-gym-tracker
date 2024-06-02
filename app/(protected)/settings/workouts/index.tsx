@@ -31,7 +31,6 @@ const WorkoutsScreen = () => {
         </View>
         <FlatList
           data={workouts}
-          keyExtractor={(a) => a.id}
           renderItem={({ item }) => (
             <Observer>
               {() => (

@@ -1,18 +1,23 @@
 import { NumberInput, ExerciseInput } from '@components/Form';
 import { Icon } from '@rneui/base';
+import { Button, useTheme } from '@rneui/themed';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
 type WorkoutExerciseFieldType = {
   index: number;
   totalExercises: number;
+  onRemoveClick: (index: number) => void;
   onSortingClick: (direction: 'UP' | 'DOWN', index: number) => void;
 };
 
 function WorkoutExerciseField({
   index,
+  onRemoveClick,
   totalExercises,
   onSortingClick,
 }: WorkoutExerciseFieldType) {
+  const { theme } = useTheme();
+
   return (
     <View style={styles.container}>
       <View style={styles.sortingContainer}>
@@ -42,6 +47,15 @@ function WorkoutExerciseField({
           labelStyles={styles.numberLabel}
         />
       </View>
+      <View style={styles.deleteButtonContainer}>
+        <TouchableOpacity onPress={() => onRemoveClick(index)}>
+          <Icon
+            name="delete"
+            type={'material-community'}
+            color={theme.colors.error}
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -60,6 +74,11 @@ const styles = StyleSheet.create({
 
   exerciseContainer: {
     flex: 1,
+  },
+
+  deleteButtonContainer: {
+    marginLeft: 10,
+    justifyContent: 'center',
   },
 
   numberLabel: {

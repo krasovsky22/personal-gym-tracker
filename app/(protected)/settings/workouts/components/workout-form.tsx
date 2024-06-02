@@ -83,6 +83,10 @@ function WorkoutForm({ workout }: WorkoutFormProps) {
     }
   };
 
+  const handleRemove = (index: number) => {
+    remove(index);
+  };
+
   const addWorkoutExercise = () => {
     append({
       id: `new-${uuid.v4()}`,
@@ -131,6 +135,7 @@ function WorkoutForm({ workout }: WorkoutFormProps) {
                 return (
                   <WorkoutExerciseField
                     index={index}
+                    onRemoveClick={handleRemove}
                     onSortingClick={handleSorting}
                     totalExercises={fields.length - 1}
                   />

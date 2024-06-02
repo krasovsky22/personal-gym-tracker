@@ -28,19 +28,21 @@ function ExercisesInput(props: ExercisesInputType) {
       <HiddenInput {...props} />
 
       <View style={styles.exerciseContainer}>
-        {exercise && (
-          <View style={styles.exerciseDescriptionContainer}>
-            <Icon
-              name="weight-lifter"
-              type="material-community"
-              color="#517fa4"
-              size={50}
-            />
-            <Text style={{ flex: 5, textAlign: 'center', fontSize: 20 }}>
-              {exercise?.name}
-            </Text>
-          </View>
-        )}
+        <View style={styles.exerciseDescriptionContainer}>
+          {exercise && (
+            <>
+              <Icon
+                name="weight-lifter"
+                type="material-community"
+                color="#517fa4"
+                size={50}
+              />
+              <Text style={{ flex: 5, textAlign: 'center', fontSize: 20 }}>
+                {exercise?.name}
+              </Text>
+            </>
+          )}
+        </View>
 
         {error?.message && (
           <Text style={[styles.errorText, { color: theme.colors.error }]}>
