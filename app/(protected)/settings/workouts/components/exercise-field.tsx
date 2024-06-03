@@ -35,26 +35,29 @@ function WorkoutExerciseField({
       <View style={styles.exerciseContainer}>
         <ExerciseInput name={`exercises.${index}.exercise_id`} />
 
-        <NumberInput
-          name={`exercises.${index}.setsCount`}
-          label="Total Sets"
-          maxLength={2}
-          containerStyle={{
-            width: 45,
-          }}
-          rules={{ required: 'Total Sets is required!' }}
-          containerStyles={styles.numberInputContainer}
-          labelStyles={styles.numberLabel}
-        />
-      </View>
-      <View style={styles.deleteButtonContainer}>
-        <TouchableOpacity onPress={() => onRemoveClick(index)}>
-          <Icon
-            name="delete"
-            type={'material-community'}
-            color={theme.colors.error}
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <NumberInput
+            name={`exercises.${index}.setsCount`}
+            label="Total Sets"
+            maxLength={2}
+            containerStyle={{
+              width: 45,
+            }}
+            rules={{ required: 'Total Sets is required!' }}
+            containerStyles={styles.numberInputContainer}
+            labelStyles={styles.numberLabel}
           />
-        </TouchableOpacity>
+
+          <View style={styles.deleteButtonContainer}>
+            <TouchableOpacity onPress={() => onRemoveClick(index)}>
+              <Icon
+                name="delete"
+                type="material-community"
+                color={theme.colors.error}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -76,10 +79,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  deleteButtonContainer: {
-    marginLeft: 10,
-    justifyContent: 'center',
-  },
+  deleteButtonContainer: {},
 
   numberLabel: {
     flexGrow: 1,

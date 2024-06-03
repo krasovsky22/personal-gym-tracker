@@ -46,8 +46,13 @@ function ExercisesDialog({
   };
 
   return (
-    <View>
-      <TouchableOpacity onPress={toggleDialog}>{children}</TouchableOpacity>
+    <>
+      <TouchableOpacity
+        onPress={toggleDialog}
+        // style={{ flex: 1, alignSelf: 'flex-end' }}
+      >
+        {children}
+      </TouchableOpacity>
 
       <Dialog
         isVisible={visible}
@@ -88,7 +93,7 @@ function ExercisesDialog({
           ))}
         </ScrollView>
       </Dialog>
-    </View>
+    </>
   );
 }
 

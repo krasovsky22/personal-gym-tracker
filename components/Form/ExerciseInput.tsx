@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { observer } from 'mobx-react-lite';
 import { useController, useFormContext } from 'react-hook-form';
 
@@ -24,7 +24,7 @@ function ExercisesInput(props: ExercisesInputType) {
   const exercise = getExerciseById(field.value);
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <HiddenInput {...props} />
 
       <View style={styles.exerciseContainer}>
@@ -37,9 +37,7 @@ function ExercisesInput(props: ExercisesInputType) {
                 color="#517fa4"
                 size={50}
               />
-              <Text style={{ flex: 5, textAlign: 'center', fontSize: 20 }}>
-                {exercise?.name}
-              </Text>
+              <Text style={styles.exerciseNameText}>{exercise?.name}</Text>
             </>
           )}
         </View>
@@ -55,18 +53,12 @@ function ExercisesInput(props: ExercisesInputType) {
             return field.onChange(exercise.id);
           }}
         >
-          <Text
-            style={[
-              styles.selectExerciseButton,
-              {
-                backgroundColor: error?.message
-                  ? theme.colors.error
-                  : theme.colors.warning,
-              },
-            ]}
-          >
-            Select Exercise
-          </Text>
+          <Icon
+            name="plus-box"
+            type="material-community"
+            size={40}
+            color={error?.message ? theme.colors.error : theme.colors.warning}
+          />
         </ExercisesDialog>
       </View>
     </View>
@@ -75,8 +67,8 @@ function ExercisesInput(props: ExercisesInputType) {
 
 const styles = StyleSheet.create({
   selectExerciseButton: {
-    flex: 1,
-    width: '100%',
+    // flex: 1,
+    // width: '100%',
     textAlign: 'center',
     borderRadius: 8,
     paddingVertical: 8,
@@ -94,11 +86,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
 
+  exerciseNameText: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+
   exerciseDescriptionContainer: {
     flexDirection: 'row',
     gap: 1,
     flex: 1,
-    height: 40,
     justifyContent: 'space-between',
     marginHorizontal: 10,
     alignItems: 'center',

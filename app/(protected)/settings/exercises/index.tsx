@@ -1,10 +1,9 @@
 import { useState, useMemo } from 'react';
 import { View, StyleSheet, FlatList, Text } from 'react-native';
-import { useTheme, ListItem, Button, Input } from '@rneui/themed';
+import { useTheme, ListItem, Button, Input, Icon } from '@rneui/themed';
 import { Observer, observer } from 'mobx-react-lite';
 import { useRouter } from 'expo-router';
 
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AddNewFab } from '@components/UI';
 import { AsyncButton } from '@components';
 import useExercisesStore from '@hooks/useExercisesStore';
@@ -59,7 +58,13 @@ function ExercisesScreen() {
                         backgroundColor: theme.colors.warning,
                       }}
                       type="clear"
-                      icon={<Icon name="pencil" size={30} />}
+                      icon={
+                        <Icon
+                          name="pencil"
+                          size={30}
+                          type="material-community"
+                        />
+                      }
                       onPress={() =>
                         router.push(`/settings/exercises/${item.id}`)
                       }
@@ -80,7 +85,7 @@ function ExercisesScreen() {
                     />
                   )}
                 >
-                  <Icon name="label-important-outline" />
+                  <Icon name="label-outline" type="material-community" />
                   <ListItem.Content>
                     <ListItem.Title>{item.name}</ListItem.Title>
                     <ListItem.Subtitle>

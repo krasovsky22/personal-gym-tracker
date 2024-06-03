@@ -11,7 +11,7 @@ import useAuthStore from '@hooks/useAuthStore';
 import { RootStoreType } from '@stores/RootStore';
 
 // Keep the splash screen visible while we fetch resources
-SplashScreen.preventAutoHideAsync();
+// SplashScreen.preventAutoHideAsync();
 
 function ProtectedLayout() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -36,7 +36,7 @@ function ProtectedLayout() {
       // loading its initial state and rendering its first pixels. So instead,
       // we hide the splash screen once we know the root view has already
       // performed layout.
-      await SplashScreen.hideAsync();
+        await SplashScreen.hideAsync();
     }
   }, [isInitialized]);
 

@@ -143,7 +143,7 @@ function WorkoutForm({ workout }: WorkoutFormProps) {
               }}
             />
           </View>
-          <View>
+          <View style={{ marginBottom: 10 }}>
             <Button
               color="primary"
               title="Add Exercise"
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   },
 
   flatList: {
-    flexGrow: 0,
+    flex: 1,
   },
 
   formFooter: {
