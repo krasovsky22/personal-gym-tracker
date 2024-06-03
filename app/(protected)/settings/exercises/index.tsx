@@ -22,7 +22,7 @@ function ExercisesScreen() {
     return sortedExercises.filter((exercise) =>
       exercise.name.includes(filterText)
     );
-  }, [filterText, sortedExercises]);
+  }, [filterText, sortedExercises, sortedExercises.length]);
 
   return (
     <View style={styles.container}>
