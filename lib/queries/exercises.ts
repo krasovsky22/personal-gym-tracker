@@ -1,10 +1,21 @@
 import { supabase } from '@lib/supabase';
+import { QueryResultType } from './types';
+import { Database } from '../database.types';
 
-import { EXERCISE_TABLE_NAME } from '@lib/constants';
+export const EXERCISE_TABLE_NAME = 'exercise';
 
-export async function loadExercises() {
+export type ExerciseRowType = Database['public']['Tables']['exercise']['Row'];
+export type ExerciseInsertRowType =
+  Database['public']['Tables']['exercise']['Insert'];
+
+export async function loadExercises(): QueryResultType<ExerciseRowType[]> {
   try {
-    const { data } = await supabase.from(EXERCISE_TABLE_NAME).select(`*`);
+    const { data, error } = await supabase
+      .from(EXERCISE_TABLE_NAME)
+      .select(`*`)
+      .returns<ExerciseRowType[]>();
+
+    if (error) throw error;
 
     return { success: true, data };
   } catch (error) {
@@ -14,38 +25,49 @@ export async function loadExercises() {
   return { success: false, data: [] };
 }
 
-export async function updateExercise(exercise) {
+// export async function updateExercise(
+//   exercise: ExerciseUpdateRowType
+// ): QueryResultType<ExerciseRowType[]> {
+//   try {
+//     const { data, error } = await supabase
+//       .from(EXERCISE_TABLE_NAME)
+//       .update({ ...exercise })
+//       .eq('id', exercise.id!)
+//       .select()
+//       .single();
+
+//     if (error) throw error;
+//     return { success: true, data };
+//   } catch (error) {
+//     console.error('Unable to update exercise', error);
+//   }
+
+//   return { success: false, data: {} };
+// }
+
+export async function insertExercise(
+  exercise: ExerciseInsertRowType
+): QueryResultType<ExerciseRowType> {
   try {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from(EXERCISE_TABLE_NAME)
-      .update({ ...exercise })
-      .eq('id', exercise.id)
-      .select();
+      .upsert([exercise], { onConflict: 'id', defaultToNull: false })
+      .select()
+      .single<ExerciseRowType>();
+
+    if (error) throw error;
 
     return { success: true, data };
-  } catch (error) {
-    console.error('Unable to update exercise', error);
-  }
-
-  return { success: false, data: {} };
-}
-
-export async function insertExercise(exercise) {
-  try {
-    const { data } = await supabase
-      .from(EXERCISE_TABLE_NAME)
-      .insert({ ...exercise })
-      .select();
-
-    return { success: true, data: data[0] };
   } catch (error) {
     console.error('Unable to insert exercise', error);
   }
 
-  return { success: false, data: {} };
+  return { success: false };
 }
 
-export async function deleteExercise(id) {
+export async function deleteExercise(
+  id: number
+): QueryResultType<ExerciseRowType> {
   try {
     await supabase.from(EXERCISE_TABLE_NAME).delete().eq('id', id);
 

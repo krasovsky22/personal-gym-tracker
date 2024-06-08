@@ -1,4 +1,3 @@
-// import { supabase } from '@lib/supabase';
 import {
   flow,
   types,
@@ -6,18 +5,13 @@ import {
   Instance,
   SnapshotIn,
   SnapshotOut,
+  applySnapshot,
 } from 'mobx-state-tree';
 
-import {
-  Workout,
-  WorkoutSnapshotInType,
-  WorkoutSnapshotOutType,
-  WorkoutType,
-} from '@models/Workout';
-import { Exercise } from '@models/Exercise';
+import { Workout, WorkoutSnapshotInType, WorkoutType } from '@models/Workout';
+import { Exercise, ExerciseSnapshotInType } from '@models/Exercise';
 import { UserWorkout } from '@models/UserWorkout';
 
-// import fetchSets from '@lib/queries/fetchSets';
 import {
   insertWorkout,
   fetchWorkouts,
@@ -32,12 +26,10 @@ import {
 } from '@lib/queries/userWorkouts';
 import {
   loadExercises,
-  updateExercise,
   insertExercise,
   deleteExercise,
 } from '@lib/queries/exercises';
-import { WorkoutExercise } from '@models/WorkoutExercise';
-// import { SETS_TABLE_NAME } from '@lib/constants';
+// import { WorkoutExercise } from '@models/WorkoutExercise';
 
 export const ExercisesStore = types
   .model('ExercisesStore', {
@@ -111,20 +103,23 @@ export const ExercisesStore = types
       self.isInitialized = true;
     }),
 
-    saveExercise: flow(function* (exercise) {
-      if (exercise.id) {
-        const { success } = yield updateExercise(exercise);
+    saveExercise: flow(function* (
+      exercise: ExerciseSnapshotInType,
+      exerciseId?: string
+    ) {
+      const { success, data } = yield insertExercise({
+        id: exerciseId,
+        name: exercise.name,
+      });
 
-        if (success) {
-          exercise.setName(exercise.name);
+      if (success) {
+        if (exerciseId) {
+          const exerciseModel = self.getExerciseById(exerciseId)!;
+          applySnapshot(exerciseModel, data);
+
+          return;
         }
 
-        return;
-      }
-
-      // insert new one
-      const { success, data } = yield insertExercise(exercise);
-      if (success) {
         self.exercises.push(data);
       }
     }),
@@ -253,16 +248,16 @@ export const ExercisesStore = types
       yield self.loadWorkouts();
     }),
 
-    loadUserWorkouts: flow(function* () {
-      const userWorkoutsData = yield fetchUserWorkouts();
-      userWorkoutsData.forEach((userWorkoutData) => {
-        console.log(userWorkoutData);
-        const userWorkout = {
-          ...userWorkoutData,
-          workout: userWorkoutData.workout_id,
-        };
-      });
-    }),
+    // loadUserWorkouts: flow(function* () {
+    //   const userWorkoutsData = yield fetchUserWorkouts();
+    //   userWorkoutsData.forEach((userWorkoutData) => {
+    //     console.log(userWorkoutData);
+    //     const userWorkout = {
+    //       ...userWorkoutData,
+    //       workout: userWorkoutData.workout_id,
+    //     };
+    //   });
+    // }),
 
     createUserWorkout: flow(function* (workoutId) {
       yield createUserWorkout({ workout_id: workoutId });

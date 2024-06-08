@@ -12,7 +12,7 @@ import {
 import { AsyncButton } from '@components';
 import { useExercisesStore } from '@hooks';
 import { TextInput } from '@components/Form';
-import { ExerciseType } from '@models/Exercise';
+import { ExerciseType, ExerciseSnapshotInType } from '@models/Exercise';
 
 const schema = z.object({
   name: z.string().min(1, { message: 'Exercise Name is Required' }),
@@ -40,17 +40,12 @@ function ExerciseForm({ exercise }: ExerciseFormProps) {
   const onSubmit: SubmitHandler<ExerciseFormValuesType> = async (formData) => {
     const { name } = formData;
 
-    const originalName = exercise?.name ?? '';
+    const exerciseData: ExerciseSnapshotInType = {
+      name,
+    };
 
-    try {
-      exercise?.setName(name);
-
-      await saveExercise(exercise ?? { name });
-      return router.back();
-    } catch (e) {
-      exercise?.setName(originalName);
-      console.error('ERROR', e);
-    }
+    await saveExercise(exerciseData, exercise?.id ?? undefined);
+    return router.back();
   };
 
   const onError: SubmitErrorHandler<ExerciseFormValuesType> = (errors, _e) => {

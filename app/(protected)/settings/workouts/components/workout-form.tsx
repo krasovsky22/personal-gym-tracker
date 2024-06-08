@@ -1,10 +1,6 @@
 import * as z from 'zod';
 import uuid from 'react-native-uuid';
-import {
-  WorkoutSnapshotInType,
-  WorkoutSnapshotOutType,
-  WorkoutType,
-} from '@models/Workout';
+import { WorkoutSnapshotInType, WorkoutType } from '@models/Workout';
 import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';

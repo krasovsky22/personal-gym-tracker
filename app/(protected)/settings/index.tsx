@@ -1,4 +1,4 @@
-import { router, Stack } from 'expo-router';
+import { router } from 'expo-router';
 import { ListItem, lightColors } from '@rneui/themed';
 import { View, FlatList, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   content: {
     gap: 1,
-    fontSize: '12',
+    fontSize: 12,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',

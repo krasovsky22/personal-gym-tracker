@@ -2,9 +2,9 @@ import { types, Instance, SnapshotIn, SnapshotOut } from 'mobx-state-tree';
 
 export const Exercise = types
   .model('Exercise', {
-    id: types.identifier,
+    id: types.maybeNull(types.identifier),
     name: types.string,
-    created_at: types.string,
+    created_at: types.maybeNull(types.string),
   })
   .actions((self) => ({
     setName: (name: string) => {

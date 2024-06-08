@@ -1,5 +1,6 @@
 import { supabase } from '@lib/supabase';
-import { Database } from '../database.types.ts';
+import { QueryResultType } from './types';
+import { Database } from '../database.types';
 
 import { WorkoutSnapshotOutType } from '@models/Workout';
 
@@ -15,8 +16,6 @@ export type WorkoutExerciseRowInsertType =
   Database['public']['Tables']['workout_exercise']['Insert'];
 export type WorkoutExerciseRowUpdateType =
   Database['public']['Tables']['workout_exercise']['Update'];
-
-type QueryResultType<T extends {}> = Promise<{ success: boolean; data?: T }>;
 
 export async function insertWorkout(
   workout: WorkoutRowInsertType

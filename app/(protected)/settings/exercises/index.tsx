@@ -1,8 +1,9 @@
+import { useRouter } from 'expo-router';
 import { useState, useMemo } from 'react';
+import { Observer, observer } from 'mobx-react-lite';
 import { View, StyleSheet, FlatList, Text } from 'react-native';
 import { useTheme, ListItem, Button, Input, Icon } from '@rneui/themed';
-import { Observer, observer } from 'mobx-react-lite';
-import { useRouter } from 'expo-router';
+import { default as MaterialIcon } from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { AddNewFab } from '@components/UI';
 import { AsyncButton } from '@components';
@@ -36,7 +37,7 @@ function ExercisesScreen() {
         </View>
         <FlatList
           data={filteredExercises}
-          keyExtractor={(a) => a.id}
+          keyExtractor={(a) => a.id!}
           ListEmptyComponent={
             <View>
               <Text>No Exercises found</Text>
@@ -57,18 +58,12 @@ function ExercisesScreen() {
                         justifyContent: 'center',
                         backgroundColor: theme.colors.warning,
                       }}
+                      icon={<MaterialIcon name="pencil" size={30} />}
                       type="clear"
-                      icon={
-                        <Icon
-                          name="pencil"
-                          size={30}
-                          type="material-community"
-                        />
-                      }
                       onPress={() =>
                         router.push(`/settings/exercises/${item.id}`)
                       }
-                    />
+                    ></Button>
                   )}
                   rightContent={() => (
                     <AsyncButton
@@ -78,11 +73,11 @@ function ExercisesScreen() {
                         backgroundColor: theme.colors.error,
                       }}
                       type="clear"
-                      icon={<Icon name="delete-outline" size={30} />}
+                      icon={<MaterialIcon name="delete-outline" size={30} />}
                       onPress={() => {
                         return deleteExercise(item.id);
                       }}
-                    />
+                    ></AsyncButton>
                   )}
                 >
                   <Icon name="label-outline" type="material-community" />

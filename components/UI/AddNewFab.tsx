@@ -1,6 +1,6 @@
 import { View } from 'react-native';
+import { Icon } from '@rneui/themed';
 import { StyleSheet } from 'react-native';
-import { Button, Icon } from '@rneui/themed';
 import { useRouter } from 'expo-router';
 
 type AddNewFabType = {
