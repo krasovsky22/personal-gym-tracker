@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'expo-router';
+import { Link, Redirect } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import useAuthStore from '@hooks/useAuthStore';
@@ -63,6 +63,10 @@ export default function Account() {
   //       setLoading(false);
   //     }
   //   }
+
+  if (!user) {
+    return <Redirect href="/(auth)/sign-in" />;
+  }
 
   return (
     <View style={styles.container}>

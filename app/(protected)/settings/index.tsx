@@ -1,9 +1,14 @@
 import { router } from 'expo-router';
 import { ListItem, lightColors } from '@rneui/themed';
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet, ListRenderItem } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const SETTINGS_PAGES = [
+type RouteType = {
+  title: string;
+  icon: string;
+  link: string;
+};
+const SETTINGS_PAGES: RouteType[] = [
   {
     title: 'Exercises',
     icon: 'dumbbell',
@@ -27,7 +32,7 @@ const SETTINGS_PAGES = [
   },
 ];
 
-const renderRow = ({ item }) => {
+const renderRow: ListRenderItem<RouteType> = ({ item }) => {
   return (
     <View style={styles.list}>
       <ListItem
@@ -50,7 +55,7 @@ function SettingsScreen() {
       <View style={styles.container}>
         <FlatList
           data={SETTINGS_PAGES}
-          keyExtractor={(a, index) => index.toString()}
+          keyExtractor={(a) => a.link}
           renderItem={renderRow}
         />
       </View>
