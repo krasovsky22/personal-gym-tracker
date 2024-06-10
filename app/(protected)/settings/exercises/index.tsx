@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { useState, useMemo } from 'react';
 import { Observer, observer } from 'mobx-react-lite';
 import { View, StyleSheet, FlatList, Text } from 'react-native';
-import { useTheme, ListItem, Button, Input, Icon } from '@rneui/themed';
+import { useTheme, ListItem, Button, Input, Icon, Avatar } from '@rneui/themed';
 import { default as MaterialIcon } from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { AddNewFab } from '@components/UI';
@@ -80,7 +80,12 @@ function ExercisesScreen() {
                     ></AsyncButton>
                   )}
                 >
-                  <Icon name="label-outline" type="material-community" />
+                  <Avatar
+                    rounded
+                    source={{
+                      uri: item.icon_url,
+                    }}
+                  />
                   <ListItem.Content>
                     <ListItem.Title>{item.name}</ListItem.Title>
                     <ListItem.Subtitle>

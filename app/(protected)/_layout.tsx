@@ -49,7 +49,10 @@ function ProtectedLayout() {
   }
 
   return (
-    <View style={styles.container} onLayout={onLayoutRootView}>
+    <View
+      style={[styles.container, { backgroundColor: theme.colors.white }]}
+      onLayout={onLayoutRootView}
+    >
       <Tabs
         screenOptions={{
           headerShown: false,

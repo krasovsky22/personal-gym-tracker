@@ -8,7 +8,7 @@ export type ExerciseRowType = Database['public']['Tables']['exercise']['Row'];
 export type ExerciseInsertRowType =
   Database['public']['Tables']['exercise']['Insert'];
 
-export async function loadExercises(): QueryResultType<ExerciseRowType[]> {
+export async function fetchExercises(): QueryResultType<ExerciseRowType[]> {
   try {
     const { data, error } = await supabase
       .from(EXERCISE_TABLE_NAME)

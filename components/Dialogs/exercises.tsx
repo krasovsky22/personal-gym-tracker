@@ -1,6 +1,6 @@
 import { View, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useState, useMemo } from 'react';
-import { Dialog, Input, ListItem } from '@rneui/themed';
+import { Avatar, Dialog, Input, ListItem } from '@rneui/themed';
 
 import { useExercisesStore } from '@hooks';
 import { ExerciseType } from '@models/Exercise';
@@ -83,6 +83,12 @@ function ExercisesDialog({
               }}
               onPress={() => handleSelectExercise(exercise)}
             >
+              <Avatar
+                rounded
+                source={{
+                  uri: exercise.icon_url,
+                }}
+              />
               <ListItem.Content>
                 <ListItem.Title style={{ fontWeight: '700' }}>
                   {exercise.name}

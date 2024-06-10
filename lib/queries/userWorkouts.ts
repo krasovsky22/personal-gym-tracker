@@ -1,32 +1,44 @@
 import { supabase } from '@lib/supabase';
+import { QueryResultType } from './types';
+import { Database } from '../database.types';
 
 const USER_WORKOUT_TABLE = 'user_workout';
 
-export async function fetchUserWorkouts() {
-  const { data, error } = await supabase.from(USER_WORKOUT_TABLE).select('*');
+export type UserWorkRowType =
+  Database['public']['Tables']['user_workout']['Row'];
 
-  if (error) {
-    console.warn('Error while fetching user workouts ', error);
-  }
-
-  return data ?? [];
-}
-
-export async function createUserWorkout({ workout_id }) {
+export async function fetchUserWorkouts(): QueryResultType<UserWorkRowType[]> {
   try {
-    const userWorkout = {
-      workout_id,
-    };
-
-    console.log('saving', userWorkout);
-
     const { data, error } = await supabase
       .from(USER_WORKOUT_TABLE)
-      .insert(userWorkout)
-      .select()
-      .single();
+      .select('*')
+      .returns<UserWorkRowType[]>();
 
-    console.log(data, error);
+    if (error) throw error;
+
+    return { success: true, data };
+  } catch (error) {
+    console.error('Unable to load user workouts', error);
+  }
+
+  return { success: false, data: [] };
+}
+
+// export async function createUserWorkout({ workout_id }) {
+//   try {
+//     const userWorkout = {
+//       workout_id,
+//     };
+
+//     console.log('saving', userWorkout);
+
+//     const { data, error } = await supabase
+//       .from(USER_WORKOUT_TABLE)
+//       .insert(userWorkout)
+//       .select()
+//       .single();
+
+//     console.log(data, error);
 
     // const insertedWorkout = workoutSelect[0];
     // const exercisesData = exercises.map((exercise, index) => ({
@@ -45,12 +57,12 @@ export async function createUserWorkout({ workout_id }) {
     //   success: true,
     //   data: { workout: { ...insertedWorkout, exercises: exercisesSelect } },
     // };
-  } catch (error) {
-    console.error('Unable to create user workout', error);
-  }
+//   } catch (error) {
+//     console.error('Unable to create user workout', error);
+//   }
 
-  return { success: false, data: {} };
-}
+//   return { success: false, data: {} };
+// }
 
 // export async function fetchWorkouts() {
 //   try {

@@ -1,44 +1,30 @@
-import { useEffect } from 'react';
-import { Link } from 'expo-router';
-import * as z from 'zod';
-import { usePathname } from 'expo-router';
-import { observer } from 'mobx-react-lite';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SafeAreaView, View, Text, StyleSheet, FlatList } from 'react-native';
-import { ListItem, Button } from '@rneui/themed';
-import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
+import {
+  Button,
+  ListItem,
+  lightColors,
+  Text,
+  Card,
+  useTheme,
+} from '@rneui/themed';
+import { usePathname } from 'expo-router';
+import { Observer, observer } from 'mobx-react-lite';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import {
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import * as z from 'zod';
 
-import { useExercisesStore } from '@hooks';
 import { AsyncButton } from '@components';
-import WorkoutsDropdown from './components/WorkoutsDropdown';
+import { useExercisesStore } from '@hooks';
+import TrackWorkoutDialog from './components/track-workout-dialog';
 
 const ROUTE_PATH = '/workouts';
-
-// const renderRow = ({ item }) => {
-//   return (
-//     <SafeAreaView style={styles.list}>
-//       <ListItem
-//         bottomDivider
-//         //   onPress={() => item.link && router.push(item.link)}
-//       >
-//         <ListItem.Content style={styles.content}>
-//           <ListItem.Title>{item.exerciseName}</ListItem.Title>
-//           <ListItem.Subtitle>
-//             <View
-//               style={{
-//                 alignItems: 'flex-end',
-//               }}
-//             >
-//               <Text>Total Sets: {item.totalSets}</Text>
-//               <Text>Max Weight: {item.maxWeight}</Text>
-//             </View>
-//           </ListItem.Subtitle>
-//         </ListItem.Content>
-//         <ListItem.Chevron />
-//       </ListItem>
-//     </SafeAreaView>
-//   );
-// };
 
 const schema = z.object({
   workout: z.string().min(1, { message: 'Workout is Required' }),
@@ -46,7 +32,9 @@ const schema = z.object({
 
 const WorkoutsScreen = () => {
   const pathName = usePathname();
-  const { loadUserWorkouts, createUserWorkout } = useExercisesStore();
+  const { theme } = useTheme();
+  const { workouts, userWorkouts, loadUserWorkouts } = useExercisesStore();
+
   const { ...methods } = useForm({
     defaultValues: {
       workout: '',
@@ -60,18 +48,18 @@ const WorkoutsScreen = () => {
     }
   }, [pathName]);
 
-  const onSubmit = async (formData) => {
-    console.log(JSON.stringify(formData, null, 2));
-    const { workout } = formData;
+  //   const onSubmit = async (formData) => {
+  //     console.log(JSON.stringify(formData, null, 2));
+  //     const { workout } = formData;
 
-    await createUserWorkout(workout);
+  //     await createUserWorkout(workout);
 
-    console.log('created');
-  };
+  //     console.log('created');
+  //   };
 
-  const onError = (errors, e) => {
-    return console.log('ERRORS ', JSON.stringify(errors, null, 2));
-  };
+  //   const onError = (errors, e) => {
+  //     return console.log('ERRORS ', JSON.stringify(errors, null, 2));
+  //   };
 
   //   useEffect(() => {
   //     loadWorkout();
@@ -80,32 +68,41 @@ const WorkoutsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View>
+        <Text h2>Start Workout</Text>
+      </View>
       <View style={styles.topContainer}>
-        <Text>1</Text>
+        <Text h4>Quick Start</Text>
+        <Button title="Start an empty Workout" />
       </View>
-      <View style={styles.createWorkoutContainer}>
-        <FormProvider {...methods}>
-          <WorkoutsDropdown name="workout" />
-          <AsyncButton
-            color="success"
-            title="Create"
-            onPress={methods.handleSubmit(onSubmit, onError)}
-            containerStyle={{
-              width: '100%',
-              zIndex: 1,
-              elevation: 3,
-            }}
-          />
-        </FormProvider>
+      <View style={styles.userWorkoutsTemplatesContainer}>
+        <FlatList
+          data={workouts}
+          keyExtractor={(a) => a.id!}
+          renderItem={({ item }) => (
+            <Observer>
+              {() => (
+                <TrackWorkoutDialog workout={item}>
+                  <Card
+                    containerStyle={{ backgroundColor: theme.colors.white }}
+                  >
+                    <Card.Title h4>{item.name}</Card.Title>
+                    <Card.Divider />
+                    <View style={styles.workoutCardContainer}>
+                      {item.workoutExercises.map((workoutExercise) => (
+                        <Text key={workoutExercise.id}>
+                          {workoutExercise.exercise?.name} x
+                          {workoutExercise.sets_count}
+                        </Text>
+                      ))}
+                    </View>
+                  </Card>
+                </TrackWorkoutDialog>
+              )}
+            </Observer>
+          )}
+        />
       </View>
-      {/* <FlatList
-        data={trackedExercisesSummary}
-        keyExtractor={(a) => a.exerciseId}
-        renderItem={renderRow}
-      /> */}
-      {/* <Link href={{ pathname: '/workouts/edit-workout-exercise' }}>
-        <Button color="error" title="Track Workout" />
-      </Link> */}
     </SafeAreaView>
   );
 };
@@ -114,17 +111,30 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 30,
     flex: 1,
+    gap: 10,
   },
   topContainer: {
     flex: 1,
-    backgroundColor: 'pink',
   },
-  createWorkoutContainer: {
-    flex: 1,
-    gap: 1,
-    zIndex: 1,
-    backgroundColor: 'orange',
+
+  userWorkoutsTemplatesContainer: {
+    flex: 8,
   },
+  //   createWorkoutContainer: {
+  //     flex: 1,
+  //     gap: 1,
+  //     zIndex: 1,
+  //   },
+
+  workoutCardContainer: {},
+
+  //   list: {
+  //     flex: 1,
+  //     width: '100%',
+  //     display: 'flex',
+  //     borderTopWidth: 1,
+  //     borderColor: lightColors.greyOutline,
+  //   },
   //   list: {
   //     flex: 1,
   //     width: '100%',

@@ -6,11 +6,12 @@ import {
   SnapshotIn,
   SnapshotOut,
   applySnapshot,
+  cast,
 } from 'mobx-state-tree';
 
 import { Workout, WorkoutSnapshotInType, WorkoutType } from '@models/Workout';
 import { Exercise, ExerciseSnapshotInType } from '@models/Exercise';
-import { UserWorkout } from '@models/UserWorkout';
+import { UserWorkout, UserWorkoutSnapshotInType } from '@models/UserWorkout';
 
 import {
   insertWorkout,
@@ -22,10 +23,11 @@ import {
 } from '@lib/queries/workouts';
 import {
   fetchUserWorkouts,
-  createUserWorkout,
+  //   createUserWorkout,
+  UserWorkRowType,
 } from '@lib/queries/userWorkouts';
 import {
-  loadExercises,
+  fetchExercises,
   insertExercise,
   deleteExercise,
 } from '@lib/queries/exercises';
@@ -85,20 +87,45 @@ export const ExercisesStore = types
     // },
   }))
   .actions((self) => ({
+    loadExercises: flow(function* () {
+      const { data } = yield fetchExercises();
+      self.exercises = cast(data);
+    }),
+
     loadWorkouts: flow(function* () {
       const workouts = yield fetchWorkouts();
 
-      self.workouts = workouts;
+      self.workouts = cast(workouts);
+    }),
+
+    loadUserWorkouts: flow(function* () {
+      const { data, success } = yield fetchUserWorkouts();
+      if (!success) {
+        console.error('UNABLE TO FETCH USER WORKOUTS');
+      }
+
+      const userWorkoutsData: UserWorkoutSnapshotInType[] = data.map(
+        (userWorkoutData: UserWorkRowType) => {
+          console.log(userWorkoutData);
+          return {
+            ...userWorkoutData,
+            workout: userWorkoutData.workout_id,
+            workoutDate: userWorkoutData.workout_date,
+          };
+        }
+      );
+
+      console.log(userWorkoutsData);
+      self.userWorkouts = cast(userWorkoutsData);
     }),
   }))
   .actions((self) => ({
     afterCreate: flow(function* () {
-      const { success, data } = yield loadExercises();
-      if (success) {
-        self.exercises = data;
-      }
+      yield self.loadExercises();
 
       yield self.loadWorkouts();
+
+      yield self.loadUserWorkouts();
 
       self.isInitialized = true;
     }),
@@ -248,20 +275,9 @@ export const ExercisesStore = types
       yield self.loadWorkouts();
     }),
 
-    // loadUserWorkouts: flow(function* () {
-    //   const userWorkoutsData = yield fetchUserWorkouts();
-    //   userWorkoutsData.forEach((userWorkoutData) => {
-    //     console.log(userWorkoutData);
-    //     const userWorkout = {
-    //       ...userWorkoutData,
-    //       workout: userWorkoutData.workout_id,
-    //     };
-    //   });
+    // createUserWorkout: flow(function* (workoutId) {
+    //   yield createUserWorkout({ workout_id: workoutId });
     // }),
-
-    createUserWorkout: flow(function* (workoutId) {
-      yield createUserWorkout({ workout_id: workoutId });
-    }),
   }));
 
 export interface ExercisesStoreType extends Instance<typeof ExercisesStore> {}

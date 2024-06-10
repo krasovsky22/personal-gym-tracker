@@ -4,6 +4,8 @@ export const Exercise = types
   .model('Exercise', {
     id: types.maybeNull(types.identifier),
     name: types.string,
+    icon_url:
+      'https://uxwing.com/wp-content/themes/uxwing/download/fitness-gym-yoga-spa/gym-dumbbell-icon.svg',
     created_at: types.maybeNull(types.string),
   })
   .actions((self) => ({
