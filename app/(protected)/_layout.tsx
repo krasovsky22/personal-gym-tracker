@@ -68,7 +68,7 @@ function ProtectedLayout() {
           }}
         />
         <Tabs.Screen
-          name="workouts"
+          name="user-workouts"
           options={{
             title: 'Workout',
             tabBarLabel: 'Workout',

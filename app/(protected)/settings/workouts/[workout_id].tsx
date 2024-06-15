@@ -1,16 +1,11 @@
-import { useTheme } from '@rneui/themed';
-import { StyleSheet, View } from 'react-native';
-
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-
 import { useExercisesStore } from '@hooks';
+import { StyleSheet, View } from 'react-native';
+import { Stack, useLocalSearchParams } from 'expo-router';
 
 import WorkoutForm from './components/workout-form';
 
 function CreateWorkoutScreen() {
-  const router = useRouter();
-  const { theme } = useTheme();
-  const { getWorkoutById, saveWorkout } = useExercisesStore();
+  const { getWorkoutById } = useExercisesStore();
   const { workout_id } = useLocalSearchParams<{ workout_id: string }>();
 
   const workout = getWorkoutById(workout_id!);

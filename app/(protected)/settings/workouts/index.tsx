@@ -1,9 +1,8 @@
-import { toJS } from 'mobx';
-import { useEffect, useMemo, useState } from 'react';
+import { Input, ListItem } from '@rneui/themed';
+import { useRouter } from 'expo-router';
 import { Observer, observer } from 'mobx-react-lite';
-import { View, StyleSheet, FlatList } from 'react-native';
-import { Button, ListItem, Input } from '@rneui/themed';
-import { Stack, useRouter } from 'expo-router';
+import { useMemo, useState } from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
 
 import { AsyncButton } from '@components';
 import { AddNewFab } from '@components/UI';
