@@ -48,7 +48,7 @@ function TrackWorkoutDialog({ children, workout }: TrackWorkoutDialogType) {
         <View
           style={[
             styles.dialogTitleContainer,
-            { backgroundColor: theme.colors.primarylightest },
+            { backgroundColor: theme.colors.primarylight },
           ]}
         >
           <CloseButton onPress={toggleDialog} minified />
@@ -62,7 +62,7 @@ function TrackWorkoutDialog({ children, workout }: TrackWorkoutDialogType) {
 
         <Card.Divider />
 
-        <View style={{ backgroundColor: theme.colors.primarylightest }}>
+        <View>
           <TouchableOpacity
             onPress={() => {
               toggleDialog();
@@ -72,16 +72,14 @@ function TrackWorkoutDialog({ children, workout }: TrackWorkoutDialogType) {
             <FlatList
               data={workout.workoutExercises}
               renderItem={({ item }) => (
-                <ListItem bottomDivider>
+                <ListItem>
                   <Avatar
                     rounded
                     source={{
                       uri: item.exercise?.icon_url,
                     }}
                   />
-                  <ListItem.Content
-                    style={{ backgroundColor: theme.colors.primarylightest }}
-                  >
+                  <ListItem.Content>
                     <ListItem.Title style={{ fontWeight: 'bold' }}>
                       {item.sets_count} x {item.exercise?.name}
                     </ListItem.Title>

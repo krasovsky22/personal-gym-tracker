@@ -29,7 +29,11 @@ const theme = createTheme({
     Button: (props, theme) => ({
       radius: 'md',
     }),
-    ListItem: (props, theme) => ({}),
+    ListItem: (props, theme) => ({
+      containerStyle: {
+        backgroundColor: theme.colors.primarylightest,
+      },
+    }),
     Dialog: (props, theme) => ({
       overlayStyle: {
         backgroundColor: theme.colors.primarylightest,
