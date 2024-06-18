@@ -10,7 +10,12 @@ import {
 } from 'mobx-state-tree';
 
 import { Exercise, ExerciseSnapshotInType } from '@models/Exercise';
-import { UserWorkout, UserWorkoutSnapshotInType } from '@models/UserWorkout';
+import {
+  NewUserWorkout,
+  NewUserWorkoutSnapshotInType,
+  UserWorkout,
+  UserWorkoutSnapshotInType,
+} from '@models/UserWorkout';
 import { Workout, WorkoutSnapshotInType, WorkoutType } from '@models/Workout';
 
 import {
@@ -28,6 +33,7 @@ import {
   removeWorkoutExercises,
 } from '@lib/queries/workouts';
 import { WorkoutExercise } from '@models/WorkoutExercise';
+import { UserWorkoutExerciseSetSnapshotInType } from '@models/UserWorkoutExerciseSet';
 
 export const ExercisesStore = types
   .model('ExercisesStore', {
@@ -36,7 +42,7 @@ export const ExercisesStore = types
     workouts: types.array(Workout),
     exercises: types.array(Exercise),
     userWorkouts: types.array(UserWorkout),
-    newUserWorkout: types.maybeNull(UserWorkout),
+    newUserWorkout: types.maybeNull(NewUserWorkout),
     // workoutSets: types.array(WorkoutSet),
   })
   .views((self) => ({
@@ -250,23 +256,25 @@ export const ExercisesStore = types
     }),
 
     createNewUserWorkoutModel: (workout: WorkoutType) => {
-      const newUserWorkoutSnapshot: UserWorkoutSnapshotInType = {
+      const newUserWorkoutSnapshot: NewUserWorkoutSnapshotInType = {
         workout: workout.id!,
-        // userWorkoutExercises: workout.workoutExercises.map(
-        //   (workoutExercise) => ({
-        //     exercise: workoutExercise.exercise?.id!,
-        //   })
-        // ),
+        userWorkoutExercises: workout.workoutExercises.map(
+          (workoutExercise) => {
+            const setsCount = workoutExercise.sets_count ?? 3;
+            return {
+              exercise: workoutExercise.exercise?.id!,
+              userWorkoutExerciseSets: Array.from(
+                { length: setsCount },
+                (v, i) => i
+              ).map(() => {
+                return {};
+              }),
+            };
+          }
+        ),
       };
 
-      console.log(newUserWorkoutSnapshot);
-
       self.newUserWorkout = cast(newUserWorkoutSnapshot);
-      workout.workoutExercises.forEach((workoutExercise) => {
-        self.newUserWorkout?.addUserWorkoutExercise({
-          exercise: workoutExercise.exercise?.id!,
-        });
-      });
 
       return self.newUserWorkout!;
     },

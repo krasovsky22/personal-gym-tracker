@@ -1,8 +1,8 @@
-import { UserWorkoutType } from '@models/UserWorkout';
+import { NewUserWorkoutType, UserWorkoutType } from '@models/UserWorkout';
 import { StyleSheet, FlatList, View, Text } from 'react-native';
 
 type UserWorkoutTrackerType = {
-  userWorkout: UserWorkoutType;
+  userWorkout: UserWorkoutType | NewUserWorkoutType;
 };
 const UserWorkoutTracker = ({ userWorkout }: UserWorkoutTrackerType) => {
   console.log('user workout', userWorkout);
@@ -11,11 +11,10 @@ const UserWorkoutTracker = ({ userWorkout }: UserWorkoutTrackerType) => {
       <View style={styles.titleContainer}>
         <FlatList
           data={userWorkout.userWorkoutExercises}
-          keyExtractor={(a) => a.id!}
           renderItem={({ item }) => (
             <View>
               <Text>{item.exercise?.name}</Text>
-              {/* <FlatList
+              <FlatList
                 data={item.userWorkoutExerciseSets}
                 renderItem={({ item: exerciseSet }) => (
                   <View style={{ flex: 1 }}>
@@ -25,7 +24,7 @@ const UserWorkoutTracker = ({ userWorkout }: UserWorkoutTrackerType) => {
                     <Text>{exerciseSet.repeats}</Text>
                   </View>
                 )}
-              /> */}
+              />
             </View>
           )}
         />
@@ -40,5 +39,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  titleContainer: {},
+  titleContainer: {
+    flex: 1,
+  },
 });
