@@ -28,52 +28,45 @@ function ProtectedLayout() {
   }
 
   return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: theme.colors.primarylightest },
-      ]}
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        unmountOnBlur: true,
+      }}
     >
-      <Tabs
-        screenOptions={{
-          headerShown: false,
-          unmountOnBlur: true,
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: 'Home',
+          tabBarLabel: 'Home',
+          tabBarIcon: () => <Icon name="home" color={theme.colors.primary} />,
         }}
-      >
-        <Tabs.Screen
-          name="home"
-          options={{
-            title: 'Home',
-            tabBarLabel: 'Home',
-            tabBarIcon: () => <Icon name="home" color={theme.colors.primary} />,
-          }}
-        />
-        <Tabs.Screen
-          name="user-workouts"
-          options={{
-            title: 'Workout',
-            tabBarLabel: 'Workout',
-            tabBarIcon: () => (
-              <MaterialIcon
-                name="dumbbell"
-                color={theme.colors.warning}
-                size={25}
-              />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="settings"
-          options={{
-            title: 'Settings',
-            tabBarLabel: 'Settings',
-            tabBarIcon: () => (
-              <Icon name="settings" color={theme.colors.primary} />
-            ),
-          }}
-        />
-      </Tabs>
-    </View>
+      />
+      <Tabs.Screen
+        name="user-workouts"
+        options={{
+          title: 'Workout',
+          tabBarLabel: 'Workout',
+          tabBarIcon: () => (
+            <MaterialIcon
+              name="dumbbell"
+              color={theme.colors.warning}
+              size={25}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarLabel: 'Settings',
+          tabBarIcon: () => (
+            <Icon name="settings" color={theme.colors.primary} />
+          ),
+        }}
+      />
+    </Tabs>
   );
 }
 
