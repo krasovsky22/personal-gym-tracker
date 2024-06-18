@@ -2,11 +2,13 @@ import EmptyState from '@components/EmptyState';
 import { useExercisesStore } from '@hooks';
 import { Divider } from '@rneui/themed';
 import { useLocalSearchParams } from 'expo-router';
+import { cast } from 'mobx-state-tree';
 import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
+import UserWorkoutTracker from './components/user-workout-tracker';
 
 const WorkoutsScreen = () => {
   const { workout_id = '' } = useLocalSearchParams<{ workout_id: string }>()!;
-  const { getWorkoutById } = useExercisesStore();
+  const { getWorkoutById, createNewUserWorkoutModel } = useExercisesStore();
   const workout = getWorkoutById(workout_id)!;
 
   if (!workout) {
@@ -17,6 +19,9 @@ const WorkoutsScreen = () => {
       />
     );
   }
+
+  const userWorkout = createNewUserWorkoutModel(workout);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleContainer}>
@@ -25,7 +30,7 @@ const WorkoutsScreen = () => {
       </View>
       <Divider />
       <View style={styles.mainContainer}>
-        <Text>Track Workout {workout.name}</Text>
+        <UserWorkoutTracker userWorkout={userWorkout} />
       </View>
     </SafeAreaView>
   );
