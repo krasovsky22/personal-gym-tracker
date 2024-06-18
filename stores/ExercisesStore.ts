@@ -1,37 +1,33 @@
 import {
-  flow,
-  types,
-  destroy,
   Instance,
   SnapshotIn,
   SnapshotOut,
   applySnapshot,
   cast,
+  destroy,
+  flow,
+  types,
 } from 'mobx-state-tree';
 
-import { Workout, WorkoutSnapshotInType, WorkoutType } from '@models/Workout';
 import { Exercise, ExerciseSnapshotInType } from '@models/Exercise';
 import { UserWorkout, UserWorkoutSnapshotInType } from '@models/UserWorkout';
+import { Workout, WorkoutSnapshotInType, WorkoutType } from '@models/Workout';
 
 import {
-  insertWorkout,
-  fetchWorkouts,
-  deleteWorkout,
-  insertWorkoutExercises,
-  removeWorkoutExercises,
-  WorkoutExerciseRowInsertType,
-} from '@lib/queries/workouts';
-import {
-  fetchUserWorkouts,
-  //   createUserWorkout,
-  UserWorkRowType,
-} from '@lib/queries/userWorkouts';
-import {
+  deleteExercise,
   fetchExercises,
   insertExercise,
-  deleteExercise,
 } from '@lib/queries/exercises';
-// import { WorkoutExercise } from '@models/WorkoutExercise';
+import { UserWorkRowType, fetchUserWorkouts } from '@lib/queries/userWorkouts';
+import {
+  WorkoutExerciseRowInsertType,
+  deleteWorkout,
+  fetchWorkouts,
+  insertWorkout,
+  insertWorkoutExercises,
+  removeWorkoutExercises,
+} from '@lib/queries/workouts';
+import { WorkoutExercise } from '@models/WorkoutExercise';
 
 export const ExercisesStore = types
   .model('ExercisesStore', {
@@ -40,6 +36,7 @@ export const ExercisesStore = types
     workouts: types.array(Workout),
     exercises: types.array(Exercise),
     userWorkouts: types.array(UserWorkout),
+    newUserWorkout: types.maybeNull(UserWorkout),
     // workoutSets: types.array(WorkoutSet),
   })
   .views((self) => ({
@@ -62,29 +59,6 @@ export const ExercisesStore = types
         return exercise.id === id;
       });
     },
-
-    // get trackedExercisesSummary() {
-    //   const summary = self.workoutSets.reduce((carry, workoutSet) => {
-    //     const { weight, exercise } = workoutSet;
-    //     const exerciseId = exercise.id;
-
-    //     carry[exerciseId] ??= {
-    //       exerciseId,
-    //       totalSets: 0,
-    //       maxWeight: 0,
-    //       exerciseName: exercise.name,
-    //     };
-
-    //     carry[exerciseId].totalSets += 1;
-    //     if (carry[exerciseId].maxWeight < +weight) {
-    //       carry[exerciseId].maxWeight = +weight;
-    //     }
-
-    //     return carry;
-    //   }, {});
-
-    //   return Object.values(summary);
-    // },
   }))
   .actions((self) => ({
     loadExercises: flow(function* () {
@@ -274,6 +248,28 @@ export const ExercisesStore = types
 
       yield self.loadWorkouts();
     }),
+
+    createNewUserWorkoutModel: (workout: WorkoutType) => {
+      const newUserWorkoutSnapshot: UserWorkoutSnapshotInType = {
+        workout: workout.id!,
+        // userWorkoutExercises: workout.workoutExercises.map(
+        //   (workoutExercise) => ({
+        //     exercise: workoutExercise.exercise?.id!,
+        //   })
+        // ),
+      };
+
+      console.log(newUserWorkoutSnapshot);
+
+      self.newUserWorkout = cast(newUserWorkoutSnapshot);
+      workout.workoutExercises.forEach((workoutExercise) => {
+        self.newUserWorkout?.addUserWorkoutExercise({
+          exercise: workoutExercise.exercise?.id!,
+        });
+      });
+
+      return self.newUserWorkout!;
+    },
 
     // createUserWorkout: flow(function* (workoutId) {
     //   yield createUserWorkout({ workout_id: workoutId });

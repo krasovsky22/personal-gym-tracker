@@ -1,11 +1,14 @@
 import EmptyState from '@components/EmptyState';
 import { useExercisesStore } from '@hooks';
+import { UserWorkout } from '@models/UserWorkout';
 import { useLocalSearchParams } from 'expo-router';
+import { cast } from 'mobx-state-tree';
 import { View, Text, StyleSheet } from 'react-native';
+import UserWorkoutTracker from './components/user-workout-tracker';
 
 const WorkoutsScreen = () => {
   const { workout_id = '' } = useLocalSearchParams<{ workout_id: string }>()!;
-  const { getWorkoutById } = useExercisesStore();
+  const { getWorkoutById, createNewUserWorkoutModel } = useExercisesStore();
   const workout = getWorkoutById(workout_id)!;
 
   if (!workout) {
@@ -16,13 +19,16 @@ const WorkoutsScreen = () => {
       />
     );
   }
+
+  const userWorkout = createNewUserWorkoutModel(workout);
+
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
         <Text>Title</Text>
       </View>
       <View style={styles.mainContainer}>
-        <Text>Track Workout {workout.name}</Text>
+        <UserWorkoutTracker userWorkout={userWorkout} />
       </View>
     </View>
   );
