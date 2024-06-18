@@ -1,4 +1,4 @@
-import { View, StyleSheet } from 'react-native';
+import { SafeAreaView, StyleSheet } from 'react-native';
 import { Stack } from 'expo-router';
 
 // export const unstable_settings = {
@@ -7,13 +7,13 @@ import { Stack } from 'expo-router';
 
 export default function WorkoutsLayout() {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Stack
         screenOptions={{
           headerShown: false,
         }}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 

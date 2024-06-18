@@ -2,7 +2,7 @@ import EmptyState from '@components/EmptyState';
 import { useExercisesStore } from '@hooks';
 import { Divider } from '@rneui/themed';
 import { useLocalSearchParams } from 'expo-router';
-import { View, Text, StyleSheet } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
 
 const WorkoutsScreen = () => {
   const { workout_id = '' } = useLocalSearchParams<{ workout_id: string }>()!;
@@ -18,7 +18,7 @@ const WorkoutsScreen = () => {
     );
   }
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.titleContainer}>
         <Text>Title</Text>
         <Text>{workout.name}</Text>
@@ -27,7 +27,7 @@ const WorkoutsScreen = () => {
       <View style={styles.mainContainer}>
         <Text>Track Workout {workout.name}</Text>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -36,6 +36,7 @@ export default WorkoutsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 20,
   },
   titleContainer: {
     height: 30,
