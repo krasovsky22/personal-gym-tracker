@@ -1,5 +1,6 @@
 import EmptyState from '@components/EmptyState';
 import { useExercisesStore } from '@hooks';
+import { Divider } from '@rneui/themed';
 import { useLocalSearchParams } from 'expo-router';
 import { View, Text, StyleSheet } from 'react-native';
 
@@ -20,7 +21,9 @@ const WorkoutsScreen = () => {
     <View style={styles.container}>
       <View style={styles.titleContainer}>
         <Text>Title</Text>
+        <Text>{workout.name}</Text>
       </View>
+      <Divider />
       <View style={styles.mainContainer}>
         <Text>Track Workout {workout.name}</Text>
       </View>
@@ -39,6 +42,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   mainContainer: {
-    flex: 3,
+    flex: 5,
   },
 });

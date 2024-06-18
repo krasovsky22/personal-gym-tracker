@@ -1,6 +1,13 @@
 import { CloseButton } from '@components/UI';
 import { WorkoutType } from '@models/Workout';
-import { Dialog, Button, Card, ListItem, Avatar } from '@rneui/themed';
+import {
+  Dialog,
+  Button,
+  Card,
+  ListItem,
+  Avatar,
+  useTheme,
+} from '@rneui/themed';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -18,6 +25,7 @@ type TrackWorkoutDialogType = {
 
 function TrackWorkoutDialog({ children, workout }: TrackWorkoutDialogType) {
   const router = useRouter();
+  const { theme } = useTheme();
   const [visible, setVisible] = useState(false);
 
   const toggleDialog = () => {
@@ -37,7 +45,12 @@ function TrackWorkoutDialog({ children, workout }: TrackWorkoutDialogType) {
           position: 'absolute',
         }}
       >
-        <View style={styles.dialogTitleContainer}>
+        <View
+          style={[
+            styles.dialogTitleContainer,
+            { backgroundColor: theme.colors.primarylightest },
+          ]}
+        >
           <CloseButton onPress={toggleDialog} minified />
           <Dialog.Title title={workout.name} titleStyle={styles.dialogTitle} />
           <Button
@@ -49,7 +62,7 @@ function TrackWorkoutDialog({ children, workout }: TrackWorkoutDialogType) {
 
         <Card.Divider />
 
-        <View>
+        <View style={{ backgroundColor: theme.colors.primarylightest }}>
           <TouchableOpacity
             onPress={() => {
               toggleDialog();
@@ -66,7 +79,9 @@ function TrackWorkoutDialog({ children, workout }: TrackWorkoutDialogType) {
                       uri: item.exercise?.icon_url,
                     }}
                   />
-                  <ListItem.Content>
+                  <ListItem.Content
+                    style={{ backgroundColor: theme.colors.primarylightest }}
+                  >
                     <ListItem.Title style={{ fontWeight: 'bold' }}>
                       {item.sets_count} x {item.exercise?.name}
                     </ListItem.Title>
@@ -86,7 +101,7 @@ export default TrackWorkoutDialog;
 
 const styles = StyleSheet.create({
   dialogTitleContainer: {
-    backgroundColor: 'lightgrey',
+    // backgroundColor: 'lightgrey',
     flex: 1,
     marginTop: -20,
     marginLeft: -20,
@@ -101,6 +116,6 @@ const styles = StyleSheet.create({
   },
 
   dialogBody: {
-    backgroundColor: 'orange',
+    // backgroundColor: 'orange',
   },
 });

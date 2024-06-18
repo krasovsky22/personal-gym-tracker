@@ -32,7 +32,13 @@
     },
     "plugins": [
       "expo-router",
-      "expo-build-properties"
+      "expo-build-properties",
+      [
+        "expo-font",
+        {
+          "fonts": ["assets/font/ComicKhazi.ttf"]
+        }
+      ]
     ],
     "extra": {
       "router": {

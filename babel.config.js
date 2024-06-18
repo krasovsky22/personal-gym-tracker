@@ -12,6 +12,7 @@ module.exports = function(api) {
             '@hooks': './hooks',
             '@stores': './stores',
             '@models': './models',
+            '@assets': './assets',
             '@components': './components',
           },
           extensions: ['.js', '.jsx', '.ts', '.tsx'],

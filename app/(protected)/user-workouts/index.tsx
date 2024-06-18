@@ -28,7 +28,7 @@ const WorkoutsScreen = () => {
                 <TrackWorkoutDialog workout={item}>
                   <Card
                     containerStyle={{
-                      backgroundColor: theme.colors.white,
+                      backgroundColor: theme.colors.primarylightest,
                       marginHorizontal: 0,
                     }}
                   >
@@ -36,7 +36,10 @@ const WorkoutsScreen = () => {
                     <Card.Divider />
                     <View style={styles.workoutCardContainer}>
                       {item.workoutExercises.map((workoutExercise) => (
-                        <Text key={workoutExercise.id}>
+                        <Text
+                          key={workoutExercise.id}
+                          style={{ color: theme.colors.primary }}
+                        >
                           {workoutExercise.exercise?.name} x
                           {workoutExercise.sets_count}
                         </Text>
