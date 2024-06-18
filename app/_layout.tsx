@@ -5,7 +5,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback } from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import { RootStore, StoreProvider } from '@stores/RootStore';
 
@@ -62,7 +62,7 @@ export default function Layout() {
   }
 
   return (
-    <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
+    <View style={styles.container} onLayout={onLayoutRootView}>
       <ThemeProvider theme={theme}>
         <StoreProvider value={rootStore}>
           <Stack
@@ -72,7 +72,7 @@ export default function Layout() {
           />
         </StoreProvider>
       </ThemeProvider>
-    </SafeAreaView>
+    </View>
   );
 }
 
