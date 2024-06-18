@@ -1,30 +1,68 @@
 import 'react-native-url-polyfill/auto';
 
+import { ThemeProvider, createTheme } from '@rneui/themed';
+import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
-import { Platform, SafeAreaView, StyleSheet } from 'react-native';
-import { lightColors, createTheme, ThemeProvider } from '@rneui/themed';
+import * as SplashScreen from 'expo-splash-screen';
+import { useCallback } from 'react';
+import { View, StyleSheet } from 'react-native';
 
-import { StoreProvider, RootStore } from '@stores/RootStore';
+import { RootStore, StoreProvider } from '@stores/RootStore';
 
 const theme = createTheme({
+  mode: 'light',
   lightColors: {
-    ...Platform.select({
-      default: lightColors.white,
-      ios: lightColors.platform.ios,
-    }),
+    primary: '#134074',
+    primaryDarker: '#13315C',
+    primaryDarkest: '#0B2545',
+    primarylight: '#8DA9C4',
+    primarylightest: '#EEF4ED',
+  },
+  darkColors: {
+    primary: '#134074',
+    primaryDarker: '#13315C',
+    primaryDarkest: '#0B2545',
+    primarylight: '#8DA9C4',
+    primarylightest: '#EEF4ED',
   },
   components: {
     Button: (props, theme) => ({
       radius: 'md',
+    }),
+    ListItem: (props, theme) => ({
+      containerStyle: {
+        backgroundColor: theme.colors.primarylightest,
+      },
+    }),
+    Dialog: (props, theme) => ({
+      overlayStyle: {
+        backgroundColor: theme.colors.primarylightest,
+      },
     }),
   },
 });
 
 const rootStore = RootStore.create({});
 
+SplashScreen.preventAutoHideAsync();
+
 export default function Layout() {
+  const [fontsLoaded, fontError] = useFonts({
+    ComicKhazi: require('../assets/font/ComicKhazi.ttf'),
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded || fontError) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
+
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container} onLayout={onLayoutRootView}>
       <ThemeProvider theme={theme}>
         <StoreProvider value={rootStore}>
           <Stack
@@ -34,13 +72,12 @@ export default function Layout() {
           />
         </StoreProvider>
       </ThemeProvider>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingTop: Platform.OS === 'ios' ? 0 : 30,
   },
 });

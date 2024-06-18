@@ -15,7 +15,6 @@ function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
     paddingTop: Platform.OS === 'ios' ? 0 : 30,
     flex: 1,
   },

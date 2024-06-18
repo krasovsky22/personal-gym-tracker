@@ -10,11 +10,7 @@ import useStore from '@hooks/useStore';
 import useAuthStore from '@hooks/useAuthStore';
 import { RootStoreType } from '@stores/RootStore';
 
-// Keep the splash screen visible while we fetch resources
-// SplashScreen.preventAutoHideAsync();
-
 function ProtectedLayout() {
-  const [appIsReady, setAppIsReady] = useState(false);
   const { theme } = useTheme();
   const { isLoggedIn } = useAuthStore();
   const { isInitialized, initialize } = useStore<RootStoreType>();
@@ -23,76 +19,54 @@ function ProtectedLayout() {
     isLoggedIn && initialize();
   }, [isLoggedIn]);
 
-  useEffect(() => {
-    if (isInitialized) {
-      setAppIsReady(true);
-    }
-  }, [isInitialized]);
-
-  const onLayoutRootView = useCallback(async () => {
-    if (isInitialized) {
-      // This tells the splash screen to hide immediately! If we call this after
-      // `setAppIsReady`, then we may see a blank screen while the app is
-      // loading its initial state and rendering its first pixels. So instead,
-      // we hide the splash screen once we know the root view has already
-      // performed layout.
-        await SplashScreen.hideAsync();
-    }
-  }, [isInitialized]);
+  if (!isInitialized) {
+    return <Text>Loading app...</Text>;
+  }
 
   if (!isLoggedIn) {
     return <Redirect href="/(auth)/sign-in" />;
   }
 
-  if (!appIsReady) {
-    return null;
-  }
-
   return (
-    <View
-      style={[styles.container, { backgroundColor: theme.colors.white }]}
-      onLayout={onLayoutRootView}
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        unmountOnBlur: true,
+      }}
     >
-      <Tabs
-        screenOptions={{
-          headerShown: false,
-          unmountOnBlur: true,
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: 'Home',
+          tabBarLabel: 'Home',
+          tabBarIcon: () => <Icon name="home" color={theme.colors.primary} />,
         }}
-      >
-        <Tabs.Screen
-          name="home"
-          options={{
-            title: 'Home',
-            tabBarLabel: 'Home',
-            tabBarIcon: () => <Icon name="home" color={theme.colors.primary} />,
-          }}
-        />
-        <Tabs.Screen
-          name="user-workouts"
-          options={{
-            title: 'Workout',
-            tabBarLabel: 'Workout',
-            tabBarIcon: () => (
-              <MaterialIcon
-                name="dumbbell"
-                color={theme.colors.warning}
-                size={25}
-              />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="settings"
-          options={{
-            title: 'Settings',
-            tabBarLabel: 'Settings',
-            tabBarIcon: () => (
-              <Icon name="settings" color={theme.colors.primary} />
-            ),
-          }}
-        />
-      </Tabs>
-    </View>
+      />
+      <Tabs.Screen
+        name="user-workouts"
+        options={{
+          title: 'Workout',
+          tabBarLabel: 'Workout',
+          tabBarIcon: () => (
+            <MaterialIcon
+              name="dumbbell"
+              color={theme.colors.warning}
+              size={25}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarLabel: 'Settings',
+          tabBarIcon: () => (
+            <Icon name="settings" color={theme.colors.primary} />
+          ),
+        }}
+      />
+    </Tabs>
   );
 }
 
