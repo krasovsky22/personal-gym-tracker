@@ -39,6 +39,17 @@ const theme = createTheme({
         backgroundColor: theme.colors.primarylightest,
       },
     }),
+    CheckBox: (props, theme) => ({
+      wrapperStyle: {
+        margin: 0,
+        padding: 0,
+      },
+      containerStyle: {
+        height: '100%',
+        margin: 0,
+        padding: 0,
+      },
+    }),
   },
 });
 
