@@ -1,9 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, ActivityIndicator } from 'react-native';
 import { observer } from 'mobx-react-lite';
 import { Redirect, Tabs } from 'expo-router';
 import { Icon, useTheme } from '@rneui/themed';
-import * as SplashScreen from 'expo-splash-screen';
 import { default as MaterialIcon } from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import useStore from '@hooks/useStore';
@@ -19,12 +18,17 @@ function ProtectedLayout() {
     isLoggedIn && initialize();
   }, [isLoggedIn]);
 
-  if (!isInitialized) {
-    return <Text>Loading app...</Text>;
-  }
-
   if (!isLoggedIn) {
     return <Redirect href="/(auth)/sign-in" />;
+  }
+
+  if (!isInitialized) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size={'large'} />
+        <Text>Initializing App...</Text>
+      </View>
+    );
   }
 
   return (

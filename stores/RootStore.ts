@@ -10,15 +10,13 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { AuthStore } from './AuthStore';
-import { ExercisesStore } from './ExercisesStore';
+import { ExercisesStore, ExercisesStoreType } from './ExercisesStore';
 
 export const RootStore = types
   .model('RootStore', {
     identifier: types.optional(types.identifier, 'RootStore'),
     authStore: types.optional(AuthStore, () => AuthStore.create()),
-    exercisesStore: types.optional(ExercisesStore, () =>
-      ExercisesStore.create()
-    ),
+    exercisesStore: types.maybeNull(ExercisesStore),
     // navigationStore: types.optional(NavigationStore, () =>
     //   NavigationStore.create({
     //     repoDetailScreenParams: {},
@@ -28,13 +26,20 @@ export const RootStore = types
   })
   .views((self) => ({
     get isInitialized() {
-      return self.exercisesStore.isInitialized;
+      return self.exercisesStore?.isInitialized;
+    },
+  }))
+  .actions((self) => ({
+    setExerciseStore: (store: ExercisesStoreType) => {
+      self.exercisesStore = store;
     },
   }))
   .actions((self) => ({
     async initialize() {
       if (self.authStore.isLoggedIn && self.exercisesStore === null) {
-        self.exercisesStore = await ExercisesStore.create();
+        console.log('initializing');
+        const store = await ExercisesStore.create();
+        self.setExerciseStore(store);
       }
     },
     async save() {
