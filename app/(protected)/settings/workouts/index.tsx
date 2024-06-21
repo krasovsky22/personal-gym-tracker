@@ -4,15 +4,16 @@ import { Observer, observer } from 'mobx-react-lite';
 import { useMemo, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
-import { AsyncButton } from '@components';
+import { AsyncButton, EmptyState } from '@components';
 import { AddNewFab } from '@components/UI';
 import { useExercisesStore } from '@hooks';
 import { WorkoutType } from '@models/Workout';
 
 const WorkoutsScreen = () => {
-  const [filterText, setFilterText] = useState<string>('');
   const router = useRouter();
-  const { workouts, deleteWorkout } = useExercisesStore();
+  const [filterText, setFilterText] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { workouts, deleteWorkout, loadWorkouts } = useExercisesStore();
 
   const filteredWorkouts = useMemo(() => {
     if (!filterText.length) {
@@ -28,6 +29,12 @@ const WorkoutsScreen = () => {
     await deleteWorkout(workout);
   };
 
+  const handleOnRefresh = async () => {
+    setIsLoading(true);
+    await loadWorkouts();
+    setIsLoading(false);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.list}>
@@ -39,7 +46,10 @@ const WorkoutsScreen = () => {
           />
         </View>
         <FlatList
+          refreshing={isLoading}
+          onRefresh={handleOnRefresh}
           data={filteredWorkouts}
+          ListEmptyComponent={<EmptyState />}
           renderItem={({ item }) => (
             <Observer>
               {() => (

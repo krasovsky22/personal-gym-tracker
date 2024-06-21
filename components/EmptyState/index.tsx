@@ -1,16 +1,21 @@
 import { View, Text, StyleSheet } from 'react-native';
 
 type EmptyStateType = {
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
 };
 
-const EmptyState = ({ title, description }: EmptyStateType) => {
+const EmptyState = ({
+  title = 'No elements found',
+  description,
+}: EmptyStateType) => {
   return (
     <View style={styles.container}>
       <View style={styles.bodyContainer}>
         <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{title}</Text>
-        <Text style={{ textAlign: 'center' }}>{description}</Text>
+        {description && (
+          <Text style={{ textAlign: 'center' }}>{description}</Text>
+        )}
       </View>
     </View>
   );

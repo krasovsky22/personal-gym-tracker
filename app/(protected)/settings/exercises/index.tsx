@@ -6,7 +6,7 @@ import { useTheme, ListItem, Button, Input, Icon, Avatar } from '@rneui/themed';
 import { default as MaterialIcon } from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { AddNewFab } from '@components/UI';
-import { AsyncButton } from '@components';
+import { AsyncButton, EmptyState } from '@components';
 import useExercisesStore from '@hooks/useExercisesStore';
 
 function ExercisesScreen() {
@@ -48,11 +48,7 @@ function ExercisesScreen() {
           onRefresh={handleOnRefresh}
           data={filteredExercises}
           keyExtractor={(a) => a.id!}
-          ListEmptyComponent={
-            <View>
-              <Text>No Exercises found</Text>
-            </View>
-          }
+          ListEmptyComponent={<EmptyState />}
           renderItem={({ item }) => (
             <Observer>
               {() => (
