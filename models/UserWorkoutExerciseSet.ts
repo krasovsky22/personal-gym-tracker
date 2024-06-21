@@ -3,17 +3,15 @@ import { Instance, SnapshotIn, SnapshotOut, types } from 'mobx-state-tree';
 
 export const NewUserWorkoutExerciseSet = types
   .model({
-    weight: types.optional(types.string, '0.1'),
-    repeats: types.optional(types.number, 0),
+    weight: types.maybeNull(types.string),
+    repeats: types.maybeNull(types.number),
   })
   .actions((self) => ({
     setWeight: (value: string) => {
-      console.log('set weight', value, parseFloat(value));
       self.weight = value;
     },
 
     setRepeats: (value: number) => {
-      console.log('repates', value);
       self.repeats = value;
     },
   }));
