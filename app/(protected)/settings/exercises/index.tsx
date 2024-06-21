@@ -11,9 +11,11 @@ import useExercisesStore from '@hooks/useExercisesStore';
 
 function ExercisesScreen() {
   const [filterText, setFilterText] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { theme } = useTheme();
-  const { sortedExercises, deleteExercise } = useExercisesStore();
+  const { sortedExercises, deleteExercise, loadExercises } =
+    useExercisesStore();
 
   const filteredExercises = useMemo(() => {
     if (!filterText.length) {
@@ -24,6 +26,12 @@ function ExercisesScreen() {
       exercise.name.includes(filterText)
     );
   }, [filterText, sortedExercises, sortedExercises.length]);
+
+  const handleOnRefresh = async () => {
+    setIsLoading(true);
+    await loadExercises();
+    setIsLoading(false);
+  };
 
   return (
     <View style={styles.container}>
@@ -36,6 +44,8 @@ function ExercisesScreen() {
           />
         </View>
         <FlatList
+          refreshing={isLoading}
+          onRefresh={handleOnRefresh}
           data={filteredExercises}
           keyExtractor={(a) => a.id!}
           ListEmptyComponent={
