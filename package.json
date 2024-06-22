@@ -10,7 +10,7 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "deploy": "eas update",
-    "types": "supabase gen types typescript --local > ./lib/database.types.ts"
+    "db:types": "supabase gen types typescript --local > ./lib/database.types.ts"
   },
   "dependencies": {
     "@expo/webpack-config": "^19.0.0",

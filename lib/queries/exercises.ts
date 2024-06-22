@@ -1,12 +1,11 @@
 import { supabase } from '@lib/supabase';
 import { QueryResultType } from './types';
-import { Database } from '../database.types';
+import { Tables, TablesInsert } from '../database.types';
 
 export const EXERCISE_TABLE_NAME = 'exercise';
 
-export type ExerciseRowType = Database['public']['Tables']['exercise']['Row'];
-export type ExerciseInsertRowType =
-  Database['public']['Tables']['exercise']['Insert'];
+export type ExerciseRowType = Tables<'exercise'>;
+export type ExerciseInsertRowType = TablesInsert<'exercise'>;
 
 export async function fetchExercises(): QueryResultType<ExerciseRowType[]> {
   try {

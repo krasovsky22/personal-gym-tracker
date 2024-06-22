@@ -1,4 +1,6 @@
+import { useExercisesStore } from '@hooks';
 import { NewUserWorkoutType, UserWorkoutType } from '@models/UserWorkout';
+import { NewUserWorkoutExerciseSetType } from '@models/UserWorkoutExerciseSet';
 import { Card, CheckBox, Divider, useTheme, Avatar } from '@rneui/themed';
 import { Observer } from 'mobx-react-lite';
 import { StyleSheet, FlatList, View, Text, TextInput } from 'react-native';
@@ -8,7 +10,16 @@ type UserWorkoutTrackerType = {
 };
 const UserWorkoutTracker = ({ userWorkout }: UserWorkoutTrackerType) => {
   const { theme } = useTheme();
-  console.log('user workout', userWorkout);
+  const { saveUserWorkoutModel } = useExercisesStore();
+
+  const onUserWorkoutSetToggle = async (
+    userWorkoutSet: NewUserWorkoutExerciseSetType
+  ) => {
+    userWorkoutSet.toggleCompleted();
+
+    await saveUserWorkoutModel(userWorkout);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
@@ -152,7 +163,9 @@ const UserWorkoutTracker = ({ userWorkout }: UserWorkoutTrackerType) => {
                                   : theme.colors.warning
                               }
                               uncheckedIcon="checkbox-blank-outline"
-                              onPress={exerciseSet.toggleCompleted}
+                              onPress={() =>
+                                onUserWorkoutSetToggle(exerciseSet)
+                              }
                             />
                           </Text>
                         </View>

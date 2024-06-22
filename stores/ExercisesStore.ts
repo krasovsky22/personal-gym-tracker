@@ -13,8 +13,10 @@ import { Exercise, ExerciseSnapshotInType } from '@models/Exercise';
 import {
   NewUserWorkout,
   NewUserWorkoutSnapshotInType,
+  NewUserWorkoutType,
   UserWorkout,
   UserWorkoutSnapshotInType,
+  UserWorkoutType,
 } from '@models/UserWorkout';
 import { Workout, WorkoutSnapshotInType, WorkoutType } from '@models/Workout';
 
@@ -23,7 +25,14 @@ import {
   fetchExercises,
   insertExercise,
 } from '@lib/queries/exercises';
-import { UserWorkRowType, fetchUserWorkouts } from '@lib/queries/userWorkouts';
+import {
+  UserWorkExerciseRowInsertType,
+  UserWorkRowInsertType,
+  UserWorkRowType,
+  fetchUserWorkouts,
+  insertUserWorkout,
+  insertUserWorkoutExercises,
+} from '@lib/queries/userWorkouts';
 import {
   WorkoutExerciseRowInsertType,
   deleteWorkout,
@@ -33,7 +42,12 @@ import {
   removeWorkoutExercises,
 } from '@lib/queries/workouts';
 import { WorkoutExercise } from '@models/WorkoutExercise';
-import { UserWorkoutExerciseSetSnapshotInType } from '@models/UserWorkoutExerciseSet';
+import {
+  NewUserWorkoutExerciseSetType,
+  UserWorkoutExerciseSetSnapshotInType,
+  UserWorkoutExerciseSetType,
+} from '@models/UserWorkoutExerciseSet';
+import { UserWorkoutExercise } from '@models/UserWorkoutExercise';
 
 export const ExercisesStore = types
   .model('ExercisesStore', {
@@ -279,9 +293,48 @@ export const ExercisesStore = types
       return self.newUserWorkout!;
     },
 
-    // createUserWorkout: flow(function* (workoutId) {
-    //   yield createUserWorkout({ workout_id: workoutId });
-    // }),
+    saveUserWorkoutModel: flow(function* (
+      userWorkout: NewUserWorkoutType | UserWorkoutType
+    ) {
+      // create user workout row
+      const userWorkoutData: UserWorkRowInsertType = {
+        workout_id: userWorkout.workout?.id!,
+      };
+
+      if ((<UserWorkoutType>userWorkout)?.id) {
+        userWorkoutData.id = (<UserWorkoutType>userWorkout).id!;
+      }
+
+      const { data: userWorkoutRow } = yield insertUserWorkout(userWorkoutData);
+      // create user workout exercise row
+
+      console.log('INSERTED USER WORKOUT ROW', userWorkoutRow);
+      const userWorkoutExercisesData: UserWorkExerciseRowInsertType[] =
+        userWorkout.userWorkoutExercises.map((userWorkoutExercise) => {
+          return {
+            user_workout_id: userWorkoutRow.id,
+            completed: userWorkoutExercise.completed,
+            exercise_id: userWorkoutExercise.exercise?.id!,
+          };
+        });
+
+      const { data: userWorkoutExercisesRows } =
+        yield insertUserWorkoutExercises(userWorkoutExercisesData);
+
+      console.log(
+        'INSERTED USER WORKOUT EXERCISE ROW',
+        userWorkoutExercisesRows
+      );
+      // create user workout exercise set row
+    }),
+
+    saveUserWorkoutSetModel: flow(function* (
+      userWorkoutExerciseSet:
+        | NewUserWorkoutExerciseSetType
+        | UserWorkoutExerciseSetType
+    ) {
+      // create or update user workout exercise record;
+    }),
   }));
 
 export interface ExercisesStoreType extends Instance<typeof ExercisesStore> {}

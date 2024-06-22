@@ -1,5 +1,10 @@
-import { Instance, SnapshotIn, SnapshotOut, types } from 'mobx-state-tree';
-
+import {
+  Instance,
+  SnapshotIn,
+  SnapshotOut,
+  flow,
+  types,
+} from 'mobx-state-tree';
 
 export const NewUserWorkoutExerciseSet = types
   .model({
@@ -19,6 +24,9 @@ export const NewUserWorkoutExerciseSet = types
     toggleCompleted: () => {
       self.completed = !self.completed;
     },
+  }))
+  .actions((self) => ({
+    save: flow(function* () {}),
   }));
 
 export const UserWorkoutExerciseSet = types

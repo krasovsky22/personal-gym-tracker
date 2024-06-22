@@ -1,21 +1,19 @@
 import { supabase } from '@lib/supabase';
 import { QueryResultType } from './types';
 import { Database } from '../database.types';
+import { Tables, TablesInsert, TablesUpdate } from '../database.types';
 
 import { WorkoutSnapshotOutType } from '@models/Workout';
 
 const WORKOUT_TABLE = 'workout';
 const WORKOUT_EXERCISE_TABLE = 'workout_exercise';
 
-export type WorkoutRowType = Database['public']['Tables']['workout']['Row'];
-export type WorkoutRowInsertType =
-  Database['public']['Tables']['workout']['Insert'];
-export type WorkoutExerciseRowType =
-  Database['public']['Tables']['workout_exercise']['Row'];
-export type WorkoutExerciseRowInsertType =
-  Database['public']['Tables']['workout_exercise']['Insert'];
-export type WorkoutExerciseRowUpdateType =
-  Database['public']['Tables']['workout_exercise']['Update'];
+export type WorkoutRowType = Tables<'workout'>;
+export type WorkoutRowInsertType = TablesInsert<'workout'>;
+
+export type WorkoutExerciseRowType = Tables<'workout_exercise'>;
+export type WorkoutExerciseRowInsertType = TablesInsert<'workout_exercise'>;
+export type WorkoutExerciseRowUpdateType = TablesUpdate<'workout_exercise'>;
 
 export async function insertWorkout(
   workout: WorkoutRowInsertType

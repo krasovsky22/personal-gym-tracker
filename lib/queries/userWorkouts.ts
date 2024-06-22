@@ -1,11 +1,23 @@
 import { supabase } from '@lib/supabase';
 import { QueryResultType } from './types';
-import { Database } from '../database.types';
+import { Tables, TablesInsert } from '../database.types';
 
 const USER_WORKOUT_TABLE = 'user_workout';
+const USER_WORKOUT_EXERCISE_TABLE = 'user_workout_exercise';
 
-export type UserWorkRowType =
-  Database['public']['Tables']['user_workout']['Row'];
+// export type UserWorkRowType =
+//   Database['public']['Tables']['user_workout']['Row'];
+
+export type UserWorkRowType = Tables<'user_workout'>;
+export type UserWorkRowInsertType = TablesInsert<'user_workout'>;
+
+export type UserWorkExerciseRowType = Tables<'user_workout_exercise'>;
+export type UserWorkExerciseRowInsertType =
+  TablesInsert<'user_workout_exercise'>;
+
+export type UserWorkExerciseSetRowType = Tables<'user_workout_exercise_set'>;
+export type UserWorkExerciseSetRowInsertType =
+  TablesInsert<'user_workout_exercise_set'>;
 
 export async function fetchUserWorkouts(): QueryResultType<UserWorkRowType[]> {
   try {
@@ -22,6 +34,46 @@ export async function fetchUserWorkouts(): QueryResultType<UserWorkRowType[]> {
   }
 
   return { success: false, data: [] };
+}
+
+export async function insertUserWorkout(
+  userWorkout: UserWorkRowInsertType
+): QueryResultType<UserWorkRowType> {
+  try {
+    const { data, error } = await supabase
+      .from(USER_WORKOUT_TABLE)
+      .upsert([userWorkout], { onConflict: 'id', defaultToNull: false })
+      .select()
+      .single<UserWorkRowType>();
+
+    if (error) throw error;
+
+    return { success: true, data };
+  } catch (error) {
+    console.error('Unable to update workout', error);
+  }
+
+  return { success: false };
+}
+
+export async function insertUserWorkoutExercises(
+  userWorkoutExercises: UserWorkExerciseRowInsertType[]
+): QueryResultType<UserWorkExerciseRowType[]> {
+  try {
+    const { data, error } = await supabase
+      .from(USER_WORKOUT_EXERCISE_TABLE)
+      .upsert(userWorkoutExercises, { onConflict: 'id', defaultToNull: false })
+      .select()
+      .returns<UserWorkExerciseRowType[]>();
+
+    if (error) throw error;
+
+    return { success: true, data };
+  } catch (error) {
+    console.error('Unable to update workout', error);
+  }
+
+  return { success: false };
 }
 
 // export async function createUserWorkout({ workout_id }) {
