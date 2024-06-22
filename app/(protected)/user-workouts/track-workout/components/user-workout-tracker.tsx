@@ -83,7 +83,15 @@ const UserWorkoutTracker = ({ userWorkout }: UserWorkoutTrackerType) => {
                     <Observer>
                       {() => (
                         <View
-                          style={[styles.setRowContainer, { marginBottom: 10 }]}
+                          style={[
+                            styles.setRowContainer,
+                            { marginBottom: 10, paddingVertical: 10 },
+                            {
+                              backgroundColor: exerciseSet.completed
+                                ? theme.colors.primarylightest
+                                : '',
+                            },
+                          ]}
                         >
                           <Text
                             style={[
@@ -104,26 +112,29 @@ const UserWorkoutTracker = ({ userWorkout }: UserWorkoutTrackerType) => {
 
                           {/* REPS */}
                           <TextInput
+                            editable={!exerciseSet.completed}
                             style={[
                               styles.setRowCell,
                               styles.textInputStyle,
-                              { backgroundColor: theme.colors.greyOutline },
+                              { backgroundColor: theme.colors.grey5 },
                             ]}
-                            value={exerciseSet.repeats.toString()}
+                            value={exerciseSet.repeats?.toString() ?? ''}
                             onChangeText={(value) =>
                               exerciseSet.setRepeats(+value)
                             }
                           />
                           {/* KG */}
                           <TextInput
+                            editable={!exerciseSet.completed}
+                            selectTextOnFocus={true}
                             keyboardType="numeric"
                             maxLength={6}
                             style={[
                               styles.setRowCell,
                               styles.textInputStyle,
-                              { backgroundColor: theme.colors.greyOutline },
+                              { backgroundColor: theme.colors.grey5 },
                             ]}
-                            value={exerciseSet.weight.toString()}
+                            value={exerciseSet.weight ?? ''}
                             onChangeText={(value) =>
                               exerciseSet.setWeight(value)
                             }
@@ -131,12 +142,17 @@ const UserWorkoutTracker = ({ userWorkout }: UserWorkoutTrackerType) => {
 
                           <Text style={styles.setRowCell}>
                             <CheckBox
-                              checked
+                              checked={exerciseSet.completed}
                               size={24}
                               iconType="material-community"
                               checkedIcon="check-circle"
-                              checkedColor={theme.colors.success}
+                              checkedColor={
+                                exerciseSet.completed
+                                  ? theme.colors.success
+                                  : theme.colors.warning
+                              }
                               uncheckedIcon="checkbox-blank-outline"
+                              onPress={exerciseSet.toggleCompleted}
                             />
                           </Text>
                         </View>

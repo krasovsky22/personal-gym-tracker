@@ -5,6 +5,7 @@ export const NewUserWorkoutExerciseSet = types
   .model({
     weight: types.maybeNull(types.string),
     repeats: types.maybeNull(types.number),
+    completed: types.optional(types.boolean, false),
   })
   .actions((self) => ({
     setWeight: (value: string) => {
@@ -13,6 +14,10 @@ export const NewUserWorkoutExerciseSet = types
 
     setRepeats: (value: number) => {
       self.repeats = value;
+    },
+
+    toggleCompleted: () => {
+      self.completed = !self.completed;
     },
   }));
 
