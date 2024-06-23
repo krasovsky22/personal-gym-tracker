@@ -13,7 +13,6 @@ export type WorkoutRowInsertType = TablesInsert<'workout'>;
 
 export type WorkoutExerciseRowType = Tables<'workout_exercise'>;
 export type WorkoutExerciseRowInsertType = TablesInsert<'workout_exercise'>;
-export type WorkoutExerciseRowUpdateType = TablesUpdate<'workout_exercise'>;
 
 export async function insertWorkout(
   workout: WorkoutRowInsertType

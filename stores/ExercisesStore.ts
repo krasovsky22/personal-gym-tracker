@@ -11,9 +11,6 @@ import {
 
 import { Exercise, ExerciseSnapshotInType } from '@models/Exercise';
 import {
-  NewUserWorkout,
-  NewUserWorkoutSnapshotInType,
-  NewUserWorkoutType,
   UserWorkout,
   UserWorkoutSnapshotInType,
   UserWorkoutType,
@@ -27,6 +24,7 @@ import {
 } from '@lib/queries/exercises';
 import {
   UserWorkExerciseRowInsertType,
+  UserWorkExerciseSetRowInsertType,
   UserWorkRowInsertType,
   UserWorkRowType,
   fetchUserWorkouts,
@@ -43,7 +41,6 @@ import {
 } from '@lib/queries/workouts';
 import { WorkoutExercise } from '@models/WorkoutExercise';
 import {
-  NewUserWorkoutExerciseSetType,
   UserWorkoutExerciseSetSnapshotInType,
   UserWorkoutExerciseSetType,
 } from '@models/UserWorkoutExerciseSet';
@@ -56,7 +53,7 @@ export const ExercisesStore = types
     workouts: types.array(Workout),
     exercises: types.array(Exercise),
     userWorkouts: types.array(UserWorkout),
-    newUserWorkout: types.maybeNull(NewUserWorkout),
+    newUserWorkout: types.maybeNull(UserWorkout),
     // workoutSets: types.array(WorkoutSet),
   })
   .views((self) => ({
@@ -270,7 +267,7 @@ export const ExercisesStore = types
     }),
 
     createNewUserWorkoutModel: (workout: WorkoutType) => {
-      const newUserWorkoutSnapshot: NewUserWorkoutSnapshotInType = {
+      const newUserWorkoutSnapshot: UserWorkoutSnapshotInType = {
         workout: workout.id!,
         userWorkoutExercises: workout.workoutExercises.map(
           (workoutExercise) => {
@@ -293,9 +290,7 @@ export const ExercisesStore = types
       return self.newUserWorkout!;
     },
 
-    saveUserWorkoutModel: flow(function* (
-      userWorkout: NewUserWorkoutType | UserWorkoutType
-    ) {
+    saveUserWorkoutModel: flow(function* (userWorkout: UserWorkoutType) {
       // create user workout row
       const userWorkoutData: UserWorkRowInsertType = {
         workout_id: userWorkout.workout?.id!,
@@ -326,12 +321,25 @@ export const ExercisesStore = types
         userWorkoutExercisesRows
       );
       // create user workout exercise set row
+
+      const userWorkoutExerciseSetsData: UserWorkExerciseSetRowInsertType[] =
+        userWorkout.userWorkoutExercises
+          .map((userWorkoutExercise) => {
+            return userWorkoutExercise.userWorkoutExerciseSets.map(
+              (userWorkoutExerciseSet) => {
+                return {
+                  weight: +(userWorkoutExerciseSet.weight || 0),
+                  repeats: userWorkoutExerciseSet.repeats || 0,
+                  user_workout_exercise_id: userWorkoutExercise.id,
+                };
+              }
+            );
+          })
+          .flat();
     }),
 
     saveUserWorkoutSetModel: flow(function* (
-      userWorkoutExerciseSet:
-        | NewUserWorkoutExerciseSetType
-        | UserWorkoutExerciseSetType
+      userWorkoutExerciseSet: UserWorkoutExerciseSetType
     ) {
       // create or update user workout exercise record;
     }),

@@ -5,13 +5,18 @@ import {
   flow,
   types,
 } from 'mobx-state-tree';
+import { NewModel } from './NewModel';
 
-export const NewUserWorkoutExerciseSet = types
-  .model({
-    weight: types.maybeNull(types.string),
-    repeats: types.maybeNull(types.number),
-    completed: types.optional(types.boolean, false),
-  })
+export const UserWorkoutExerciseSet = types
+  .compose(
+    types.model({
+      weight: types.maybeNull(types.string),
+      repeats: types.maybeNull(types.number),
+      completed: types.optional(types.boolean, false),
+    }),
+    NewModel
+  )
+  .named('UserWorkoutExerciseSet')
   .actions((self) => ({
     setWeight: (value: string) => {
       self.weight = value;
@@ -28,23 +33,6 @@ export const NewUserWorkoutExerciseSet = types
   .actions((self) => ({
     save: flow(function* () {}),
   }));
-
-export const UserWorkoutExerciseSet = types
-  .compose(
-    types.model({
-      id: types.identifier,
-      created_at: types.maybeNull(types.string),
-    }),
-    NewUserWorkoutExerciseSet
-  )
-  .named('UserWorkoutExerciseSet');
-
-export interface NewUserWorkoutExerciseSetType
-  extends Instance<typeof NewUserWorkoutExerciseSet> {}
-export interface NewUserWorkoutExerciseSetSnapshotInType
-  extends SnapshotIn<typeof NewUserWorkoutExerciseSet> {}
-export interface NewUserWorkoutExerciseSetSnapshotOutType
-  extends SnapshotOut<typeof NewUserWorkoutExerciseSet> {}
 
 export interface UserWorkoutExerciseSetType
   extends Instance<typeof UserWorkoutExerciseSet> {}

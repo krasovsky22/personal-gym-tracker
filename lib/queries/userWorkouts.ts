@@ -4,6 +4,7 @@ import { Tables, TablesInsert } from '../database.types';
 
 const USER_WORKOUT_TABLE = 'user_workout';
 const USER_WORKOUT_EXERCISE_TABLE = 'user_workout_exercise';
+const USER_WORKOUT_EXERCISE_SETS_TABLE = 'user_workout_exercise_set';
 
 // export type UserWorkRowType =
 //   Database['public']['Tables']['user_workout']['Row'];
@@ -50,7 +51,7 @@ export async function insertUserWorkout(
 
     return { success: true, data };
   } catch (error) {
-    console.error('Unable to update workout', error);
+    console.error('Unable to save workout', error);
   }
 
   return { success: false };
@@ -70,7 +71,30 @@ export async function insertUserWorkoutExercises(
 
     return { success: true, data };
   } catch (error) {
-    console.error('Unable to update workout', error);
+    console.error('Unable to user workout exercises', error);
+  }
+
+  return { success: false };
+}
+
+export async function insertUserWorkoutExerciseSets(
+  userWorkoutExerciseSets: UserWorkExerciseSetRowInsertType[]
+): QueryResultType<UserWorkExerciseSetRowType[]> {
+  try {
+    const { data, error } = await supabase
+      .from(USER_WORKOUT_EXERCISE_SETS_TABLE)
+      .upsert(userWorkoutExerciseSets, {
+        onConflict: 'id',
+        defaultToNull: false,
+      })
+      .select()
+      .returns<UserWorkExerciseSetRowType[]>();
+
+    if (error) throw error;
+
+    return { success: true, data };
+  } catch (error) {
+    console.error('Unable to save user workout exercise sets', error);
   }
 
   return { success: false };

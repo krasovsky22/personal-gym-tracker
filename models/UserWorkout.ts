@@ -1,33 +1,19 @@
 import { Instance, SnapshotIn, SnapshotOut, types } from 'mobx-state-tree';
 
 import { Workout } from './Workout';
-import {
-  NewUserWorkoutExercise,
-  UserWorkoutExercise,
-} from './UserWorkoutExercise';
-
-export const NewUserWorkout = types.model({
-  workout: types.safeReference(Workout),
-  userWorkoutExercises: types.array(NewUserWorkoutExercise),
-  completed: types.optional(types.boolean, false),
-});
+import { UserWorkoutExercise } from './UserWorkoutExercise';
+import { NewModel } from './NewModel';
 
 export const UserWorkout = types
   .compose(
     types.model({
-      id: types.identifier,
+      workout: types.safeReference(Workout),
+      completed: types.optional(types.boolean, false),
       userWorkoutExercises: types.array(UserWorkoutExercise),
-      created_at: types.maybeNull(types.string),
     }),
-    NewUserWorkout
+    NewModel
   )
   .named('UserWorkout');
-
-export interface NewUserWorkoutType extends Instance<typeof NewUserWorkout> {}
-export interface NewUserWorkoutSnapshotInType
-  extends SnapshotIn<typeof NewUserWorkout> {}
-export interface NewUserWorkoutSnapshotOutType
-  extends SnapshotOut<typeof NewUserWorkout> {}
 
 export interface UserWorkoutType extends Instance<typeof UserWorkout> {}
 export interface UserWorkoutSnapshotInType
