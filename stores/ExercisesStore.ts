@@ -29,7 +29,8 @@ import {
   UserWorkRowType,
   fetchUserWorkouts,
   insertUserWorkout,
-  insertUserWorkoutExercises,
+  insertUserWorkoutExercise,
+  insertUserWorkoutExerciseSet,
 } from '@lib/queries/userWorkouts';
 import {
   WorkoutExerciseRowInsertType,
@@ -45,6 +46,7 @@ import {
   UserWorkoutExerciseSetType,
 } from '@models/UserWorkoutExerciseSet';
 import { UserWorkoutExercise } from '@models/UserWorkoutExercise';
+import { toJS } from 'mobx';
 
 export const ExercisesStore = types
   .model('ExercisesStore', {
@@ -97,7 +99,6 @@ export const ExercisesStore = types
 
       const userWorkoutsData: UserWorkoutSnapshotInType[] = data.map(
         (userWorkoutData: UserWorkRowType) => {
-          console.log(userWorkoutData);
           return {
             ...userWorkoutData,
             workout: userWorkoutData.workout_id,
@@ -106,7 +107,6 @@ export const ExercisesStore = types
         }
       );
 
-      console.log(userWorkoutsData);
       self.userWorkouts = cast(userWorkoutsData);
     }),
   }))
@@ -296,46 +296,59 @@ export const ExercisesStore = types
         workout_id: userWorkout.workout?.id!,
       };
 
-      if ((<UserWorkoutType>userWorkout)?.id) {
-        userWorkoutData.id = (<UserWorkoutType>userWorkout).id!;
+      if (!userWorkout.isNew) {
+        userWorkoutData.id = userWorkout.id;
       }
 
       const { data: userWorkoutRow } = yield insertUserWorkout(userWorkoutData);
-      // create user workout exercise row
+      if (!userWorkoutRow) {
+        return;
+      }
 
-      console.log('INSERTED USER WORKOUT ROW', userWorkoutRow);
-      const userWorkoutExercisesData: UserWorkExerciseRowInsertType[] =
-        userWorkout.userWorkoutExercises.map((userWorkoutExercise) => {
-          return {
+      userWorkout.setFromSnapshot(userWorkoutRow);
+
+      const responses = yield Promise.all(
+        userWorkout.userWorkoutExercises.map(async (userWorkoutExercise) => {
+          const userWorkoutExerciseData: UserWorkExerciseRowInsertType = {
             user_workout_id: userWorkoutRow.id,
             completed: userWorkoutExercise.completed,
             exercise_id: userWorkoutExercise.exercise?.id!,
           };
-        });
 
-      const { data: userWorkoutExercisesRows } =
-        yield insertUserWorkoutExercises(userWorkoutExercisesData);
+          const { data: userWorkoutExerciseRow } =
+            await insertUserWorkoutExercise(userWorkoutExerciseData);
 
-      console.log(
-        'INSERTED USER WORKOUT EXERCISE ROW',
-        userWorkoutExercisesRows
-      );
-      // create user workout exercise set row
+          if (userWorkoutExerciseRow) {
+            userWorkoutExercise.setFromSnapshot(userWorkoutExerciseRow);
+          }
 
-      const userWorkoutExerciseSetsData: UserWorkExerciseSetRowInsertType[] =
-        userWorkout.userWorkoutExercises
-          .map((userWorkoutExercise) => {
-            return userWorkoutExercise.userWorkoutExerciseSets.map(
-              (userWorkoutExerciseSet) => {
-                return {
+          return await Promise.all(
+            userWorkoutExercise.userWorkoutExerciseSets.map(
+              async (userWorkoutExerciseSet) => {
+                const userWorkoutExerciseSetData = {
                   weight: +(userWorkoutExerciseSet.weight || 0),
                   repeats: userWorkoutExerciseSet.repeats || 0,
+                  completed: userWorkoutExerciseSet.completed,
                   user_workout_exercise_id: userWorkoutExercise.id,
                 };
+
+                const { data: userWorkoutExerciseSetRow } =
+                  await insertUserWorkoutExerciseSet(
+                    userWorkoutExerciseSetData
+                  );
+
+                if (userWorkoutExerciseSetRow) {
+                  userWorkoutExerciseSet.setFromSnapshot(
+                    userWorkoutExerciseSetRow
+                  );
+                }
               }
-            );
-          })
-          .flat();
+            )
+          );
+        })
+      );
+
+      console.log('OLOLOLO', responses, toJS(userWorkout));
     }),
 
     saveUserWorkoutSetModel: flow(function* (

@@ -77,6 +77,15 @@ export async function insertUserWorkoutExercises(
   return { success: false };
 }
 
+export async function insertUserWorkoutExercise(
+  userWorkoutExercise: UserWorkExerciseRowInsertType
+): QueryResultType<UserWorkExerciseRowType> {
+  console.log('inserting');
+  const { data } = await insertUserWorkoutExercises([userWorkoutExercise]);
+
+  return { success: true, data: data?.[0] };
+}
+
 export async function insertUserWorkoutExerciseSets(
   userWorkoutExerciseSets: UserWorkExerciseSetRowInsertType[]
 ): QueryResultType<UserWorkExerciseSetRowType[]> {
@@ -98,6 +107,16 @@ export async function insertUserWorkoutExerciseSets(
   }
 
   return { success: false };
+}
+
+export async function insertUserWorkoutExerciseSet(
+  userWorkoutExerciseSet: UserWorkExerciseSetRowInsertType
+): QueryResultType<UserWorkExerciseSetRowType> {
+  const { data } = await insertUserWorkoutExerciseSets([
+    userWorkoutExerciseSet,
+  ]);
+
+  return { success: true, data: data?.[0] };
 }
 
 // export async function createUserWorkout({ workout_id }) {

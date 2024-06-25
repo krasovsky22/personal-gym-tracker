@@ -37,7 +37,6 @@ export const RootStore = types
   .actions((self) => ({
     async initialize() {
       if (self.authStore.isLoggedIn && self.exercisesStore === null) {
-        console.log('initializing');
         const store = await ExercisesStore.create();
         self.setExerciseStore(store);
       }

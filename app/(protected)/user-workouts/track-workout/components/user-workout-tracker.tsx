@@ -1,19 +1,19 @@
 import { useExercisesStore } from '@hooks';
-import { NewUserWorkoutType, UserWorkoutType } from '@models/UserWorkout';
-import { NewUserWorkoutExerciseSetType } from '@models/UserWorkoutExerciseSet';
+import { UserWorkoutType } from '@models/UserWorkout';
+import { UserWorkoutExerciseSetType } from '@models/UserWorkoutExerciseSet';
 import { Card, CheckBox, Divider, useTheme, Avatar } from '@rneui/themed';
 import { Observer } from 'mobx-react-lite';
 import { StyleSheet, FlatList, View, Text, TextInput } from 'react-native';
 
 type UserWorkoutTrackerType = {
-  userWorkout: UserWorkoutType | NewUserWorkoutType;
+  userWorkout: UserWorkoutType;
 };
 const UserWorkoutTracker = ({ userWorkout }: UserWorkoutTrackerType) => {
   const { theme } = useTheme();
   const { saveUserWorkoutModel } = useExercisesStore();
 
   const onUserWorkoutSetToggle = async (
-    userWorkoutSet: NewUserWorkoutExerciseSetType
+    userWorkoutSet: UserWorkoutExerciseSetType
   ) => {
     userWorkoutSet.toggleCompleted();
 
