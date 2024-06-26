@@ -315,6 +315,9 @@ export const ExercisesStore = types
             exercise_id: userWorkoutExercise.exercise?.id!,
           };
 
+          if (!userWorkoutExercise.isNew) {
+            userWorkoutExerciseData.id = userWorkoutExercise.id;
+          }
           const { data: userWorkoutExerciseRow } =
             await insertUserWorkoutExercise(userWorkoutExerciseData);
 
@@ -325,12 +328,17 @@ export const ExercisesStore = types
           return await Promise.all(
             userWorkoutExercise.userWorkoutExerciseSets.map(
               async (userWorkoutExerciseSet) => {
-                const userWorkoutExerciseSetData = {
-                  weight: +(userWorkoutExerciseSet.weight || 0),
-                  repeats: userWorkoutExerciseSet.repeats || 0,
-                  completed: userWorkoutExerciseSet.completed,
-                  user_workout_exercise_id: userWorkoutExercise.id,
-                };
+                const userWorkoutExerciseSetData: UserWorkExerciseSetRowInsertType =
+                  {
+                    weight: +(userWorkoutExerciseSet.weight || 0),
+                    repeats: userWorkoutExerciseSet.repeats || 0,
+                    completed: userWorkoutExerciseSet.completed,
+                    user_workout_exercise_id: userWorkoutExercise.id,
+                  };
+
+                if (!userWorkoutExerciseSet.isNew) {
+                  userWorkoutExerciseSetData.id = userWorkoutExerciseSet.id;
+                }
 
                 const { data: userWorkoutExerciseSetRow } =
                   await insertUserWorkoutExerciseSet(

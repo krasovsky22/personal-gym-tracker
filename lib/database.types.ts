@@ -220,6 +220,7 @@ export type Database = {
           created_by: string
           id: string
           repeats: number
+          updated_at: string
           user_workout_exercise_id: string
           weight: number
         }
@@ -229,6 +230,7 @@ export type Database = {
           created_by?: string
           id?: string
           repeats: number
+          updated_at?: string
           user_workout_exercise_id: string
           weight: number
         }
@@ -238,6 +240,7 @@ export type Database = {
           created_by?: string
           id?: string
           repeats?: number
+          updated_at?: string
           user_workout_exercise_id?: string
           weight?: number
         }
