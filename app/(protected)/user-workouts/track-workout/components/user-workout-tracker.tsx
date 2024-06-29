@@ -100,7 +100,7 @@ const UserWorkoutTracker = ({ userWorkout }: UserWorkoutTrackerType) => {
                             {
                               backgroundColor: exerciseSet.completed
                                 ? theme.colors.primarylightest
-                                : '',
+                                : theme.colors.background,
                             },
                           ]}
                         >
