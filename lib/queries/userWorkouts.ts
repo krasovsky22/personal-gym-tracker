@@ -20,21 +20,85 @@ export type UserWorkExerciseSetRowType = Tables<'user_workout_exercise_set'>;
 export type UserWorkExerciseSetRowInsertType =
   TablesInsert<'user_workout_exercise_set'>;
 
-export async function fetchUserWorkouts(): QueryResultType<UserWorkRowType[]> {
+export type UserWorkoutCompleteType = UserWorkRowType & {
+  userWorkoutExercises: (UserWorkExerciseRowType & {
+    userWorkoutExerciseSets: UserWorkExerciseSetRowType[];
+  })[];
+};
+
+type UserWorkoutExerciseSetSelectRowType = Omit<
+  UserWorkExerciseSetRowType,
+  'user_workout_exercise_id'
+> & {
+  user_workout_exercise_id: Omit<UserWorkExerciseRowType, 'user_workout_id'> & {
+    user_workout_id: UserWorkRowType;
+  };
+};
+
+export async function fetchUserWorkouts(): QueryResultType<
+  UserWorkoutCompleteType[]
+> {
   try {
     const { data, error } = await supabase
-      .from(USER_WORKOUT_TABLE)
-      .select('*')
-      .returns<UserWorkRowType[]>();
+      .from(USER_WORKOUT_EXERCISE_SETS_TABLE)
+      .select(`*, user_workout_exercise_id ( *, user_workout_id ( * ) )`)
+      .order('user_workout_id', {
+        referencedTable: 'user_workout_exercise_id',
+        ascending: false,
+      })
+      .returns<UserWorkoutExerciseSetSelectRowType[]>();
 
     if (error) throw error;
 
-    return { success: true, data };
+    const userWorkoutsMap = data.reduce((carry, row) => {
+      const { user_workout_exercise_id, ...userWorkoutExerciseSetRow } = row;
+      const { user_workout_id: userWorkout, ...userWorkoutExerciseRow } =
+        user_workout_exercise_id;
+
+      if (!carry.has(userWorkout.id)) {
+        carry.set(userWorkout.id, {
+          ...userWorkout,
+          userWorkoutExercises: [],
+        });
+      }
+
+      const userWorkoutExercises = carry.get(
+        userWorkout.id
+      )!.userWorkoutExercises;
+
+      const userWorkoutExercise = userWorkoutExercises.find(
+        (userWorkoutExercise) =>
+          userWorkoutExercise.id === userWorkoutExerciseRow.id
+      );
+
+      const useWorkoutExerciseSetRowData = {
+        ...userWorkoutExerciseSetRow,
+        user_workout_exercise_id: userWorkoutExerciseRow.id,
+      };
+
+      if (!userWorkoutExercise) {
+        userWorkoutExercises.push({
+          ...userWorkoutExerciseRow,
+          user_workout_id: userWorkout.id,
+          userWorkoutExerciseSets: [useWorkoutExerciseSetRowData],
+        });
+      } else {
+        userWorkoutExercise.userWorkoutExerciseSets.push(
+          useWorkoutExerciseSetRowData
+        );
+      }
+
+      return carry;
+    }, new Map<string, UserWorkoutCompleteType>());
+
+    const returnArray = Array.from(userWorkoutsMap, ([name, value]) => value);
+
+    return { success: true, data: returnArray };
   } catch (error) {
     console.error('Unable to load user workouts', error);
   }
 
-  return { success: false, data: [] };
+  return { success: false };
 }
 
 export async function insertUserWorkout(

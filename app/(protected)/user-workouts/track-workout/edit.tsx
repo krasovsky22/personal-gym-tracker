@@ -6,12 +6,16 @@ import { cast } from 'mobx-state-tree';
 import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
 import UserWorkoutTracker from './components/user-workout-tracker';
 
-const WorkoutsScreen = () => {
-  const { workout_id = '' } = useLocalSearchParams<{ workout_id: string }>()!;
-  const { getWorkoutById, createNewUserWorkoutModel } = useExercisesStore();
-  const workout = getWorkoutById(workout_id)!;
+const EditUserWorkoutsScreen = () => {
+  const { user_workout_id = '' } = useLocalSearchParams<{
+    user_workout_id: string;
+  }>()!;
+  const { getUserWorkoutById, createNewUserWorkoutModel } = useExercisesStore();
+  const userWorkout = getUserWorkoutById(user_workout_id)!;
 
-  if (!workout) {
+  const workout = userWorkout.workout;
+
+  if (!userWorkout || !workout) {
     return (
       <EmptyState
         title="Workout not found"
@@ -19,8 +23,6 @@ const WorkoutsScreen = () => {
       />
     );
   }
-
-  const userWorkout = createNewUserWorkoutModel(workout);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -36,7 +38,7 @@ const WorkoutsScreen = () => {
   );
 };
 
-export default WorkoutsScreen;
+export default EditUserWorkoutsScreen;
 
 const styles = StyleSheet.create({
   container: {

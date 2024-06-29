@@ -9,6 +9,7 @@ export const UserWorkout = types
     types.model({
       workout: types.safeReference(Workout),
       completed: types.optional(types.boolean, false),
+      workoutDate: types.maybeNull(types.string),
       userWorkoutExercises: types.array(UserWorkoutExercise),
     }),
     NewModel

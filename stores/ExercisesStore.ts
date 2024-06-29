@@ -27,6 +27,7 @@ import {
   UserWorkExerciseSetRowInsertType,
   UserWorkRowInsertType,
   UserWorkRowType,
+  UserWorkoutCompleteType,
   fetchUserWorkouts,
   insertUserWorkout,
   insertUserWorkoutExercise,
@@ -45,7 +46,10 @@ import {
   UserWorkoutExerciseSetSnapshotInType,
   UserWorkoutExerciseSetType,
 } from '@models/UserWorkoutExerciseSet';
-import { UserWorkoutExercise } from '@models/UserWorkoutExercise';
+import {
+  UserWorkoutExercise,
+  UserWorkoutExerciseSnapshotInType,
+} from '@models/UserWorkoutExercise';
 import { toJS } from 'mobx';
 
 export const ExercisesStore = types
@@ -78,6 +82,10 @@ export const ExercisesStore = types
         return exercise.id === id;
       });
     },
+
+    getUserWorkoutById: (id: string) => {
+      return self.userWorkouts.find((userWorkout) => userWorkout.id === id);
+    },
   }))
   .actions((self) => ({
     loadExercises: flow(function* () {
@@ -98,11 +106,30 @@ export const ExercisesStore = types
       }
 
       const userWorkoutsData: UserWorkoutSnapshotInType[] = data.map(
-        (userWorkoutData: UserWorkRowType) => {
+        (userWorkoutData: UserWorkoutCompleteType) => {
+          const workoutExercises: UserWorkoutExerciseSnapshotInType[] =
+            userWorkoutData.userWorkoutExercises.map((userWorkoutExercise) => {
+              const userWorkoutExerciseSets: UserWorkoutExerciseSetSnapshotInType[] =
+                userWorkoutExercise.userWorkoutExerciseSets.map(
+                  (userWorkoutExerciseSet) => {
+                    return {
+                      userWorkoutExerciseSet,
+                      weight: userWorkoutExerciseSet.weight.toString(),
+                    };
+                  }
+                );
+
+              return {
+                ...userWorkoutExercise,
+                userWorkoutExerciseSets,
+                exercise: userWorkoutExercise.exercise_id,
+              };
+            });
           return {
             ...userWorkoutData,
             workout: userWorkoutData.workout_id,
             workoutDate: userWorkoutData.workout_date,
+            userWorkoutExercises: workoutExercises,
           };
         }
       );
