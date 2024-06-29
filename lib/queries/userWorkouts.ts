@@ -44,12 +44,13 @@ export async function fetchUserWorkouts(): QueryResultType<
       .select(`*, user_workout_exercise_id ( *, user_workout_id ( * ) )`)
       .order('created_at', {
         referencedTable: 'user_workout_exercise_id',
-        ascending: false,
+        ascending: true,
       })
       .returns<UserWorkoutExerciseSetSelectRowType[]>();
 
     if (error) throw error;
 
+    console.log(data);
     const userWorkoutsMap = data.reduce((carry, row) => {
       const { user_workout_exercise_id, ...userWorkoutExerciseSetRow } = row;
       const { user_workout_id: userWorkout, ...userWorkoutExerciseRow } =
@@ -91,6 +92,7 @@ export async function fetchUserWorkouts(): QueryResultType<
       return carry;
     }, new Map<string, UserWorkoutCompleteType>());
 
+    console.log(userWorkoutsMap);
     const returnArray = Array.from(userWorkoutsMap, ([name, value]) => value);
 
     return { success: true, data: returnArray };
@@ -144,7 +146,7 @@ export async function insertUserWorkoutExercises(
 export async function insertUserWorkoutExercise(
   userWorkoutExercise: UserWorkExerciseRowInsertType
 ): QueryResultType<UserWorkExerciseRowType> {
-  console.log('inserting');
+  console.log('inserting', userWorkoutExercise);
   const { data } = await insertUserWorkoutExercises([userWorkoutExercise]);
 
   return { success: true, data: data?.[0] };
@@ -176,6 +178,10 @@ export async function insertUserWorkoutExerciseSets(
 export async function insertUserWorkoutExerciseSet(
   userWorkoutExerciseSet: UserWorkExerciseSetRowInsertType
 ): QueryResultType<UserWorkExerciseSetRowType> {
+  console.log(
+    'inserting insertUserWorkoutExerciseSet ',
+    userWorkoutExerciseSet
+  );
   const { data } = await insertUserWorkoutExerciseSets([
     userWorkoutExerciseSet,
   ]);

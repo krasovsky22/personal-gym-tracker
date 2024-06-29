@@ -103,33 +103,33 @@ export const ExercisesStore = types
       const userWorkoutsData: UserWorkoutSnapshotInType[] = data.map(
         (userWorkoutData: UserWorkoutCompleteType) => {
           const workoutExercises: UserWorkoutExerciseSnapshotInType[] =
-            userWorkoutData.userWorkoutExercises
-              .map((userWorkoutExercise) => {
-                const userWorkoutExerciseSets: UserWorkoutExerciseSetSnapshotInType[] =
-                  userWorkoutExercise.userWorkoutExerciseSets
-                    .map((userWorkoutExerciseSet) => {
-                      return {
-                        ...userWorkoutExerciseSet,
-                        weight: userWorkoutExerciseSet.weight.toString(),
-                      };
-                    })
-                    .sort(
-                      (a, b) =>
-                        new Date(b.created_at).getTime() -
-                        new Date(a.created_at).getTime()
-                    );
+            userWorkoutData.userWorkoutExercises.map((userWorkoutExercise) => {
+              const userWorkoutExerciseSets: UserWorkoutExerciseSetSnapshotInType[] =
+                userWorkoutExercise.userWorkoutExerciseSets.map(
+                  (userWorkoutExerciseSet) => {
+                    return {
+                      ...userWorkoutExerciseSet,
+                      weight: userWorkoutExerciseSet.weight.toString(),
+                    };
+                  }
+                );
+              // .sort(
+              //   (a, b) =>
+              //     new Date(b.created_at).getTime() -
+              //     new Date(a.created_at).getTime()
+              // );
 
-                return {
-                  ...userWorkoutExercise,
-                  userWorkoutExerciseSets,
-                  exercise: userWorkoutExercise.exercise_id,
-                };
-              })
-              .sort(
-                (a, b) =>
-                  new Date(b.created_at).getTime() -
-                  new Date(a.created_at).getTime()
-              );
+              return {
+                ...userWorkoutExercise,
+                userWorkoutExerciseSets,
+                exercise: userWorkoutExercise.exercise_id,
+              };
+            });
+          //   .sort(
+          //     (a, b) =>
+          //       new Date(b.created_at).getTime() -
+          //       new Date(a.created_at).getTime()
+          //   );
           return {
             ...userWorkoutData,
             workout: userWorkoutData.workout_id,
@@ -322,7 +322,7 @@ export const ExercisesStore = types
       return self.newUserWorkout!;
     },
 
-    saveUserWorkoutModel: flow(function* (userWorkout: UserWorkoutType) {
+    saveUserWorkoutModel: async (userWorkout: UserWorkoutType) => {
       // create user workout row
       const userWorkoutData: UserWorkRowInsertType = {
         workout_id: userWorkout.workout?.id!,
@@ -332,68 +332,99 @@ export const ExercisesStore = types
         userWorkoutData.id = userWorkout.id;
       }
 
-      const { data: userWorkoutRow } = yield insertUserWorkout(userWorkoutData);
+      const { data: userWorkoutRow } = await insertUserWorkout(userWorkoutData);
       if (!userWorkoutRow) {
         return;
       }
 
       userWorkout.setFromSnapshot(userWorkoutRow);
 
-      const responses = yield Promise.all(
-        userWorkout.userWorkoutExercises.map(async (userWorkoutExercise) => {
-          const userWorkoutExerciseData: UserWorkExerciseRowInsertType = {
-            user_workout_id: userWorkoutRow.id,
-            completed: userWorkoutExercise.completed,
-            exercise_id: userWorkoutExercise.exercise?.id!,
+      for await (const userWorkoutExercise of userWorkout.userWorkoutExercises) {
+        const userWorkoutExerciseData: UserWorkExerciseRowInsertType = {
+          user_workout_id: userWorkoutRow.id,
+          completed: userWorkoutExercise.completed,
+          exercise_id: userWorkoutExercise.exercise?.id!,
+        };
+
+        if (!userWorkoutExercise.isNew) {
+          userWorkoutExerciseData.id = userWorkoutExercise.id;
+        }
+        const { data: userWorkoutExerciseRow } =
+          await insertUserWorkoutExercise(userWorkoutExerciseData);
+
+        if (userWorkoutExerciseRow) {
+          userWorkoutExercise.setFromSnapshot(userWorkoutExerciseRow);
+        }
+
+        for await (const userWorkoutExerciseSet of userWorkoutExercise.userWorkoutExerciseSets) {
+          const userWorkoutExerciseSetData: UserWorkExerciseSetRowInsertType = {
+            weight: +(userWorkoutExerciseSet.weight || 0),
+            repeats: userWorkoutExerciseSet.repeats || 0,
+            completed: userWorkoutExerciseSet.completed,
+            user_workout_exercise_id: userWorkoutExercise.id,
           };
 
-          if (!userWorkoutExercise.isNew) {
-            userWorkoutExerciseData.id = userWorkoutExercise.id;
-          }
-          const { data: userWorkoutExerciseRow } =
-            await insertUserWorkoutExercise(userWorkoutExerciseData);
-
-          if (userWorkoutExerciseRow) {
-            userWorkoutExercise.setFromSnapshot(userWorkoutExerciseRow);
+          if (!userWorkoutExerciseSet.isNew) {
+            userWorkoutExerciseSetData.id = userWorkoutExerciseSet.id;
           }
 
-          return await Promise.all(
-            userWorkoutExercise.userWorkoutExerciseSets.map(
-              async (userWorkoutExerciseSet) => {
-                const userWorkoutExerciseSetData: UserWorkExerciseSetRowInsertType =
-                  {
-                    weight: +(userWorkoutExerciseSet.weight || 0),
-                    repeats: userWorkoutExerciseSet.repeats || 0,
-                    completed: userWorkoutExerciseSet.completed,
-                    user_workout_exercise_id: userWorkoutExercise.id,
-                  };
+          const { data: userWorkoutExerciseSetRow } =
+            await insertUserWorkoutExerciseSet(userWorkoutExerciseSetData);
 
-                if (!userWorkoutExerciseSet.isNew) {
-                  userWorkoutExerciseSetData.id = userWorkoutExerciseSet.id;
-                }
+          if (userWorkoutExerciseSetRow) {
+            userWorkoutExerciseSet.setFromSnapshot(userWorkoutExerciseSetRow);
+          }
+        }
+      }
+      //   const responses = yield Promise.all(
+      //     userWorkout.userWorkoutExercises.map(async (userWorkoutExercise) => {
+      //       const userWorkoutExerciseData: UserWorkExerciseRowInsertType = {
+      //         user_workout_id: userWorkoutRow.id,
+      //         completed: userWorkoutExercise.completed,
+      //         exercise_id: userWorkoutExercise.exercise?.id!,
+      //       };
 
-                const { data: userWorkoutExerciseSetRow } =
-                  await insertUserWorkoutExerciseSet(
-                    userWorkoutExerciseSetData
-                  );
+      //       if (!userWorkoutExercise.isNew) {
+      //         userWorkoutExerciseData.id = userWorkoutExercise.id;
+      //       }
+      //       const { data: userWorkoutExerciseRow } =
+      //         await insertUserWorkoutExercise(userWorkoutExerciseData);
 
-                if (userWorkoutExerciseSetRow) {
-                  userWorkoutExerciseSet.setFromSnapshot(
-                    userWorkoutExerciseSetRow
-                  );
-                }
-              }
-            )
-          );
-        })
-      );
-    }),
+      //       if (userWorkoutExerciseRow) {
+      //         userWorkoutExercise.setFromSnapshot(userWorkoutExerciseRow);
+      //       }
 
-    saveUserWorkoutSetModel: flow(function* (
-      userWorkoutExerciseSet: UserWorkoutExerciseSetType
-    ) {
-      // create or update user workout exercise record;
-    }),
+      //       return await Promise.all(
+      //         userWorkoutExercise.userWorkoutExerciseSets.map(
+      //           async (userWorkoutExerciseSet) => {
+      //             const userWorkoutExerciseSetData: UserWorkExerciseSetRowInsertType =
+      //               {
+      //                 weight: +(userWorkoutExerciseSet.weight || 0),
+      //                 repeats: userWorkoutExerciseSet.repeats || 0,
+      //                 completed: userWorkoutExerciseSet.completed,
+      //                 user_workout_exercise_id: userWorkoutExercise.id,
+      //               };
+
+      //             if (!userWorkoutExerciseSet.isNew) {
+      //               userWorkoutExerciseSetData.id = userWorkoutExerciseSet.id;
+      //             }
+
+      //             const { data: userWorkoutExerciseSetRow } =
+      //               await insertUserWorkoutExerciseSet(
+      //                 userWorkoutExerciseSetData
+      //               );
+
+      //             if (userWorkoutExerciseSetRow) {
+      //               userWorkoutExerciseSet.setFromSnapshot(
+      //                 userWorkoutExerciseSetRow
+      //               );
+      //             }
+      //           }
+      //         )
+      //       );
+      //     })
+      //   );
+    },
   }));
 
 export interface ExercisesStoreType extends Instance<typeof ExercisesStore> {}
