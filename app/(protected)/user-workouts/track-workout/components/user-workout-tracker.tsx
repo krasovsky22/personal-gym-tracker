@@ -124,6 +124,7 @@ const UserWorkoutTracker = ({ userWorkout }: UserWorkoutTrackerType) => {
                           {/* REPS */}
                           <TextInput
                             editable={!exerciseSet.completed}
+                            keyboardType="numeric"
                             style={[
                               styles.setRowCell,
                               styles.textInputStyle,
@@ -162,6 +163,10 @@ const UserWorkoutTracker = ({ userWorkout }: UserWorkoutTrackerType) => {
                                   ? theme.colors.success
                                   : theme.colors.warning
                               }
+                              style={{
+                                marginLeft: 'auto',
+                                marginRight: 'auto',
+                              }}
                               uncheckedIcon="checkbox-blank-outline"
                               onPress={() =>
                                 onUserWorkoutSetToggle(exerciseSet)
