@@ -50,7 +50,6 @@ export async function fetchUserWorkouts(): QueryResultType<
 
     if (error) throw error;
 
-    console.log(data);
     const userWorkoutsMap = data.reduce((carry, row) => {
       const { user_workout_exercise_id, ...userWorkoutExerciseSetRow } = row;
       const { user_workout_id: userWorkout, ...userWorkoutExerciseRow } =

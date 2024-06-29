@@ -69,7 +69,6 @@ export const AuthStore = types
         ...rest,
       };
 
-      console.log('here');
       self.setUser(authUser);
     }),
 

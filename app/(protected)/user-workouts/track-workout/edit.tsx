@@ -26,8 +26,6 @@ const EditUserWorkoutsScreen = () => {
     );
   }
 
-  console.log(toJS(userWorkout));
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleContainer}>
