@@ -9,6 +9,18 @@ import useStore from '@hooks/useStore';
 import useAuthStore from '@hooks/useAuthStore';
 import { RootStoreType } from '@stores/RootStore';
 
+function resetStack(navigation, routes) {
+  if (routes.length > 1) {
+    const { routeName } = routes[0];
+    navigation.dispatch(
+      NavigationActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate({ routeName })],
+      })
+    );
+  }
+}
+
 function ProtectedLayout() {
   const { theme } = useTheme();
   const { isLoggedIn } = useAuthStore();
@@ -41,6 +53,7 @@ function ProtectedLayout() {
       <Tabs.Screen
         name="home"
         options={{
+          href: '/(protected)/home',
           title: 'Home',
           tabBarLabel: 'Home',
           tabBarIcon: () => <Icon name="home" color={theme.colors.primary} />,
@@ -49,6 +62,7 @@ function ProtectedLayout() {
       <Tabs.Screen
         name="user-workouts"
         options={{
+          href: '/(protected)/user-workouts',
           title: 'Workout',
           tabBarLabel: 'Workout',
           tabBarIcon: () => (
@@ -63,6 +77,7 @@ function ProtectedLayout() {
       <Tabs.Screen
         name="settings"
         options={{
+          href: '/(protected)/settings',
           title: 'Settings',
           tabBarLabel: 'Settings',
           tabBarIcon: () => (
