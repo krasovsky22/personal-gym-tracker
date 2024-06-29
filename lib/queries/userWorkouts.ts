@@ -42,7 +42,7 @@ export async function fetchUserWorkouts(): QueryResultType<
     const { data, error } = await supabase
       .from(USER_WORKOUT_EXERCISE_SETS_TABLE)
       .select(`*, user_workout_exercise_id ( *, user_workout_id ( * ) )`)
-      .order('user_workout_id', {
+      .order('created_at', {
         referencedTable: 'user_workout_exercise_id',
         ascending: false,
       })

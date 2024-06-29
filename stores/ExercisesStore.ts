@@ -26,7 +26,6 @@ import {
   UserWorkExerciseRowInsertType,
   UserWorkExerciseSetRowInsertType,
   UserWorkRowInsertType,
-  UserWorkRowType,
   UserWorkoutCompleteType,
   fetchUserWorkouts,
   insertUserWorkout,
@@ -41,15 +40,11 @@ import {
   insertWorkoutExercises,
   removeWorkoutExercises,
 } from '@lib/queries/workouts';
-import { WorkoutExercise } from '@models/WorkoutExercise';
 import {
   UserWorkoutExerciseSetSnapshotInType,
   UserWorkoutExerciseSetType,
 } from '@models/UserWorkoutExerciseSet';
-import {
-  UserWorkoutExercise,
-  UserWorkoutExerciseSnapshotInType,
-} from '@models/UserWorkoutExercise';
+import { UserWorkoutExerciseSnapshotInType } from '@models/UserWorkoutExercise';
 import { toJS } from 'mobx';
 
 export const ExercisesStore = types
@@ -108,23 +103,33 @@ export const ExercisesStore = types
       const userWorkoutsData: UserWorkoutSnapshotInType[] = data.map(
         (userWorkoutData: UserWorkoutCompleteType) => {
           const workoutExercises: UserWorkoutExerciseSnapshotInType[] =
-            userWorkoutData.userWorkoutExercises.map((userWorkoutExercise) => {
-              const userWorkoutExerciseSets: UserWorkoutExerciseSetSnapshotInType[] =
-                userWorkoutExercise.userWorkoutExerciseSets.map(
-                  (userWorkoutExerciseSet) => {
-                    return {
-                      userWorkoutExerciseSet,
-                      weight: userWorkoutExerciseSet.weight.toString(),
-                    };
-                  }
-                );
+            userWorkoutData.userWorkoutExercises
+              .map((userWorkoutExercise) => {
+                const userWorkoutExerciseSets: UserWorkoutExerciseSetSnapshotInType[] =
+                  userWorkoutExercise.userWorkoutExerciseSets
+                    .map((userWorkoutExerciseSet) => {
+                      return {
+                        ...userWorkoutExerciseSet,
+                        weight: userWorkoutExerciseSet.weight.toString(),
+                      };
+                    })
+                    .sort(
+                      (a, b) =>
+                        new Date(b.created_at).getTime() -
+                        new Date(a.created_at).getTime()
+                    );
 
-              return {
-                ...userWorkoutExercise,
-                userWorkoutExerciseSets,
-                exercise: userWorkoutExercise.exercise_id,
-              };
-            });
+                return {
+                  ...userWorkoutExercise,
+                  userWorkoutExerciseSets,
+                  exercise: userWorkoutExercise.exercise_id,
+                };
+              })
+              .sort(
+                (a, b) =>
+                  new Date(b.created_at).getTime() -
+                  new Date(a.created_at).getTime()
+              );
           return {
             ...userWorkoutData,
             workout: userWorkoutData.workout_id,
@@ -382,8 +387,6 @@ export const ExercisesStore = types
           );
         })
       );
-
-      console.log('OLOLOLO', responses, toJS(userWorkout));
     }),
 
     saveUserWorkoutSetModel: flow(function* (

@@ -5,11 +5,13 @@ import { useLocalSearchParams } from 'expo-router';
 import { cast } from 'mobx-state-tree';
 import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
 import UserWorkoutTracker from './components/user-workout-tracker';
+import { toJS } from 'mobx';
 
 const EditUserWorkoutsScreen = () => {
   const { user_workout_id = '' } = useLocalSearchParams<{
     user_workout_id: string;
   }>()!;
+
   const { getUserWorkoutById, createNewUserWorkoutModel } = useExercisesStore();
   const userWorkout = getUserWorkoutById(user_workout_id)!;
 
@@ -23,6 +25,8 @@ const EditUserWorkoutsScreen = () => {
       />
     );
   }
+
+  console.log(toJS(userWorkout));
 
   return (
     <SafeAreaView style={styles.container}>

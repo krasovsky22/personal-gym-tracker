@@ -14,7 +14,15 @@ export const UserWorkout = types
     }),
     NewModel
   )
-  .named('UserWorkout');
+  .named('UserWorkout')
+  .views((self) => ({
+    get workoutDateString() {
+      if (!self.workoutDate) {
+        return '';
+      }
+      return new Date(self.workoutDate).toLocaleDateString();
+    },
+  }));
 
 export interface UserWorkoutType extends Instance<typeof UserWorkout> {}
 export interface UserWorkoutSnapshotInType

@@ -1,13 +1,42 @@
-import { Platform, SafeAreaView, View, Text, StyleSheet } from 'react-native';
+import { useExercisesStore } from '@hooks';
+import { Card } from '@rneui/themed';
+import { Link } from 'expo-router';
+import {
+  Platform,
+  SafeAreaView,
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+} from 'react-native';
 
 function HomeScreen() {
+  const { userWorkouts } = useExercisesStore();
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.newsContainer}>
         <Text>Home Screen</Text>
       </View>
       <View style={styles.buttonsContainer}>
-        <Text>Bottom</Text>
+        <Text>Previous Workouts</Text>
+        <View style={{ flex: 1, width: '100%' }}>
+          <FlatList
+            data={userWorkouts}
+            keyExtractor={(a) => a.id}
+            renderItem={({ item }) => (
+              <Card>
+                <Card.Title>{item.workout?.name}</Card.Title>
+                <Text>Completed - {item.workoutDateString}</Text>
+                <Text>Exercises - {item.userWorkoutExercises.length}</Text>
+                <Link
+                  href={`/(protected)/user-workouts/track-workout/edit?user_workout_id=${item.id}`}
+                >
+                  Edit
+                </Link>
+              </Card>
+            )}
+          />
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -25,7 +54,7 @@ const styles = StyleSheet.create({
 
   buttonsContainer: {
     flex: 1,
-    flexDirection: 'row',
+    alignItems: 'center',
     gap: 2,
     flexWrap: 'wrap',
   },
