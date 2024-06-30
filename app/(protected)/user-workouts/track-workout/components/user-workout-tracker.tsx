@@ -1,9 +1,10 @@
 import { useExercisesStore } from '@hooks';
 import { UserWorkoutType } from '@models/UserWorkout';
 import { UserWorkoutExerciseSetType } from '@models/UserWorkoutExerciseSet';
-import { Card, CheckBox, Divider, useTheme, Avatar } from '@rneui/themed';
+import { Card, CheckBox, Divider, useTheme } from '@rneui/themed';
 import { Observer } from 'mobx-react-lite';
 import { StyleSheet, FlatList, View, Text, TextInput } from 'react-native';
+import { Avatar } from '@components/UI';
 
 type UserWorkoutTrackerType = {
   userWorkout: UserWorkoutType;
@@ -49,13 +50,7 @@ const UserWorkoutTracker = ({ userWorkout }: UserWorkoutTrackerType) => {
                       {exerciseIndex + 1} of{' '}
                       {userWorkout.userWorkoutExercises.length}
                     </Text>
-                    <Avatar
-                      rounded
-                      size={24}
-                      source={{
-                        uri: item.exercise?.icon_url,
-                      }}
-                    />
+                    <Avatar rounded uri={item.exercise?.icon_url ?? ''} />
                   </View>
                 </View>
                 <Divider />
@@ -152,7 +147,7 @@ const UserWorkoutTracker = ({ userWorkout }: UserWorkoutTrackerType) => {
                             }
                           />
 
-                          <Text style={styles.setRowCell}>
+                          <View style={styles.setRowCell}>
                             <CheckBox
                               checked={exerciseSet.completed}
                               size={24}
@@ -172,7 +167,7 @@ const UserWorkoutTracker = ({ userWorkout }: UserWorkoutTrackerType) => {
                                 onUserWorkoutSetToggle(exerciseSet)
                               }
                             />
-                          </Text>
+                          </View>
                         </View>
                       )}
                     </Observer>
@@ -231,6 +226,7 @@ const styles = StyleSheet.create({
     width: 20,
     fontSize: 20,
     textAlign: 'center',
+    alignItems: 'center',
   },
 
   textInputStyle: {

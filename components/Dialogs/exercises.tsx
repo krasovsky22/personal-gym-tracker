@@ -1,10 +1,11 @@
 import { View, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useState, useMemo } from 'react';
-import { Avatar, Dialog, Input, ListItem } from '@rneui/themed';
+import { Dialog, Input, ListItem } from '@rneui/themed';
 
 import { useExercisesStore } from '@hooks';
 import { ExerciseType } from '@models/Exercise';
 import { useFormContext } from 'react-hook-form';
+import { Avatar } from '@components/UI';
 
 type ExercisesDialogProps = {
   title?: string;
@@ -83,12 +84,7 @@ function ExercisesDialog({
               }}
               onPress={() => handleSelectExercise(exercise)}
             >
-              <Avatar
-                rounded
-                source={{
-                  uri: exercise.icon_url,
-                }}
-              />
+              <Avatar rounded uri={exercise.icon_url} />
               <ListItem.Content>
                 <ListItem.Title style={{ fontWeight: '700' }}>
                   {exercise.name}

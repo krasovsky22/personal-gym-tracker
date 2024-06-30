@@ -5,7 +5,8 @@ import { useController, useFormContext } from 'react-hook-form';
 import { ExercisesDialog } from '@components/Dialogs';
 import useExercisesStore from '@hooks/useExercisesStore';
 import HiddenInput, { HiddenInputType } from './HiddenInput';
-import { Avatar, Icon, useTheme } from '@rneui/themed';
+import { Icon, useTheme } from '@rneui/themed';
+import { Avatar } from '@components/UI';
 
 type ExercisesInputType = HiddenInputType & {
   name: string;
@@ -31,11 +32,7 @@ function ExercisesInput(props: ExercisesInputType) {
         <View style={styles.exerciseDescriptionContainer}>
           {exercise && (
             <>
-              <Avatar
-                source={{
-                  uri: exercise?.icon_url,
-                }}
-              />
+              <Avatar rounded uri={exercise?.icon_url ?? ''} />
               <Text style={styles.exerciseNameText}>{exercise?.name}</Text>
             </>
           )}

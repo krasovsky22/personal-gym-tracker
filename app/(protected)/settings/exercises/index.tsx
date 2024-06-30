@@ -1,11 +1,11 @@
 import { useRouter } from 'expo-router';
 import { useState, useMemo } from 'react';
 import { Observer, observer } from 'mobx-react-lite';
-import { View, StyleSheet, FlatList, Text } from 'react-native';
-import { useTheme, ListItem, Button, Input, Icon, Avatar } from '@rneui/themed';
+import { View, StyleSheet, FlatList } from 'react-native';
+import { useTheme, ListItem, Button, Input } from '@rneui/themed';
 import { default as MaterialIcon } from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { AddNewFab } from '@components/UI';
+import { AddNewFab, Avatar } from '@components/UI';
 import { AsyncButton, EmptyState } from '@components';
 import useExercisesStore from '@hooks/useExercisesStore';
 
@@ -16,6 +16,8 @@ function ExercisesScreen() {
   const { theme } = useTheme();
   const { sortedExercises, deleteExercise, loadExercises } =
     useExercisesStore();
+
+  console.log(sortedExercises);
 
   const filteredExercises = useMemo(() => {
     if (!filterText.length) {
@@ -86,12 +88,7 @@ function ExercisesScreen() {
                     ></AsyncButton>
                   )}
                 >
-                  <Avatar
-                    rounded
-                    source={{
-                      uri: item.icon_url,
-                    }}
-                  />
+                  <Avatar rounded uri={item.icon_url} />
                   <ListItem.Content>
                     <ListItem.Title>{item.name}</ListItem.Title>
                     <ListItem.Subtitle>

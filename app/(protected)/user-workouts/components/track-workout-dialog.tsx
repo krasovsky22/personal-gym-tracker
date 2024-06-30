@@ -1,13 +1,6 @@
-import { CloseButton } from '@components/UI';
+import { Avatar, CloseButton } from '@components/UI';
 import { WorkoutType } from '@models/Workout';
-import {
-  Dialog,
-  Button,
-  Card,
-  ListItem,
-  Avatar,
-  useTheme,
-} from '@rneui/themed';
+import { Dialog, Button, Card, ListItem, useTheme } from '@rneui/themed';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -73,12 +66,7 @@ function TrackWorkoutDialog({ children, workout }: TrackWorkoutDialogType) {
               data={workout.workoutExercises}
               renderItem={({ item }) => (
                 <ListItem>
-                  <Avatar
-                    rounded
-                    source={{
-                      uri: item.exercise?.icon_url,
-                    }}
-                  />
+                  <Avatar rounded uri={item.exercise?.icon_url ?? ''} />
                   <ListItem.Content>
                     <ListItem.Title style={{ fontWeight: 'bold' }}>
                       {item.sets_count} x {item.exercise?.name}
