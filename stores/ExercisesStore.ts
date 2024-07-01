@@ -348,7 +348,6 @@ export const ExercisesStore = types
       for await (const userWorkoutExercise of userWorkout.userWorkoutExercises) {
         const userWorkoutExerciseData: UserWorkExerciseRowInsertType = {
           user_workout_id: userWorkoutRow.id,
-          completed: userWorkoutExercise.completed,
           exercise_id: userWorkoutExercise.exercise?.id!,
         };
 
