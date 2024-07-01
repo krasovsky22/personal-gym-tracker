@@ -2,10 +2,9 @@ import EmptyState from '@components/EmptyState';
 import { useExercisesStore } from '@hooks';
 import { Divider } from '@rneui/themed';
 import { useLocalSearchParams } from 'expo-router';
-import { cast } from 'mobx-state-tree';
 import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
 import UserWorkoutTracker from './components/user-workout-tracker';
-import { toJS } from 'mobx';
+import TrackWorkoutHeader from './components/header';
 
 const EditUserWorkoutsScreen = () => {
   const { user_workout_id = '' } = useLocalSearchParams<{
@@ -28,10 +27,7 @@ const EditUserWorkoutsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Text>{workout.name}</Text>
-        <Text>Check Workout Blah Blah</Text>
-      </View>
+      <TrackWorkoutHeader userWorkout={userWorkout} />
       <Divider />
       <View style={styles.mainContainer}>
         <UserWorkoutTracker userWorkout={userWorkout} />
@@ -46,11 +42,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 20,
-  },
-  titleContainer: {
-    height: 30,
-    paddingHorizontal: 15,
-    flex: 1,
   },
   mainContainer: {
     flex: 8,

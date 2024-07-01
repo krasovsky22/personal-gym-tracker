@@ -8,12 +8,16 @@ export const UserWorkoutExercise = types
   .compose(
     types.model({
       exercise: types.safeReference(Exercise),
-      completed: types.optional(types.boolean, false),
       userWorkoutExerciseSets: types.array(UserWorkoutExerciseSet),
     }),
     NewModel
   )
-  .named('UserWorkoutExercise');
+  .named('UserWorkoutExercise')
+  .views((self) => ({
+    get isCompleted() {
+      return self.userWorkoutExerciseSets.every((set) => set.completed);
+    },
+  }));
 
 export interface UserWorkoutExerciseType
   extends Instance<typeof UserWorkoutExercise> {}

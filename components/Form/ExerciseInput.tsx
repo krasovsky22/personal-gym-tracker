@@ -1,12 +1,12 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { observer } from 'mobx-react-lite';
-import { useController, useFormContext } from 'react-hook-form';
+import { useController } from 'react-hook-form';
+import { StyleSheet, Text, View } from 'react-native';
 
+import { Avatar } from '@components/UI';
+import { Icon, useTheme } from '@rneui/themed';
 import { ExercisesDialog } from '@components/Dialogs';
 import useExercisesStore from '@hooks/useExercisesStore';
 import HiddenInput, { HiddenInputType } from './HiddenInput';
-import { Icon, useTheme } from '@rneui/themed';
-import { Avatar } from '@components/UI';
 
 type ExercisesInputType = HiddenInputType & {
   name: string;

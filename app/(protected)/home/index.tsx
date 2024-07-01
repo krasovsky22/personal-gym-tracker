@@ -14,9 +14,9 @@ function HomeScreen() {
   const { userWorkouts } = useExercisesStore();
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.newsContainer}>
+      {/* <View style={styles.newsContainer}>
         <Text>Home Screen</Text>
-      </View>
+      </View> */}
       <View style={styles.buttonsContainer}>
         <Text>Previous Workouts</Text>
         <View style={{ flex: 1, width: '100%' }}>

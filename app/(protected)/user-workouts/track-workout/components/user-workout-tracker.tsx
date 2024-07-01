@@ -1,7 +1,7 @@
 import { useExercisesStore } from '@hooks';
 import { UserWorkoutType } from '@models/UserWorkout';
 import { UserWorkoutExerciseSetType } from '@models/UserWorkoutExerciseSet';
-import { Card, CheckBox, Divider, useTheme } from '@rneui/themed';
+import { Card, CheckBox, Divider, Icon, useTheme } from '@rneui/themed';
 import { Observer } from 'mobx-react-lite';
 import { StyleSheet, FlatList, View, Text, TextInput } from 'react-native';
 import { Avatar } from '@components/UI';
@@ -39,19 +39,33 @@ const UserWorkoutTracker = ({ userWorkout }: UserWorkoutTrackerType) => {
                     </Text>
                   </View>
 
-                  <View style={{ gap: 5 }}>
-                    <Text
-                      style={{
-                        fontSize: 10,
-                        color: theme.colors.grey3,
-                        flexWrap: 'nowrap',
-                      }}
-                    >
-                      {exerciseIndex + 1} of{' '}
-                      {userWorkout.userWorkoutExercises.length}
-                    </Text>
-                    <Avatar rounded uri={item.exercise?.icon_url ?? ''} />
-                  </View>
+                  <Observer>
+                    {() => (
+                      <View style={{ gap: 5 }}>
+                        <Text
+                          style={{
+                            fontSize: 10,
+                            color: theme.colors.grey3,
+                            flexWrap: 'nowrap',
+                          }}
+                        >
+                          {exerciseIndex + 1} of{' '}
+                          {userWorkout.userWorkoutExercises.length}
+                        </Text>
+
+                        {item.isCompleted ? (
+                          <Icon
+                            size={36}
+                            name="check-circle-outline"
+                            type="material-community"
+                            color={theme.colors.success}
+                          />
+                        ) : (
+                          <Avatar rounded uri={item.exercise?.icon_url ?? ''} />
+                        )}
+                      </View>
+                    )}
+                  </Observer>
                 </View>
                 <Divider />
 

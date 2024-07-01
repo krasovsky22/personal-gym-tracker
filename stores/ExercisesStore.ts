@@ -83,6 +83,12 @@ export const ExercisesStore = types
     },
   }))
   .actions((self) => ({
+    cancelUserWorkout: flow(function* () {
+      if (self.newUserWorkout?.isNew) {
+        destroy(self.newUserWorkout);
+        self.newUserWorkout = null;
+      }
+    }),
     loadExercises: flow(function* () {
       const { data } = yield fetchExercises();
       self.exercises = cast(data);
